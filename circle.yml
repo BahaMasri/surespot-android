@@ -23,7 +23,8 @@ dependencies:
       ls -al ~/surespot-android/surespot/src/main/java/com/twofours/surespot/backup ;
       echo "xxxxxxxxxxxxxxxx" ;
       git apply -v --ignore-whitespace patches/Ex-63.patch ;
-      patch < patches/Im-63.patch ;
+      git apply -v --ignore-whitespace patches/Im-63.patch ;
+      ls -al ; ls -al tmp ;
       echo "yyyyyyyyyyyyyyyy" ;
       ls -al ~/surespot-android/surespot/src/main/java/com/twofours/surespot/backup ;
       cat ~/surespot-android/surespot/src/main/java/com/twofours/surespot/backup/ExportIdentityActivity.java ;
