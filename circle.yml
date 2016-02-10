@@ -8,9 +8,13 @@ dependencies:
     - ~/.android
     - "~/.gradle"
   pre:
+    #- export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH" ;
     - rm -v .google_apis/._.DS_Store ._.DS_Store surespot/libs/* surespot/src/main/res/raw/ffmpegpie surespot/src/main/res/raw/ffmpeg surespotcommon/libs/*.jar ;
       git clone https://github.com/zoff99/gcm-client-old.git ;
       ls -al ;
+      ls -al surespot ;
+      ls -al surespot/src ;
+      ls -al surespot/src/main ;
       pwd ;
       ln -s gcm-client-old/com/google surespot/src/main/java/com/ ;
       ls -al gcm-client-old/ ;
@@ -20,7 +24,6 @@ dependencies:
       git apply patches/Ex-63.patch ;
       git apply --stat patches/Im-63.patch ;
       git apply patches/Im-63.patch ;
-      export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH" ;
       touch src/main/res/raw/ffmpegpie src/main/res/raw/ffmpeg ;
       sed -i -e 's#com.google.android.gms:play-services-drive:7.8.0#com.android.support:support-v4:19.0.1#' build.gradle ;
       mkdir -p ../surespotcommon/src/main/res/raw ;
