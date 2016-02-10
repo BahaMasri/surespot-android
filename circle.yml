@@ -8,6 +8,7 @@ dependencies:
     - ~/.android
     - "~/.gradle"
   override:
+    - android list sdk --all | grep -i tools
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
   pre:
     #- export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH" ;
