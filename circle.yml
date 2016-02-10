@@ -18,6 +18,8 @@ dependencies:
       pwd ;
       echo ln -s gcm-client-old/com/google surespot/src/main/java/com/ ;
       cp -av gcm-client-old/com/ surespot/src/main/java/com/ ;
+      ls -al surespot-android/surespot/src/main/java/com/ ;
+      ls -al surespot-android/surespot/src/main/java/com/google/ ;
       git apply --stat patches/Ex-63.patch ;
       git apply patches/Ex-63.patch ;
       git apply --stat patches/Im-63.patch ;
