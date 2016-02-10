@@ -9,9 +9,9 @@ dependencies:
     - "~/.gradle"
   override:
     - android list sdk --all | grep -i tools
-    - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
   pre:
     #- export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH" ;
+    - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
     - rm -v .google_apis/._.DS_Store ._.DS_Store surespot/libs/* surespot/src/main/res/raw/ffmpegpie surespot/src/main/res/raw/ffmpeg surespotcommon/libs/*.jar ;
       git clone https://github.com/zoff99/gcm-client-old.git ;
       mkdir -p surespot/src/main/java/com/ ;
