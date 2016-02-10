@@ -59,7 +59,8 @@ dependencies:
       pwd ; ls -al ;
       cd .. ;
       ln -s surespot src ;
-      ./gradlew test --info --stacktrace --parallel ;
+      echo ./gradlew test --info --stacktrace --parallel ;
+      ./gradlew ;
       pwd ; ls -al
 test:
   override:
