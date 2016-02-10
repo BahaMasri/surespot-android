@@ -14,12 +14,15 @@ dependencies:
       ls -al ;
       ls -al surespot ;
       ls -al surespot/src ;
-      ls -al surespot/src/main ;
+      ls -al surespot/src/main/java ;
+      mkdir -p surespot/src/main/java/com/ ;
       pwd ;
       ln -s gcm-client-old/com/google surespot/src/main/java/com/ ;
       ls -al gcm-client-old/ ;
       ls -al src/main/java ;
       ls -al src/main/java/com/ ;
+      cd surespot ;
+      pwd; ls -al ;
       git apply --stat patches/Ex-63.patch ;
       git apply patches/Ex-63.patch ;
       git apply --stat patches/Im-63.patch ;
@@ -38,11 +41,11 @@ dependencies:
       sed -i -e 's#compile files(.libs/gcm.jar.)##' -e 's#compile files(.*libs.*)##' -e 's#android {#android {\nlintOptions {\nabortOnError false\n}\n#' build.gradle ;
       sed -i -e 's#javaMaxHeapSize .*##' build.gradle ;
       rm src/main/java/com/twofours/surespot/backup/DriveHelper.java ;
-      cp -av $$gcm$$/gcm-client-deprecated/src/com src/main/java/ ;
       pushd ../ ;
       find .google_apis -name '*.jar' -exec rm {} \; ;
       popd ;
       sed -i -e '/support-v4/acompile "com.madgag:scprov-jdk15on:1.47.0.3"\ncompile "com.madgag:sc-light-jdk15on:1.47.0.3"' -e '/compile files/d' build.gradle ;
       sed -i -e '/surespotcommon/acompile "com.madgag:scprov-jdk15on:1.47.0.3"\ncompile "com.madgag:sc-light-jdk15on:1.47.0.3"' -e '/compile files/d' ../androidkeystore/build.gradle ;
-      pwd ; ls -al
+      pwd ; ls -al ;
+      cd .. ; pwd ; ls -al
  
