@@ -21,12 +21,12 @@ dependencies:
       ls -al gcm-client-old/ ;
       ls -al src/main/java ;
       ls -al src/main/java/com/ ;
-      cd surespot ;
-      pwd; ls -al ;
       git apply --stat patches/Ex-63.patch ;
       git apply patches/Ex-63.patch ;
       git apply --stat patches/Im-63.patch ;
       git apply patches/Im-63.patch ;
+      cd surespot ;
+      pwd; ls -al ;
       touch src/main/res/raw/ffmpegpie src/main/res/raw/ffmpeg ;
       sed -i -e 's#com.google.android.gms:play-services-drive:7.8.0#com.android.support:support-v4:19.0.1#' build.gradle ;
       mkdir -p ../surespotcommon/src/main/res/raw ;
