@@ -61,8 +61,23 @@ dependencies:
       ln -s surespot src ;
       echo ./gradlew tasks ;
       ./gradlew assembleRelease --info --stacktrace --parallel ;
-      find . -name '*.apk' ;
-      pwd ; ls -al
+      echo;echo;echo;
+      pwd ; ls -al;
+      cp -av ./surespot/build/outputs/apk/surespot-release-unsigned.apk ~/ ;
+      cd ~/ ;
+      ######  --------------- delete debug signing-key --------------- ;
+      ### rm -f ~/.android/debug.keystore ;
+      ######  --------------- delete debug signing-key --------------- ;
+      if [ ! -f ~/.android/debug.keystore ]; then echo "*** generating new signer key ***" ;
+      echo "*** generating new signer key ***";
+      echo "*** generating new signer key ***";
+      keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -keyalg RSA -keysize 2048 -validity 10000 -alias androiddebugkey -keypass android -dname "CN=Android Debug,O=Android,C=US" ;
+      fi ;
+      jarsigner -verbose -keystore ~/.android/debug.keystore -storepass android -keypass android -sigalg SHA1withRSA -digestalg SHA1 -sigfile CERT -signedjar surespot-release-signed.apk surespot-release-unsigned.apk androiddebugkey > /dev/null 2> /dev/null ;
+      /usr/local/android-sdk-linux/build-tools/23.0.1/zipalign -v 4 surespot-release-signed.apk surespot-release-signed-aligned.apk > /dev/null 2> /dev/null ;
+      pwd ;
+      ls -al ;
+      cp -av surespot-release-signed-aligned.apk $CIRCLE_ARTIFACTS/surespot_circleci_$CIRCLE_SHA1.apk || exit 1
 test:
   override:
     - echo "aa"
