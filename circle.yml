@@ -57,9 +57,9 @@ dependencies:
       sed -i -e '/support-v4/acompile "com.madgag:scprov-jdk15on:1.47.0.3"\ncompile "com.madgag:sc-light-jdk15on:1.47.0.3"' -e '/compile files/d' build.gradle ;
       sed -i -e '/surespotcommon/acompile "com.madgag:scprov-jdk15on:1.47.0.3"\ncompile "com.madgag:sc-light-jdk15on:1.47.0.3"' -e '/compile files/d' ../androidkeystore/build.gradle ;
       pwd ; ls -al ;
-      ./gradlew test --info --stacktrace ;
       cd .. ;
       ln -s surespot src ;
+      ./gradlew test --info --stacktrace --parallel ;
       pwd ; ls -al
 test:
   override:
