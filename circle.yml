@@ -26,6 +26,12 @@ dependencies:
       git apply -v --ignore-whitespace patches/Im-63.patch ;
       mv tmp/E3.java surespot/src/main/java/com/twofours/surespot/backup/ExportIdentityActivity.java ;
       mv tmp/I3.java surespot/src/main/java/com/twofours/surespot/backup/ImportIdentityActivity.java ;
+      echo "EEEEEEEEEEEE" ;
+      cat surespot/src/main/java/com/twofours/surespot/backup/ExportIdentityActivity.java ;
+      echo "EEEEEEEEEEEE" ;
+      echo "--IIIIIIII--" ;
+      cat surespot/src/main/java/com/twofours/surespot/backup/ImportIdentityActivity.java ;
+      echo "--IIIIIIII--" ;
       echo "yyyyyyyyyyyyyyyy" ;
       ls -al ~/surespot-android/surespot/src/main/java/com/twofours/surespot/backup ;
       echo "yyyyyyyyyyyyyyyy" ;
