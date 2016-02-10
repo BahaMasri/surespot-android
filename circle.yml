@@ -61,6 +61,7 @@ dependencies:
       ln -s surespot src ;
       echo ./gradlew tasks ;
       ./gradlew assembleRelease --info --stacktrace --parallel ;
+      find . -name '*.apk' ;
       pwd ; ls -al
 test:
   override:
