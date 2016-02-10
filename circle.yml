@@ -62,12 +62,13 @@ dependencies:
       cd .. ;
       ln -s surespot src ;
       echo ./gradlew tasks ;
-      ./gradlew assembleRelease --info --stacktrace --parallel ;
+      ./gradlew assembleRelease --info --stacktrace --parallel > /dev/null 2> /dev/null;
       echo;echo;echo;
       pwd ; ls -al;
       cp -av ./surespot/build/outputs/apk/surespot-release-unsigned.apk ~/ ;
       cd ~/ ;
-      echo xxxxxx rm -f ~/.android/debug.keystore ;
+      echo xxxxxxrm -f ~/.android/debug.keystore ;
+      ls -al ~/.android/debug.keystore ;
       if [ ! -f ~/.android/debug.keystore ]; then echo "*** generating new signer key ***" ;
       echo "*** generating new signer key ***";
       echo "*** generating new signer key ***";
