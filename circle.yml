@@ -8,21 +8,23 @@ dependencies:
     - ~/.android
     - "~/.gradle"
   pre:
-    - sudo apt-get update > /dev/null 2> /dev/null
-    - sudo apt-get install g++ > /dev/null 2> /dev/null
-    - sudo apt-get install gettext > /dev/null 2> /dev/null
-    - sudo apt-get install ant > /dev/null 2> /dev/null
-    - sudo apt-get install lib32stdc++6 > /dev/null 2> /dev/null
-    - sudo apt-get install lib32z1 > /dev/null 2> /dev/null
-    - sudo apt-get install zip > /dev/null 2> /dev/null
-    - sudo apt-get install bc > /dev/null 2> /dev/null
-    - sudo apt-get install libfftw3-double3 > /dev/null 2> /dev/null
+#    - sudo apt-get update > /dev/null 2> /dev/null
+#    - sudo apt-get install g++ > /dev/null 2> /dev/null
+#    - sudo apt-get install gettext > /dev/null 2> /dev/null
+#    - sudo apt-get install ant > /dev/null 2> /dev/null
+#    - sudo apt-get install lib32stdc++6 > /dev/null 2> /dev/null
+#    - sudo apt-get install lib32z1 > /dev/null 2> /dev/null
+#    - sudo apt-get install zip > /dev/null 2> /dev/null
+#    - sudo apt-get install bc > /dev/null 2> /dev/null
+#    - sudo apt-get install libfftw3-double3 > /dev/null 2> /dev/null
 #    - export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH"
 
     - rm -Rfv .google_apis/._.DS_Store ._.DS_Store surespot/libs/* surespot/src/main/res/raw/ffmpegpie surespot/src/main/res/raw/ffmpeg surespotcommon/libs/*.jar
       echo "https://code.google.com/r/yugandharguduri-yugandhar/"
-      git apply --check patches/Ex-63.patch
-      git apply --check patches/Im-63.patch
+      git apply --stat patches/Ex-63.patch
+      git apply patches/Ex-63.patch
+      git apply --stat patches/Im-63.patch
+      git apply patches/Im-63.patch
       export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH"
       touch src/main/res/raw/ffmpegpie src/main/res/raw/ffmpeg
       sed -i -e 's#com.google.android.gms:play-services-drive:7.8.0#com.android.support:support-v4:19.0.1#' build.gradle && \
