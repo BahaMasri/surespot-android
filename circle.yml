@@ -3,6 +3,8 @@ machine:
     Europe/Vienna
   environment:
     ANDROID_HOME: /usr/local/android-sdk-linux
+    ANDROID_SDK: /usr/local/android-sdk-linux/
+    _SDK_: /usr/local/android-sdk-linux/
 dependencies:
   cache_directories:
     - ~/.android
@@ -72,7 +74,7 @@ dependencies:
       keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -keyalg RSA -keysize 2048 -validity 10000 -alias androiddebugkey -keypass android -dname "CN=Android Debug,O=Android,C=US" ;
       fi ;
       jarsigner -verbose -keystore ~/.android/debug.keystore -storepass android -keypass android -sigalg SHA1withRSA -digestalg SHA1 -sigfile CERT -signedjar surespot-release-signed.apk surespot-release-unsigned.apk androiddebugkey > /dev/null 2> /dev/null ;
-      /usr/local/android-sdk-linux/build-tools/23.0.1/zipalign -v 4 surespot-release-signed.apk surespot-release-signed-aligned.apk > /dev/null 2> /dev/null ;
+      $_SDK_/build-tools/23.0.1/zipalign -v 4 surespot-release-signed.apk surespot-release-signed-aligned.apk > /dev/null 2> /dev/null ;
       pwd ;
       ls -al ;
       cp -av surespot-release-signed-aligned.apk $CIRCLE_ARTIFACTS/surespot_circleci_$CIRCLE_SHA1.apk || exit 1
