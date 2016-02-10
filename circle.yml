@@ -24,11 +24,10 @@ dependencies:
       echo "xxxxxxxxxxxxxxxx" ;
       git apply -v --ignore-whitespace patches/Ex-63.patch ;
       git apply -v --ignore-whitespace patches/Im-63.patch ;
-      ls -al ; ls -al tmp ;
+      mv /tmp/E3.java surespot/src/main/java/com/twofours/surespot/backup/ExportIdentityActivity.java ;
+      mv /tmp/I3.java surespot/src/main/java/com/twofours/surespot/backup/ImportIdentityActivity.java ;
       echo "yyyyyyyyyyyyyyyy" ;
       ls -al ~/surespot-android/surespot/src/main/java/com/twofours/surespot/backup ;
-      cat ~/surespot-android/surespot/src/main/java/com/twofours/surespot/backup/ExportIdentityActivity.java ;
-      cat ~/surespot-android/surespot/src/main/java/com/twofours/surespot/backup/ImportIdentityActivity.java ;
       echo "yyyyyyyyyyyyyyyy" ;
       cd surespot ;
       pwd; ls -al ;
