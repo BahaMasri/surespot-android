@@ -131,7 +131,13 @@ public class LoginActivity extends SherlockActivity {
 		{
 		    public void run()
 		    {
-		    	login();
+		    	try
+		    	{
+		    		login();
+		    	}
+		    	catch(Exception ee)
+		    	{
+		    	}
 		    }
 		};
 		handler.postDelayed(r, 1500);
