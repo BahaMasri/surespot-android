@@ -48,20 +48,10 @@ public class DeleteIdentityActivity extends SherlockActivity {
 		deleteIdentityButton.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v)
+			{
 				final String user = (String) mSpinner.getSelectedItem();
-				mDialog = UIUtils.passwordDialog(DeleteIdentityActivity.this, getString(R.string.delete_identity_user, user),
-						getString(R.string.enter_password_for, user), new IAsyncCallback<String>() {
-							@Override
-							public void handleResponse(String result) {
-								if (!TextUtils.isEmpty(result)) {
-									deleteIdentity(user, result);
-								}
-								else {
-									Utils.makeToast(DeleteIdentityActivity.this, getString(R.string.no_identity_deleted));
-								}
-							}
-						});
+				deleteIdentity(user, SurespotApplication.PW_INSECURE);
 
 			}
 		});
