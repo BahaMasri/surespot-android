@@ -83,7 +83,117 @@ public class ImportIdentityActivity extends SherlockActivity {
 		Intent intent = getIntent();
 	}
 
-	private void setupLocal() {
+	private void setupLocal()
+	{
+
+		ListView lvIdentities = (ListView) findViewById(R.id.lvLocalIdentities);
+		lvIdentities.setEmptyView(findViewById(R.id.no_local_identities));
+
+		List<HashMap<String, String>> items = new ArrayList<HashMap<String, String>>();
+
+		// query the filesystem for identities
+		final File exportDir = FileUtils.getIdentityExportDir();
+		File[] files = IdentityController.getExportIdentityFiles(this, exportDir.getPath());
+
+		TextView tvLocalLocation = (TextView) findViewById(R.id.restoreLocalLocation);
+
+		if (files != null) {
+			TreeMap<Long, File> sortedFiles = new TreeMap<Long, File>(new Comparator<Long>() {
+				public int compare(Long o1, Long o2) {
+					return o2.compareTo(o1);
+				}
+			});
+
+			for (File file : files) {
+				sortedFiles.put(file.lastModified(), file);
+			}
+
+			for (File file : sortedFiles.values()) {
+				long lastModTime = file.lastModified();
+				String date = DateFormat.getDateFormat(this).format(lastModTime) + " " + DateFormat.getTimeFormat(this).format(lastModTime);
+
+				HashMap<String, String> map = new HashMap<String, String>();
+				map.put("name", IdentityController.getIdentityNameFromFile(file));
+				map.put("date", date);
+				items.add(map);
+			}
+		}
+
+		final SimpleAdapter adapter = new SimpleAdapter(this, items, R.layout.identity_item, new String[] { "name", "date" }, new int[] {
+				R.id.identityBackupName, R.id.identityBackupDate });
+		tvLocalLocation.setText(exportDir.toString());
+		lvIdentities.setVisibility(View.VISIBLE);
+
+		lvIdentities.setAdapter(adapter);
+		lvIdentities.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				if (IdentityController.getIdentityCount(ImportIdentityActivity.this) >= SurespotConstants.MAX_IDENTITIES) {
+					Utils.makeLongToast(ImportIdentityActivity.this, getString(R.string.login_max_identities_reached, SurespotConstants.MAX_IDENTITIES));
+					return;
+				}
+
+				@SuppressWarnings("unchecked")
+				Map<String, String> map = (Map<String, String>) adapter.getItem(position);
+
+				final String user = map.get("name");			
+
+				// make sure file we're going to save to is writable before we
+				// start
+				if (!IdentityController.ensureIdentityFile(ImportIdentityActivity.this, user, true)) {
+					Utils.makeToast(ImportIdentityActivity.this, getString(R.string.could_not_import_identity));
+					if (mMode == MODE_DRIVE) {
+						finish();
+					}
+					return;
+				}
+
+				UIUtils.passwordDialog(ImportIdentityActivity.this, getString(R.string.restore_identity, user), getString(R.string.enter_password_for, user),
+						new IAsyncCallback<String>() {
+							@Override
+							public void handleResponse(String result) {
+								if (!TextUtils.isEmpty(result)) {
+									IdentityController.importIdentity(ImportIdentityActivity.this, exportDir, user, result,
+											new IAsyncCallback<IdentityOperationResult>() {
+
+												@Override
+												public void handleResponse(IdentityOperationResult response) {
+
+													Utils.makeLongToast(ImportIdentityActivity.this, response.getResultText());
+
+													if (response.getResultSuccess()) {
+														// if launched
+														// from
+														// signup and
+														// successful
+														// import, go to
+														// login
+														// screen
+														if (mSignup) {
+															IdentityController.logout();
+
+															Intent intent = new Intent(ImportIdentityActivity.this, MainActivity.class);
+															intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+															startActivity(intent);
+														}
+
+													}
+
+												}
+											});
+								}
+								else {
+									Utils.makeToast(ImportIdentityActivity.this, getString(R.string.no_identity_imported));
+								}
+
+							}
+						});
+
+			}
+
+		});
+
 	}
 
 	private void restoreExternal(boolean firstTime) {
