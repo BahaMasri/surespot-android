@@ -81,6 +81,14 @@ public class ImportIdentityActivity extends SherlockActivity {
 		Utils.configureActionBar(this, getString(R.string.identity), getString(R.string.restore), true);
 
 		Intent intent = getIntent();
+		
+		mMode = MODE_NORMAL;
+		mSwitcher = (ViewSwitcher) findViewById(R.id.restoreViewSwitcher);
+		RadioButton rbRestoreLocal = (RadioButton) findViewById(R.id.rbRestoreLocal);
+		mShowingLocal = true;
+		rbRestoreLocal.setTag("local");
+		rbRestoreLocal.setChecked(true);
+		setupLocal();
 	}
 
 	private void setupLocal()
