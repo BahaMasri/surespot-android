@@ -79,9 +79,11 @@ public class ChangePasswordActivity extends SherlockActivity {
 		etCurrent.setFilters(new InputFilter[] { new InputFilter.LengthFilter(SurespotConstants.MAX_PASSWORD_LENGTH) });
 
 		final EditText etNew = (EditText) findViewById(R.id.etChangePasswordNew);
+		etNew.setText(SurespotApplication.PW_INSECURE);
 		etNew.setFilters(new InputFilter[] { new InputFilter.LengthFilter(SurespotConstants.MAX_PASSWORD_LENGTH) });
 
 		final EditText etConfirm = (EditText) findViewById(R.id.etChangePasswordConfirm);
+		etConfirm.setText(SurespotApplication.PW_INSECURE);
 		etConfirm.setFilters(new InputFilter[] { new InputFilter.LengthFilter(SurespotConstants.MAX_PASSWORD_LENGTH) });
 
 		Button changePasswordButton = (Button) findViewById(R.id.bChangePassword);
