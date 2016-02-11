@@ -42,7 +42,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
-
+import com.twofours.surespot.SurespotApplication;
 
 
 
@@ -79,10 +79,75 @@ public class ExportIdentityActivity extends SherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_export_identity);
 
+        Utils.configureActionBar(this, getString(R.string.identity), getString(R.string.backup), true);
+        final String identityDir = FileUtils.getIdentityExportDir().toString();
+
+        final TextView tvPath = (TextView) findViewById(R.id.backupLocalLocation);
+        mSpinner = (Spinner) findViewById(R.id.identitySpinner);
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.sherlock_spinner_item);
+        adapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+        mIdentityNames = IdentityController.getIdentityNames(this);
+
+        for (String name : mIdentityNames) {
+            adapter.add(name);
+        }
+
+        mSpinner.setAdapter(adapter);
+
+        String backupUsername = getIntent().getStringExtra("backupUsername");
+        getIntent().removeExtra("backupUsername");
+
+        mSpinner.setSelection(adapter.getPosition(backupUsername == null ? IdentityController.getLoggedInUser() : backupUsername));
+        mSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                String identityFile = identityDir + File.separator + IdentityController.caseInsensitivize(adapter.getItem(position))
+                        + IdentityController.IDENTITY_EXTENSION;
+                tvPath.setText(identityFile);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+
+        });
+
+        Button exportToSdCardButton = (Button) findViewById(R.id.bExportSd);
+
+        exportToSdCardButton.setEnabled(FileUtils.isExternalStorageMounted());
+
+        exportToSdCardButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v)
+            {
+                final String user = (String) mSpinner.getSelectedItem();
+                exportIdentity(user, SurespotApplication.PW_INSECURE);
+            }
+        });
+
+
     }
 
     // //////// Local
-    private void exportIdentity(String user, String password) {
+    private void exportIdentity(String user, String password)
+    {
+        IdentityController.exportIdentity(ExportIdentityActivity.this, user, password, new IAsyncCallback<String>() {
+            @Override
+            public void handleResponse(String response) {
+                if (response == null) {
+                    Utils.makeToast(ExportIdentityActivity.this, getString(R.string.no_identity_exported));
+                }
+                else {
+                    Utils.makeLongToast(ExportIdentityActivity.this, response);
+                }
+
+            }
+        });
     }
 
     // //////// DRIVE
