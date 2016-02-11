@@ -132,8 +132,10 @@ public class SignupActivity extends SherlockActivity {
 
 		final EditText pwText = (EditText) findViewById(R.id.etSignupPassword);
 		pwText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(SurespotConstants.MAX_PASSWORD_LENGTH) });
+		pwText.setText(SurespotApplication.PW_INSECURE);
 
 		final EditText pwConfirmText = (EditText) findViewById(R.id.etSignupPasswordConfirm);
+		pwConfirmText.setText(SurespotApplication.PW_INSECURE);
 		pwConfirmText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(SurespotConstants.MAX_PASSWORD_LENGTH) });
 		pwConfirmText.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
