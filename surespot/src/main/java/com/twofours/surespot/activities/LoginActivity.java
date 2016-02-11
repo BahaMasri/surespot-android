@@ -3,6 +3,9 @@ package com.twofours.surespot.activities;
 import java.security.InvalidKeyException;
 import java.util.List;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -124,6 +127,16 @@ public class LoginActivity extends SherlockActivity {
 			}
 
 		});
+		mEtPassword.setText(SurespotApplication.PW_INSECURE);
+
+		new Timer().schedule(new TimerTask()
+		{
+		    @Override
+		    public void run()
+		    {
+		        login();
+		    }
+		}, 2000);
 
 		mCbSavePassword = (CheckBox) findViewById(R.id.cbSavePassword);
 		mCbSavePassword.setOnClickListener(new OnClickListener() {
