@@ -73,10 +73,13 @@ public class LoginActivity extends SherlockActivity {
 	private String mUnlockingUser;
 	private boolean mUserChallenge;
 	private Handler mHandler = new Handler(Looper.getMainLooper());
+	private boolean activity_active = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		activity_active = true;
 
 		SurespotLog.d(TAG, "onCreate");
 
@@ -133,7 +136,11 @@ public class LoginActivity extends SherlockActivity {
 		    {
 		    	try
 		    	{
-		    		login();
+		    		// avoid a crash on "logout then back-button"
+		    		if (activity_active == true)
+		    		{
+		    			login();
+		    		}
 		    	}
 		    	catch(Exception ee)
 		    	{
@@ -193,9 +200,18 @@ public class LoginActivity extends SherlockActivity {
 	}
 
 	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		activity_active = false;
+	}
+
+	@Override
 	protected void onResume() {
 
 		super.onResume();
+
+		activity_active = true;
 
 		// set the identities
 
@@ -500,6 +516,8 @@ public class LoginActivity extends SherlockActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+
+		activity_active = false;
 
 		if (mCacheServiceBound && mConnection != null) {
 			unbindService(mConnection);
