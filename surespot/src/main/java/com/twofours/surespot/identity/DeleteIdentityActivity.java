@@ -17,6 +17,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.twofours.surespot.R;
+import com.twofours.surespot.SurespotApplication;
 import com.twofours.surespot.activities.MainActivity;
 import com.twofours.surespot.chat.ChatUtils;
 import com.twofours.surespot.common.SurespotLog;
