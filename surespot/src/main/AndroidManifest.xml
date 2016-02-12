@@ -107,11 +107,11 @@
         <activity
             android:name="com.twofours.surespot.activities.SignupActivity"
             android:label="@string/title_activity_signup"
-            android:windowSoftInputMode="stateVisible"></activity>
+            android:windowSoftInputMode="stateHidden"></activity>
         <activity
             android:name="com.twofours.surespot.activities.LoginActivity"
             android:label="login"
-            android:windowSoftInputMode="stateVisible"></activity>
+            android:windowSoftInputMode="stateHidden"></activity>
         <activity
             android:name="com.twofours.surespot.images.ImageViewActivity"
             android:noHistory="true"></activity>
