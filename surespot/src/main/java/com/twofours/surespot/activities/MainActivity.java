@@ -863,7 +863,9 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 		boolean helpShown = Utils.getSharedPrefsBoolean(this, "helpShownAgain");
 		if (!helpShown || userWasCreated) {
 			Utils.removePref(this, "helpShown");
-			mHelpDialog = UIUtils.showHelpDialog(this, true);
+			// -- dont show help at first startup anymore !! --
+			// mHelpDialog = UIUtils.showHelpDialog(this, true);
+			// -- dont show help at first startup anymore !! --
 		}
 
 		// only lollipop fixes for 59 so don't bother showing anything
