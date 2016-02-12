@@ -84,7 +84,8 @@ public class LoginActivity extends SherlockActivity {
 		SurespotLog.d(TAG, "onCreate");
 
 		boolean keystoreEnabled = Utils.getSharedPrefsBoolean(this, SurespotConstants.PrefNames.KEYSTORE_ENABLED);
-		if (keystoreEnabled) {
+		if (keystoreEnabled)
+		{
 			IdentityController.initKeystore();			
 		}
 
@@ -147,7 +148,7 @@ public class LoginActivity extends SherlockActivity {
 		    	}
 		    }
 		};
-		handler.postDelayed(r, 1500);
+		handler.postDelayed(r, 500);
 
 		mCbSavePassword = (CheckBox) findViewById(R.id.cbSavePassword);
 		mCbSavePassword.setOnClickListener(new OnClickListener() {
@@ -171,6 +172,8 @@ public class LoginActivity extends SherlockActivity {
 
 			}
 		});
+
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 	}
 
 	private void LaunchKeystoreActivity() {
