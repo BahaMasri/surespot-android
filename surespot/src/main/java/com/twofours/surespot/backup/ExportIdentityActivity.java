@@ -89,7 +89,8 @@ public class ExportIdentityActivity extends SherlockActivity {
         adapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
         mIdentityNames = IdentityController.getIdentityNames(this);
 
-        for (String name : mIdentityNames) {
+        for (String name : mIdentityNames)
+        {
             adapter.add(name);
         }
 
@@ -130,6 +131,15 @@ public class ExportIdentityActivity extends SherlockActivity {
             }
         });
 
+
+        final TextView t001 = (TextView) findViewById(R.id.drive_001);
+        t001.setVisibility(View.INVISIBLE);
+
+        final Button b001 = (Button) findViewById(R.id.bBackupDrive);
+        b001.setVisibility(View.INVISIBLE);
+
+        final View v001 = (View) findViewById(R.id.drive_002);
+        v001.setVisibility(View.INVISIBLE);
 
     }
 
