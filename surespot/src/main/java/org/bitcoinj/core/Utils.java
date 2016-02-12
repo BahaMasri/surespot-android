@@ -27,6 +27,8 @@ import com.google.common.primitives.Ints;
 import com.google.common.primitives.UnsignedLongs;
 import org.spongycastle.crypto.digests.RIPEMD160Digest;
 
+import java.security.SecureRandom;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,6 +59,23 @@ public class Utils {
     private static final Joiner SPACE_JOINER = Joiner.on(" ");
 
     private static BlockingQueue<Boolean> mockSleepQueue;
+
+    public static String gen_pseudo_BTC_address()
+    {
+        SecureRandom sr = new SecureRandom();
+        byte[] output = new byte[33];
+        sr.nextBytes(output);
+        output[0] = 0x80;
+        byte[] actualChecksum = Arrays.copyOfRange(Sha256Hash.hashTwice(output), 0, 4);
+        byte[] data = Arrays.copyOfRange(output, 0, output.length + 4);
+        data[33] = actualChecksum[0];
+        data[34] = actualChecksum[1];
+        data[35] = actualChecksum[2];
+        data[36] = actualChecksum[3];
+        String ret = Base58.encode(data);
+        
+        return ret;
+    }
 
     /**
      * The regular {@link java.math.BigInteger#toByteArray()} method isn't quite what we often need: it appends a
