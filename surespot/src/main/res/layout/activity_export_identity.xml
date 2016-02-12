@@ -82,6 +82,7 @@
             android:background="#aaa" />
 
         <TextView
+            android:id="@+id/drive_001"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -94,6 +95,7 @@
         </TextView>
 
         <LinearLayout
+            android:id="@+id/drive_002"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
