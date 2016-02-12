@@ -54,7 +54,7 @@ import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterrup
  * A collection of various utility methods that are helpful for working with the Bitcoin protocol.
  * To enable debug logging from the library, run with -Dbitcoinj.logging=true on your command line.
  */
-public class Utils {
+public class Utils2 {
 
     /** The string that prefixes all text messages signed using Bitcoin keys. */
     public static final String BITCOIN_SIGNED_MESSAGE_HEADER = "Bitcoin Signed Message:\n";
