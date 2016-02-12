@@ -181,9 +181,14 @@ public class ManageKeysActivity extends SherlockActivity {
 													result.keyPairs[0], result.keyPairs[1]);
 											mMpd.decrProgress();
 											Utils.makeLongToast(ManageKeysActivity.this, getString(R.string.keys_created));
-											Intent intent = new Intent(ManageKeysActivity.this, ExportIdentityActivity.class);
-											intent.putExtra("backupUsername", username);
-											ManageKeysActivity.this.startActivity(intent);
+											
+											// ---- disable automatic showing of the export-keys screen!! ----
+											// ---- disable automatic showing of the export-keys screen!! ----
+											// Intent intent = new Intent(ManageKeysActivity.this, ExportIdentityActivity.class);
+											// intent.putExtra("backupUsername", username);
+											// ManageKeysActivity.this.startActivity(intent);
+											// ---- disable automatic showing of the export-keys screen!! ----
+											// ---- disable automatic showing of the export-keys screen!! ----
 										};
 
 										@Override
