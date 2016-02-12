@@ -58,7 +58,7 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
     @Deprecated
     public Sha256Hash(String hexString) {
         //checkArgument(hexString.length() == 64);
-        this.bytes = Utils.HEX.decode(hexString);
+        this.bytes = Utils2.HEX.decode(hexString);
     }
 
     /**
@@ -82,7 +82,7 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
      *         hex string, or if it does not represent exactly 32 bytes
      */
     public static Sha256Hash wrap(String hexString) {
-        return wrap(Utils.HEX.decode(hexString));
+        return wrap(Utils2.HEX.decode(hexString));
     }
 
     /**
@@ -94,7 +94,7 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
      */
     @SuppressWarnings("deprecation") // the constructor will be made private in the future
     public static Sha256Hash wrapReversed(byte[] rawHashBytes) {
-        return wrap(Utils.reverseBytes(rawHashBytes));
+        return wrap(Utils2.reverseBytes(rawHashBytes));
     }
 
     /** Use {@link #of(byte[])} instead: this old name is ambiguous. */
@@ -245,7 +245,7 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
 
     @Override
     public String toString() {
-        return Utils.HEX.encode(bytes);
+        return Utils2.HEX.encode(bytes);
     }
 
     /**
@@ -266,7 +266,7 @@ public class Sha256Hash implements Serializable, Comparable<Sha256Hash> {
      * Returns a reversed copy of the internal byte array.
      */
     public byte[] getReversedBytes() {
-        return Utils.reverseBytes(bytes);
+        return Utils2.reverseBytes(bytes);
     }
 
     @Override
