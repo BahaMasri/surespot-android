@@ -79,10 +79,12 @@ public class SignupActivity extends SherlockActivity {
 		setContentView(R.layout.activity_signup);
 		Utils.configureActionBar(this, getString(R.string.identity), getString(R.string.create), false);
 
-		try {
+		try
+		{
 			mNetworkController = new NetworkController(SignupActivity.this, null, null);
 		}
-		catch (Exception e) {
+		catch (Exception e)
+		{
 			this.finish();
 			return;
 		}
@@ -147,7 +149,7 @@ public class SignupActivity extends SherlockActivity {
 		    	}
 		    }
 		};
-		handler.postDelayed(r, 1000);
+		handler.postDelayed(r, 500);
 
 		final EditText pwText = (EditText) findViewById(R.id.etSignupPassword);
 		pwText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(SurespotConstants.MAX_PASSWORD_LENGTH) });
@@ -168,6 +170,8 @@ public class SignupActivity extends SherlockActivity {
 				return handled;
 			}
 		});
+
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 	}
 
 	private SpannableStringBuilder setRestoreListener(String str) {
