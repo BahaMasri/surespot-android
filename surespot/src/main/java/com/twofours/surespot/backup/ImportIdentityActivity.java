@@ -85,6 +85,10 @@ public class ImportIdentityActivity extends SherlockActivity {
 		mMode = MODE_NORMAL;
 		mSwitcher = (ViewSwitcher) findViewById(R.id.restoreViewSwitcher);
 		RadioButton rbRestoreLocal = (RadioButton) findViewById(R.id.rbRestoreLocal);
+		
+		final View v001 = (ViewSwitcher) findViewById(R.id.rbRestoreDrive);
+		v001.setVisibility(View.INVISIBLE);
+		
 		mShowingLocal = true;
 		rbRestoreLocal.setTag("local");
 		rbRestoreLocal.setChecked(true);
