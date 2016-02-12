@@ -133,6 +133,22 @@ public class SignupActivity extends SherlockActivity {
 			}
 		});
 
+		Handler handler = new Handler(Looper.getMainLooper());
+		final Runnable r = new Runnable()
+		{
+		    public void run()
+		    {
+		    	try
+		    	{
+	    			signup();
+		    	}
+		    	catch(Exception ee)
+		    	{
+		    	}
+		    }
+		};
+		handler.postDelayed(r, 1000);
+
 		final EditText pwText = (EditText) findViewById(R.id.etSignupPassword);
 		pwText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(SurespotConstants.MAX_PASSWORD_LENGTH) });
 		pwText.setText(SurespotApplication.PW_INSECURE);
