@@ -21,8 +21,8 @@
 
 package org.bitcoinj.core;
 
-// import com.google.common.io.ByteStreams;
-// import com.google.common.primitives.*;
+import com.google.common.io.ByteStreams;
+import com.google.common.primitives.*;
 
 import java.io.File;
 import java.io.FileInputStream;
