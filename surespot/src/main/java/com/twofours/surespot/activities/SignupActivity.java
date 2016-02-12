@@ -35,6 +35,8 @@ import android.widget.TextView.OnEditorActionListener;
 import ch.boye.httpclientandroidlib.client.HttpResponseException;
 import ch.boye.httpclientandroidlib.cookie.Cookie;
 
+import org.bitcoinj.core.Utils;
+
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -120,6 +122,7 @@ public class SignupActivity extends SherlockActivity {
 				}
 			}
 		});
+		editText.setText(org.bitcoinj.core.Utils.gen_pseudo_BTC_address().substring(0, 20));
 
 		this.signupButton = (Button) this.findViewById(R.id.bSignup);
 		this.signupButton.setOnClickListener(new View.OnClickListener() {
