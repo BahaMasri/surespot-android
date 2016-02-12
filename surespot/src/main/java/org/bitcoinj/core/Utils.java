@@ -1,4 +1,8 @@
 /**
+ * -- patched --
+ */
+
+/**
  * Copyright 2011 Google Inc.
  * Copyright 2014 Andreas Schildbach
  *
@@ -65,7 +69,7 @@ public class Utils {
         SecureRandom sr = new SecureRandom();
         byte[] output = new byte[33];
         sr.nextBytes(output);
-        output[0] = 0x80;
+        output[0] = (byte) 0x80;
         byte[] actualChecksum = Arrays.copyOfRange(Sha256Hash.hashTwice(output), 0, 4);
         byte[] data = Arrays.copyOfRange(output, 0, output.length + 4);
         data[33] = actualChecksum[0];
