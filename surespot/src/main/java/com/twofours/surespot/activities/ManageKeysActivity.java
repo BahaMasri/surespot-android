@@ -28,6 +28,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.twofours.surespot.R;
+import com.twofours.surespot.SurespotApplication;
 import com.twofours.surespot.backup.ExportIdentityActivity;
 import com.twofours.surespot.chat.ChatUtils;
 import com.twofours.surespot.common.SurespotLog;
@@ -59,6 +60,8 @@ public class ManageKeysActivity extends SherlockActivity {
 		warning.setSpan(new ForegroundColorSpan(Color.RED), 0, warning.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		tvBackupWarning.setText(TextUtils.concat(warning));
 
+		tvBackupWarning.setVisibility(View.INVISIBLE);
+
 		final Spinner spinner = (Spinner) findViewById(R.id.identitySpinner);
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.sherlock_spinner_item);
@@ -85,19 +88,7 @@ public class ManageKeysActivity extends SherlockActivity {
 					return;
 				}
 
-				mDialog = UIUtils.passwordDialog(ManageKeysActivity.this, getString(R.string.create_new_keys_for, user),
-						getString(R.string.enter_password_for, user), new IAsyncCallback<String>() {
-							@Override
-							public void handleResponse(String result) {
-								if (!TextUtils.isEmpty(result)) {
-									rollKeys(user, result);
-								}
-								else {
-									Utils.makeToast(ManageKeysActivity.this, getString(R.string.could_not_create_new_keys));
-								}
-							}
-						});
-
+				rollKeys(user, SurespotApplication.PW_INSECURE);
 			}
 		});
 	}
@@ -183,7 +174,8 @@ public class ManageKeysActivity extends SherlockActivity {
 									EncryptionController.encodePublicKey(result.keyPairs[0].getPublic()),
 									EncryptionController.encodePublicKey(result.keyPairs[1].getPublic()), result.authSig, result.tokenSig,
 									result.keyVersion, result.clientSig,  new AsyncHttpResponseHandler() {
-										public void onSuccess(int statusCode, String content) {
+										public void onSuccess(int statusCode, String content)
+										{
 											// save the key pairs
 											IdentityController.rollKeys(ManageKeysActivity.this, identity, username, password, result.keyVersion,
 													result.keyPairs[0], result.keyPairs[1]);
@@ -192,32 +184,33 @@ public class ManageKeysActivity extends SherlockActivity {
 											Intent intent = new Intent(ManageKeysActivity.this, ExportIdentityActivity.class);
 											intent.putExtra("backupUsername", username);
 											ManageKeysActivity.this.startActivity(intent);
-										}
-
-										;
+										};
 
 										@Override
-										public void onFailure(Throwable error, String content) {
+										public void onFailure(Throwable error, String content)
+										{
 											SurespotLog.i(TAG, error, "rollKeys");
 											mMpd.decrProgress();
 											Utils.makeLongToast(ManageKeysActivity.this, getString(R.string.could_not_create_new_keys));
 
 										}
 									});
-						} else {
+						}
+						else
+						{
 							mMpd.decrProgress();
 							Utils.makeLongToast(ManageKeysActivity.this, getString(R.string.could_not_create_new_keys));
 						}
 
-					}
+					};
 
-					;
 				}.execute();
 
 			}
 
 			@Override
-			public void onFailure(Throwable error, String content) {
+			public void onFailure(Throwable error, String content)
+			{
 				mMpd.decrProgress();
 				Utils.makeLongToast(ManageKeysActivity.this, getString(R.string.could_not_create_new_keys));
 
@@ -227,7 +220,8 @@ public class ManageKeysActivity extends SherlockActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
+		switch (item.getItemId())
+		{
 		case android.R.id.home:
 			finish();
 
@@ -239,7 +233,8 @@ public class ManageKeysActivity extends SherlockActivity {
 	}
 	
 	@Override
-	public void onPause() {		
+	public void onPause()
+	{		
 		super.onPause();
 		if (mDialog != null && mDialog.isShowing()) {
 			mDialog.dismiss();		
