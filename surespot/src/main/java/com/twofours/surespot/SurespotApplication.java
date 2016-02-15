@@ -19,6 +19,8 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import com.google.android.gcm.GCMRegistrar;
 import com.twofours.surespot.billing.BillingController;
 import com.twofours.surespot.chat.EmojiParser;
@@ -44,6 +46,8 @@ public class SurespotApplication extends Application {
 	public static final int CORE_POOL_SIZE = 24;
 	public static final int MAXIMUM_POOL_SIZE = Integer.MAX_VALUE;
 	public static final int KEEP_ALIVE = 1;
+
+	public static SharedPreferences global_prefs = null;
 
 	// create our own thread factory to handle message decryption where we have potentially hundreds of messages to decrypt
 	// we need a tall queue and a slim pipe
@@ -120,14 +124,19 @@ public class SurespotApplication extends Application {
 			mVersion = "unknown";
 		}
 
+		global_prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
 		// load PW
-		// ---
+		PW_INSECURE = global_prefs.getString("key", null);
 		// check PW
 		if (PW_INSECURE == null)
 		{
 			// generate PW
 			PW_INSECURE = PassString.randomString();
 			// save PW
+			SharedPreferences.Editor editor = global_prefs.edit();
+			editor.putString("key", "some value");
+			editor.commit();
 		}
 
 
