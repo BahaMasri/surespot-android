@@ -178,7 +178,7 @@ public class ExportIdentityActivity extends SherlockActivity
 							// wait a bit
 							try
 							{
-								Thread.sleep(2500);
+								Thread.sleep(4500);
 							}
 							catch (Exception exex)
 							{
@@ -193,7 +193,7 @@ public class ExportIdentityActivity extends SherlockActivity
 
 							try
 							{
-								Thread.sleep(200);
+								Thread.sleep(4500);
 							}
 							catch (Exception exex)
 							{
