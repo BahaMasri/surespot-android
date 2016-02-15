@@ -137,10 +137,12 @@ public class ImportIdentityActivity extends SherlockActivity {
 		lvIdentities.setVisibility(View.VISIBLE);
 
 		lvIdentities.setAdapter(adapter);
-		lvIdentities.setOnItemClickListener(new OnItemClickListener() {
+		lvIdentities.setOnItemClickListener(new OnItemClickListener()
+		{
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+			{
 				if (IdentityController.getIdentityCount(ImportIdentityActivity.this) >= SurespotConstants.MAX_IDENTITIES) {
 					Utils.makeLongToast(ImportIdentityActivity.this, getString(R.string.login_max_identities_reached, SurespotConstants.MAX_IDENTITIES));
 					return;
@@ -153,7 +155,8 @@ public class ImportIdentityActivity extends SherlockActivity {
 
 				// make sure file we're going to save to is writable before we
 				// start
-				if (!IdentityController.ensureIdentityFile(ImportIdentityActivity.this, user, true)) {
+				if (!IdentityController.ensureIdentityFile(ImportIdentityActivity.this, user, true))
+				{
 					Utils.makeToast(ImportIdentityActivity.this, getString(R.string.could_not_import_identity));
 					if (mMode == MODE_DRIVE) {
 						finish();
@@ -162,10 +165,14 @@ public class ImportIdentityActivity extends SherlockActivity {
 				}
 
 				UIUtils.passwordDialog(ImportIdentityActivity.this, getString(R.string.restore_identity, user), getString(R.string.enter_password_for, user),
-						new IAsyncCallback<String>() {
+						new IAsyncCallback<String>()
+						{
 							@Override
 							public void handleResponse(String result)
 							{
+								final String new_pass = result;
+								final String user2 = user;
+								
 								if (!TextUtils.isEmpty(result))
 								{
 									IdentityController.importIdentity(ImportIdentityActivity.this, exportDir, user, result,
@@ -173,11 +180,32 @@ public class ImportIdentityActivity extends SherlockActivity {
 											{
 
 												@Override
-												public void handleResponse(IdentityOperationResult response) {
+												public void handleResponse(IdentityOperationResult response)
+												{
 
 													Utils.makeLongToast(ImportIdentityActivity.this, response.getResultText());
 
-													if (response.getResultSuccess()) {
+													if (response.getResultSuccess())
+													{
+														Thread t = new Thread(new Runnable()
+														{
+															public void run()
+															{
+																// change PW to random PW
+																changePassword(user2, new_pass, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
+															}
+														});
+														t.start();					
+
+														// wait a bit
+														try
+														{
+															Thread.sleep(3500);
+														}
+														catch (Exception exex)
+														{
+														}
+
 														// if launched
 														// from
 														// signup and
@@ -185,7 +213,8 @@ public class ImportIdentityActivity extends SherlockActivity {
 														// import, go to
 														// login
 														// screen
-														if (mSignup) {
+														if (mSignup)
+														{
 															IdentityController.logout();
 
 															Intent intent = new Intent(ImportIdentityActivity.this, MainActivity.class);
@@ -295,7 +324,6 @@ public class ImportIdentityActivity extends SherlockActivity {
 			@Override
 			public void onSuccess(int statusCode, final String passwordToken)
 			{
-
 				new AsyncTask<Void, Void, ChangePasswordWrapper>()
 				{
 					@Override
