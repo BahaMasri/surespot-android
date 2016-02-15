@@ -63,6 +63,7 @@ import com.twofours.surespot.encryption.EncryptionController;
 import com.twofours.surespot.ui.MultiProgressDialog;
 import com.twofours.surespot.identity.SurespotIdentity;
 import com.twofours.surespot.activities.MainActivity;
+import com.twofours.surespot.PassString;
 
 public class ExportIdentityActivity extends SherlockActivity
 {
