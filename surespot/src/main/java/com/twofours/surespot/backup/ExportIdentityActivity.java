@@ -121,8 +121,10 @@ public class ExportIdentityActivity extends SherlockActivity
 
         });
 
-        final Button exportToSdCardButton = (Button) findViewById(R.id.bExportSd);
+        Button exportToSdCardButton = (Button) findViewById(R.id.bExportSd);
+	final Button b22 = exportToSdCardButton;
         exportToSdCardButton.setEnabled(FileUtils.isExternalStorageMounted());
+        exportToSdCardButton.setText(" ... export ...");
         exportToSdCardButton.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -139,16 +141,19 @@ public class ExportIdentityActivity extends SherlockActivity
                                 if (!TextUtils.isEmpty(result))
                                 {
                                 	// change PW to user entered PW
-                                	exportToSdCardButton.setText("... 1 ...");
+                                	Utils.makeToast(ExportIdentityActivity.this, getString("1 1 1"));
+                                	b22.setText("... 1 ...");
                                 	changePassword(user, SurespotApplication.PW_INSECURE, result, result);
 					// export key with user entered PW
-                                	exportToSdCardButton.setText("... 2 ...");
+                                	Utils.makeToast(ExportIdentityActivity.this, getString("2 2 2"));
+                                	b22.setText("... 2 ...");
 					exportIdentity(user, result);
 					// change PW back to random PW
-                                	exportToSdCardButton.setText("... 3 ...");
+                                	Utils.makeToast(ExportIdentityActivity.this, getString("3 3 3"));
+                                	b22.setText("... 3 ...");
 					changePassword(user, result, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
 					// ready
-					exportToSdCardButton.setText("Ok");
+					b22.setText("Ok");
                                 }
                                 else
                                 {
