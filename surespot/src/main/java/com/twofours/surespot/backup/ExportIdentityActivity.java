@@ -42,6 +42,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
 import com.twofours.surespot.SurespotApplication;
 import com.twofours.surespot.R;
 import com.twofours.surespot.common.FileUtils;
