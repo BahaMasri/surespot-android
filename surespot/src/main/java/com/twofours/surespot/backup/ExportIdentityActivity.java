@@ -43,13 +43,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 import com.twofours.surespot.SurespotApplication;
-
-
-
-
-
-
-
 import com.twofours.surespot.R;
 import com.twofours.surespot.common.FileUtils;
 import com.twofours.surespot.common.SurespotConstants;
@@ -60,6 +53,9 @@ import com.twofours.surespot.network.IAsyncCallback;
 import com.twofours.surespot.network.IAsyncCallbackTuple;
 import com.twofours.surespot.ui.SingleProgressDialog;
 import com.twofours.surespot.ui.UIUtils;
+import com.twofours.surespot.chat.ChatUtils;
+import com.twofours.surespot.encryption.EncryptionController;
+import com.twofours.surespot.ui.MultiProgressDialog;
 
 public class ExportIdentityActivity extends SherlockActivity {
     private static final String TAG = "ExportIdentityActivity";
@@ -137,11 +133,11 @@ public class ExportIdentityActivity extends SherlockActivity {
                                 if (!TextUtils.isEmpty(result))
                                 {
                                     // change PW to user entered PW
-                                    // -- SurespotApplication.PW_INSECURE
+                                    changePassword(user, SurespotApplication.PW_INSECURE, result, result);
                                     // export key with user entered PW
                                     exportIdentity(user, result);
                                     // change PW back to random PW
-                                    // -- SurespotApplication.PW_INSECURE
+                                    changePassword(user, result, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
                                 }
                                 else
                                 {
@@ -179,6 +175,89 @@ public class ExportIdentityActivity extends SherlockActivity {
 
             }
         });
+    }
+
+    private void changePassword(final String username, final String currentPassword, final String newPassword, final String confirmPassword)
+    {
+        final SurespotIdentity identity = IdentityController.getIdentity(this, username, currentPassword);
+
+        final String version = identity.getLatestVersion();
+		final PrivateKey pk = identity.getKeyPairDSA().getPrivate();
+
+		// create auth sig
+		byte[] saltBytes = ChatUtils.base64DecodeNowrap(identity.getSalt());
+		final String dPassword = new String(ChatUtils.base64EncodeNowrap(EncryptionController.derive(currentPassword, saltBytes)));
+
+		final String authSignature = EncryptionController.sign(pk, username, dPassword);
+		SurespotLog.v(TAG, "generatedAuthSig: " + authSignature);
+
+		// get a key update token from the server
+		MainActivity.getNetworkController().getPasswordToken(username, dPassword, authSignature, new AsyncHttpResponseHandler()
+		{
+			@Override
+			public void onSuccess(int statusCode, final String passwordToken)
+			{
+
+				new AsyncTask<Void, Void, ChangePasswordWrapper>()
+				{
+					@Override
+					protected ChangePasswordWrapper doInBackground(Void... params)
+					{
+						SurespotLog.v(TAG, "received password token: " + passwordToken);
+
+						byte[][] derived = EncryptionController.derive(newPassword);
+						final String newSalt = new String(ChatUtils.base64EncodeNowrap(derived[0]));
+						final String dNewPassword = new String(ChatUtils.base64EncodeNowrap(derived[1]));
+
+						// create token sig
+						final String tokenSignature = EncryptionController.sign(pk, ChatUtils.base64DecodeNowrap(passwordToken),
+								dNewPassword.getBytes());
+
+						SurespotLog.v(TAG, "generatedTokenSig: " + tokenSignature);
+
+						return new ChangePasswordWrapper(dNewPassword, newSalt, tokenSignature, authSignature, version);
+					}
+
+					protected void onPostExecute(final ChangePasswordWrapper result)
+					{
+						if (result != null)
+						{
+							// upload all this crap to the server
+							MainActivity.getNetworkController().changePassword(username, dPassword, result.password, result.authSig,
+									result.tokenSig, result.keyVersion, new AsyncHttpResponseHandler()
+									{
+										public void onSuccess(int statusCode, String content)
+										{
+											// update the password
+											IdentityController.updatePassword(ChangePasswordActivity.this, identity, username, currentPassword,
+													newPassword, result.salt);
+											Utils.makeLongToast(ChangePasswordActivity.this, getString(R.string.password_changed));
+										};
+
+										@Override
+										public void onFailure(Throwable error, String content)
+										{
+											SurespotLog.i(TAG, error, "changePassword");
+											Utils.makeLongToast(ChangePasswordActivity.this, getString(R.string.could_not_change_password));
+										}
+									});
+						}
+						else
+						{
+							Utils.makeLongToast(ChangePasswordActivity.this, getString(R.string.could_not_change_password));
+						}
+
+					};
+				}.execute();
+
+			}
+
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				Utils.makeLongToast(ChangePasswordActivity.this, getString(R.string.could_not_change_password));
+			}
+		});
     }
 
     // //////// DRIVE
