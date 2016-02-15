@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
+import java.security.PrivateKey;
+
+
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -58,8 +61,10 @@ import com.twofours.surespot.ui.UIUtils;
 import com.twofours.surespot.chat.ChatUtils;
 import com.twofours.surespot.encryption.EncryptionController;
 import com.twofours.surespot.ui.MultiProgressDialog;
+import com.twofours.surespot.identity.SurespotIdentity;
 
-public class ExportIdentityActivity extends SherlockActivity {
+public class ExportIdentityActivity extends SherlockActivity
+{
     private static final String TAG = "ExportIdentityActivity";
     private List<String> mIdentityNames;
     
