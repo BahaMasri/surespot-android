@@ -146,31 +146,36 @@ public class ExportIdentityActivity extends SherlockActivity
                                 	Utils.makeToast(ExportIdentityActivity.this, "1 1 1");
                                 	b22.setText("... 1 ...");
                                 	changePassword(user, SurespotApplication.PW_INSECURE, result, result);
-					try
+
+					final String newpass = result;
+
+					Thread t = new Thread(new Runnable()
 					{
-                                		Thread.sleep(2500);
-					}
-					catch(Exception eee)
-					{
-					}
-					// export key with user entered PW
-                                	Utils.makeToast(ExportIdentityActivity.this, "2 2 2");
-                                	b22.setText("... 2 ...");
-					exportIdentity(user, result);
-					try
-					{
-                                		Thread.sleep(500);
-					}
-					catch(Exception eee)
-					{
-					}
-					// change PW back to random PW
-                                	Utils.makeToast(ExportIdentityActivity.this, "3 3 3");
-                                	b22.setText("... 3 ...");
-					changePassword(user, result, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
-					// ready
-					b22.setText("Ok");
-					b22.setEnabled(false);
+						public void run()
+						{
+							// wait a bit
+							try
+							{
+								Thread.sleep(3000);
+							}
+							catch(Exception exex)
+							{
+							}
+							
+							// export key with user entered PW
+		                                	Utils.makeToast(ExportIdentityActivity.this, "2 2 2");
+		                                	b22.setText("... 2 ...");
+							exportIdentity(user, newpass);
+							// change PW back to random PW
+		                                	Utils.makeToast(ExportIdentityActivity.this, "3 3 3");
+		                                	b22.setText("... 3 ...");
+							changePassword(user, newpass, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
+							// ready
+							b22.setText("Ok");
+							b22.setEnabled(false);
+						}
+					});
+					t.start();
                                 }
                                 else
                                 {
