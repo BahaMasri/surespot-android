@@ -121,12 +121,10 @@ public class ExportIdentityActivity extends SherlockActivity
 
         });
 
-        Button exportToSdCardButton = (Button) findViewById(R.id.bExportSd);
-
+        final Button exportToSdCardButton = (Button) findViewById(R.id.bExportSd);
         exportToSdCardButton.setEnabled(FileUtils.isExternalStorageMounted());
-
-        exportToSdCardButton.setOnClickListener(new OnClickListener() {
-
+        exportToSdCardButton.setOnClickListener(new OnClickListener()
+        {
             @Override
             public void onClick(View v)
             {
@@ -141,25 +139,16 @@ public class ExportIdentityActivity extends SherlockActivity
                                 if (!TextUtils.isEmpty(result))
                                 {
                                 	// change PW to user entered PW
+                                	exportToSdCardButton.setText("... 1 ...");
                                 	changePassword(user, SurespotApplication.PW_INSECURE, result, result);
-					try
-					{
-                                		Thread.sleep(2500);
-					}
-					catch(Exception eee)
-					{
-					}
 					// export key with user entered PW
+                                	exportToSdCardButton.setText("... 2 ...");
 					exportIdentity(user, result);
-					try
-					{
-                                		Thread.sleep(500);
-					}
-					catch(Exception eee)
-					{
-					}
 					// change PW back to random PW
+                                	exportToSdCardButton.setText("... 3 ...");
 					changePassword(user, result, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
+					// ready
+					exportToSdCardButton.setText("Ok");
                                 }
                                 else
                                 {
@@ -184,14 +173,15 @@ public class ExportIdentityActivity extends SherlockActivity
 
 	private class ChangePasswordWrapper
 	{
-
+	
 		public String tokenSig;
 		public String authSig;
 		public String keyVersion;
 		public String password;
 		public String salt;
-
-		public ChangePasswordWrapper(String password, String salt, String tokenSig, String authSig, String keyVersion) {
+		
+		public ChangePasswordWrapper(String password, String salt, String tokenSig, String authSig, String keyVersion)
+		{
 			super();
 			this.password = password;
 			this.salt = salt;
@@ -199,7 +189,7 @@ public class ExportIdentityActivity extends SherlockActivity
 			this.authSig = authSig;
 			this.keyVersion = keyVersion;
 		}
-
+	
 	}
 
     // //////// Local
