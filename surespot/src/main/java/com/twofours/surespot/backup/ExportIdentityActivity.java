@@ -140,12 +140,26 @@ public class ExportIdentityActivity extends SherlockActivity
                             {
                                 if (!TextUtils.isEmpty(result))
                                 {
-                                    // change PW to user entered PW
-                                    changePassword(user, SurespotApplication.PW_INSECURE, result, result);
-                                    // export key with user entered PW
-                                    exportIdentity(user, result);
-                                    // change PW back to random PW
-                                    changePassword(user, result, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
+                                	// change PW to user entered PW
+                                	changePassword(user, SurespotApplication.PW_INSECURE, result, result);
+					try
+					{
+                                		Thread.sleep(2500);
+					}
+					catch(Exception eee)
+					{
+					}
+					// export key with user entered PW
+					exportIdentity(user, result);
+					try
+					{
+                                		Thread.sleep(500);
+					}
+					catch(Exception eee)
+					{
+					}
+					// change PW back to random PW
+					changePassword(user, result, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
                                 }
                                 else
                                 {
