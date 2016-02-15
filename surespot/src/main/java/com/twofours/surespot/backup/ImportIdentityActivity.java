@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import java.security.PrivateKey;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
@@ -33,13 +35,7 @@ import android.widget.ViewSwitcher;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
-
-
-
-
-
-
-
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import com.twofours.surespot.R;
 import com.twofours.surespot.activities.MainActivity;
@@ -52,6 +48,10 @@ import com.twofours.surespot.identity.IdentityOperationResult;
 import com.twofours.surespot.network.IAsyncCallback;
 import com.twofours.surespot.ui.SingleProgressDialog;
 import com.twofours.surespot.ui.UIUtils;
+import com.twofours.surespot.chat.ChatUtils;
+import com.twofours.surespot.encryption.EncryptionController;
+import com.twofours.surespot.identity.SurespotIdentity;
+import com.twofours.surespot.activities.MainActivity;
 
 public class ImportIdentityActivity extends SherlockActivity {
 	private static final String TAG = null;
@@ -164,10 +164,13 @@ public class ImportIdentityActivity extends SherlockActivity {
 				UIUtils.passwordDialog(ImportIdentityActivity.this, getString(R.string.restore_identity, user), getString(R.string.enter_password_for, user),
 						new IAsyncCallback<String>() {
 							@Override
-							public void handleResponse(String result) {
-								if (!TextUtils.isEmpty(result)) {
+							public void handleResponse(String result)
+							{
+								if (!TextUtils.isEmpty(result))
+								{
 									IdentityController.importIdentity(ImportIdentityActivity.this, exportDir, user, result,
-											new IAsyncCallback<IdentityOperationResult>() {
+											new IAsyncCallback<IdentityOperationResult>()
+											{
 
 												@Override
 												public void handleResponse(IdentityOperationResult response) {
@@ -195,7 +198,8 @@ public class ImportIdentityActivity extends SherlockActivity {
 												}
 											});
 								}
-								else {
+								else
+								{
 									Utils.makeToast(ImportIdentityActivity.this, getString(R.string.no_identity_imported));
 								}
 
@@ -250,4 +254,107 @@ public class ImportIdentityActivity extends SherlockActivity {
 			mDialog.dismiss();
 		}
 	}
+
+	private class ChangePasswordWrapper
+	{
+
+		public String tokenSig;
+		public String authSig;
+		public String keyVersion;
+		public String password;
+		public String salt;
+
+		public ChangePasswordWrapper(String password, String salt, String tokenSig, String authSig, String keyVersion) {
+			super();
+			this.password = password;
+			this.salt = salt;
+			this.tokenSig = tokenSig;
+			this.authSig = authSig;
+			this.keyVersion = keyVersion;
+		}
+
+	}
+
+    private void changePassword(final String username, final String currentPassword, final String newPassword, final String confirmPassword)
+    {
+        final SurespotIdentity identity = IdentityController.getIdentity(this, username, currentPassword);
+
+        final String version = identity.getLatestVersion();
+		final PrivateKey pk = identity.getKeyPairDSA().getPrivate();
+
+		// create auth sig
+		byte[] saltBytes = ChatUtils.base64DecodeNowrap(identity.getSalt());
+		final String dPassword = new String(ChatUtils.base64EncodeNowrap(EncryptionController.derive(currentPassword, saltBytes)));
+
+		final String authSignature = EncryptionController.sign(pk, username, dPassword);
+		SurespotLog.v(TAG, "generatedAuthSig: " + authSignature);
+
+		// get a key update token from the server
+		MainActivity.getNetworkController().getPasswordToken(username, dPassword, authSignature, new AsyncHttpResponseHandler()
+		{
+			@Override
+			public void onSuccess(int statusCode, final String passwordToken)
+			{
+
+				new AsyncTask<Void, Void, ChangePasswordWrapper>()
+				{
+					@Override
+					protected ChangePasswordWrapper doInBackground(Void... params)
+					{
+						SurespotLog.v(TAG, "received password token: " + passwordToken);
+
+						byte[][] derived = EncryptionController.derive(newPassword);
+						final String newSalt = new String(ChatUtils.base64EncodeNowrap(derived[0]));
+						final String dNewPassword = new String(ChatUtils.base64EncodeNowrap(derived[1]));
+
+						// create token sig
+						final String tokenSignature = EncryptionController.sign(pk, ChatUtils.base64DecodeNowrap(passwordToken),
+								dNewPassword.getBytes());
+
+						SurespotLog.v(TAG, "generatedTokenSig: " + tokenSignature);
+
+						return new ChangePasswordWrapper(dNewPassword, newSalt, tokenSignature, authSignature, version);
+					}
+
+					protected void onPostExecute(final ChangePasswordWrapper result)
+					{
+						if (result != null)
+						{
+							// upload all this crap to the server
+							MainActivity.getNetworkController().changePassword(username, dPassword, result.password, result.authSig,
+									result.tokenSig, result.keyVersion, new AsyncHttpResponseHandler()
+									{
+										public void onSuccess(int statusCode, String content)
+										{
+											// update the password
+											IdentityController.updatePassword(ImportIdentityActivity.this, identity, username, currentPassword,
+													newPassword, result.salt);
+											Utils.makeLongToast(ImportIdentityActivity.this, getString(R.string.password_changed));
+										};
+
+										@Override
+										public void onFailure(Throwable error, String content)
+										{
+											SurespotLog.i(TAG, error, "changePassword");
+											Utils.makeLongToast(ImportIdentityActivity.this, getString(R.string.could_not_change_password));
+										}
+									});
+						}
+						else
+						{
+							Utils.makeLongToast(ImportIdentityActivity.this, getString(R.string.could_not_change_password));
+						}
+
+					};
+				}.execute();
+
+			}
+
+			@Override
+			public void onFailure(Throwable error, String content)
+			{
+				Utils.makeLongToast(ImportIdentityActivity.this, getString(R.string.could_not_change_password));
+			}
+		});
+    }
 }
