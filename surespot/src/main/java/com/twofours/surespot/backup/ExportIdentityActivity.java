@@ -168,6 +168,26 @@ public class ExportIdentityActivity extends SherlockActivity
 
     }
 
+	private class ChangePasswordWrapper
+	{
+
+		public String tokenSig;
+		public String authSig;
+		public String keyVersion;
+		public String password;
+		public String salt;
+
+		public ChangePasswordWrapper(String password, String salt, String tokenSig, String authSig, String keyVersion) {
+			super();
+			this.password = password;
+			this.salt = salt;
+			this.tokenSig = tokenSig;
+			this.authSig = authSig;
+			this.keyVersion = keyVersion;
+		}
+
+	}
+
     // //////// Local
     private void exportIdentity(String user, String password)
     {
