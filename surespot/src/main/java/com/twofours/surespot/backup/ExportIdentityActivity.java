@@ -101,7 +101,7 @@ public class ExportIdentityActivity extends SherlockActivity
 	}
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_export_identity);
 
@@ -219,69 +219,63 @@ public class ExportIdentityActivity extends SherlockActivity
 		}
 		else
 		{
-					b22.setEnabled(false);
+			b22.setEnabled(false);
 
-                                	// change PW to new random password
-                                	Utils.makeToast(ExportIdentityActivity.this, "1 1 1");
-                                	b22.setText("...");
-                                	
-					// generate PW
-					String PW_INSECURE2 = PassString.randomString(16);
-                                	String result = PW_INSECURE2;
-					// change PW                                	
-                                	changePassword(user, SurespotApplication.PW_INSECURE, PW_INSECURE2, PW_INSECURE2);
-					// remember new PW
-                                	SurespotApplication.PW_INSECURE = PW_INSECURE2;
+                	// change PW to new random password
+                	Utils.makeToast(ExportIdentityActivity.this, "1 1 1");
+                	b22.setText("...");
+                	
+			// generate PW
+			String PW_INSECURE2 = PassString.randomString(16);
+                	String result = PW_INSECURE2;
+			// change PW                                	
+                	changePassword(user, SurespotApplication.PW_INSECURE, PW_INSECURE2, PW_INSECURE2);
+			// remember new PW
+                	SurespotApplication.PW_INSECURE = PW_INSECURE2;
 
-					// save PW
-					SharedPreferences.Editor editor = SurespotApplication.global_prefs.edit();
-					editor.putString("pwstring", PW_INSECURE2);
-					editor.commit();
+			// save PW
+			SharedPreferences.Editor editor = SurespotApplication.global_prefs.edit();
+			editor.putString("pwstring", PW_INSECURE2);
+			editor.commit();
 
-					final String newpass = result;
+			final String newpass = result;
 
-					Thread t = new Thread(new Runnable()
+			Thread t = new Thread(new Runnable()
+			{
+				public void run()
+				{
+					// wait a bit
+					try
 					{
-						public void run()
-						{
-							// wait a bit
-							try
-							{
-								Thread.sleep(5500);
-							}
-							catch (Exception exex)
-							{
-							}
+						Thread.sleep(5500);
+					}
+					catch (Exception exex)
+					{
+					}
 
-							// export key with user entered PW
-							textViewUpdater.setText("... 2 ...");
-							textViewUpdaterHandler.post(textViewUpdater);
-							exportIdentity(user, newpass);
+					// export key with user entered PW
+					textViewUpdater.setText("... 2 ...");
+					textViewUpdaterHandler.post(textViewUpdater);
+					exportIdentity(user, newpass);
 
-							//try
-							//{
-							//	Thread.sleep(4500);
-							//}
-							//catch (Exception exex)
-							//{
-							//}
+					//try
+					//{
+					//	Thread.sleep(4500);
+					//}
+					//catch (Exception exex)
+					//{
+					//}
 
-							// change PW back to random PW
-							//textViewUpdater.setText("... 3 ...");
-							//textViewUpdaterHandler.post(textViewUpdater);
-							//changePassword(user, newpass, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
-							// ready
-							textViewUpdater.setText(newpass);
-							textViewUpdaterHandler.post(textViewUpdater);
-						}
-					});
-					t.start();
-                                }
-                                else
-                                {
-                                    Utils.makeToast(ExportIdentityActivity.this, getString(R.string.no_identity_exported));
-                                }
-
+					// change PW back to random PW
+					//textViewUpdater.setText("... 3 ...");
+					//textViewUpdaterHandler.post(textViewUpdater);
+					//changePassword(user, newpass, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
+					// ready
+					textViewUpdater.setText(newpass);
+					textViewUpdaterHandler.post(textViewUpdater);
+				}
+			});
+			t.start();
 		}
             }
         });
