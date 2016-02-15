@@ -77,6 +77,28 @@ public class ExportIdentityActivity extends SherlockActivity
     private SingleProgressDialog mSpdBackupDir;
     private AlertDialog mDialog;
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    private static Button exportToSdCardButton = null;
+
+	TextViewUpdater textViewUpdater = new TextViewUpdater();
+	Handler textViewUpdaterHandler = new Handler(Looper.getMainLooper());
+	
+	private class TextViewUpdater implements Runnable
+	{
+		private String txt;
+	
+		@Override
+		public void run()
+		{
+			Utils.makeToast(ExportIdentityActivity.this, txt);
+			exportToSdCardButton.setText(txt);
+		}
+	
+		public void setText(String txt)
+		{
+			this.txt = txt;
+		}
+	
+	}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +143,7 @@ public class ExportIdentityActivity extends SherlockActivity
 
         });
 
-        Button exportToSdCardButton = (Button) findViewById(R.id.bExportSd);
+        exportToSdCardButton = (Button) findViewById(R.id.bExportSd);
 	final Button b22 = exportToSdCardButton;
         exportToSdCardButton.setEnabled(FileUtils.isExternalStorageMounted());
         // exportToSdCardButton.setText(" ... export ...");
@@ -156,23 +178,34 @@ public class ExportIdentityActivity extends SherlockActivity
 							// wait a bit
 							try
 							{
-								Thread.sleep(3000);
+								Thread.sleep(2500);
 							}
-							catch(Exception exex)
+							catch (Exception exex)
 							{
 							}
-							
+
 							// export key with user entered PW
-		                                	Utils.makeToast(ExportIdentityActivity.this, "2 2 2");
-		                                	// b22.setText("... 2 ...");
+							textViewUpdater.setText("... 2 ...");
+							textViewUpdaterHandler.post(textViewUpdater);
+							// Utils.makeToast(ExportIdentityActivity.this, "2 2 2");
+							// b22.setText("... 2 ...");
 							exportIdentity(user, newpass);
+
+							try
+							{
+								Thread.sleep(200);
+							}
+							catch (Exception exex)
+							{
+							}
+
 							// change PW back to random PW
-		                                	Utils.makeToast(ExportIdentityActivity.this, "3 3 3");
-		                                	// b22.setText("... 3 ...");
+							textViewUpdater.setText("... 3 ...");
+							textViewUpdaterHandler.post(textViewUpdater);
 							changePassword(user, newpass, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
 							// ready
-							// b22.setText("Ok");
-							// b22.setEnabled(false);
+							textViewUpdater.setText("Ok");
+							textViewUpdaterHandler.post(textViewUpdater);
 						}
 					});
 					t.start();
