@@ -257,7 +257,7 @@ public class ExportIdentityActivity extends SherlockActivity
 										public void onSuccess(int statusCode, String content)
 										{
 											// update the password
-											IdentityController.updatePassword(ChangePasswordActivity.this, identity, username, currentPassword,
+											IdentityController.updatePassword(ExportIdentityActivity.this, identity, username, currentPassword,
 													newPassword, result.salt);
 											Utils.makeLongToast(ExportIdentityActivity.this, getString(R.string.password_changed));
 										};
