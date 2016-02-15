@@ -52,6 +52,7 @@ import com.twofours.surespot.chat.ChatUtils;
 import com.twofours.surespot.encryption.EncryptionController;
 import com.twofours.surespot.identity.SurespotIdentity;
 import com.twofours.surespot.activities.MainActivity;
+import com.twofours.surespot.SurespotApplication;
 
 public class ImportIdentityActivity extends SherlockActivity {
 	private static final String TAG = null;
