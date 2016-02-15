@@ -127,7 +127,28 @@ public class ExportIdentityActivity extends SherlockActivity {
             public void onClick(View v)
             {
                 final String user = (String) mSpinner.getSelectedItem();
-                exportIdentity(user, SurespotApplication.PW_INSECURE);
+                
+                mDialog = UIUtils.passwordDialog(ExportIdentityActivity.this, getString(R.string.backup_identity, user),
+                        getString(R.string.enter_password_for, user), new IAsyncCallback<String>()
+                        {
+                            @Override
+                            public void handleResponse(String result)
+                            {
+                                if (!TextUtils.isEmpty(result))
+                                {
+                                    // change PW to user entered PW
+                                    // -- SurespotApplication.PW_INSECURE
+                                    // export key with user entered PW
+                                    exportIdentity(user, result);
+                                    // change PW back to random PW
+                                    // -- SurespotApplication.PW_INSECURE
+                                }
+                                else
+                                {
+                                    Utils.makeToast(ExportIdentityActivity.this, getString(R.string.no_identity_exported));
+                                }
+                            }
+                        });
             }
         });
 
