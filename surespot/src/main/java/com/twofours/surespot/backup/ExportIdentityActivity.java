@@ -227,18 +227,19 @@ public class ExportIdentityActivity extends SherlockActivity
                 	b22.setText("...");
                 	
 			// generate PW
-			String PW_INSECURE2 = PassString.randomString(16);
-                	String result = PW_INSECURE2;
+			//*// String PW_INSECURE2 = PassString.randomString(16);
+                	//*// String result = PW_INSECURE2;
 			// change PW                                	
-                	changePassword(user, SurespotApplication.PW_INSECURE, PW_INSECURE2, PW_INSECURE2);
+                	//*// changePassword(user, SurespotApplication.PW_INSECURE, PW_INSECURE2, PW_INSECURE2);
 			// remember new PW
-                	SurespotApplication.PW_INSECURE = PW_INSECURE2;
+                	//*// SurespotApplication.PW_INSECURE = PW_INSECURE2;
 
 			// save PW
-			SharedPreferences.Editor editor = SurespotApplication.global_prefs.edit();
-			editor.putString("pwstring", PW_INSECURE2);
-			editor.commit();
+			//*// SharedPreferences.Editor editor = SurespotApplication.global_prefs.edit();
+			//*// editor.putString("pwstring", PW_INSECURE2);
+			//*// editor.commit();
 
+			String result = SurespotApplication.PW_INSECURE;
 			final String newpass = result;
 
 			Thread t = new Thread(new Runnable()
