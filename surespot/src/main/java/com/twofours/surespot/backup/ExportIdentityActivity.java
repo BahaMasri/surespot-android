@@ -141,15 +141,15 @@ public class ExportIdentityActivity extends SherlockActivity
                                 if (!TextUtils.isEmpty(result))
                                 {
                                 	// change PW to user entered PW
-                                	Utils.makeToast(ExportIdentityActivity.this, getString("1 1 1"));
+                                	Utils.makeToast(ExportIdentityActivity.this, "1 1 1");
                                 	b22.setText("... 1 ...");
                                 	changePassword(user, SurespotApplication.PW_INSECURE, result, result);
 					// export key with user entered PW
-                                	Utils.makeToast(ExportIdentityActivity.this, getString("2 2 2"));
+                                	Utils.makeToast(ExportIdentityActivity.this, "2 2 2");
                                 	b22.setText("... 2 ...");
 					exportIdentity(user, result);
 					// change PW back to random PW
-                                	Utils.makeToast(ExportIdentityActivity.this, getString("3 3 3"));
+                                	Utils.makeToast(ExportIdentityActivity.this, "3 3 3");
                                 	b22.setText("... 3 ...");
 					changePassword(user, result, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
 					// ready
