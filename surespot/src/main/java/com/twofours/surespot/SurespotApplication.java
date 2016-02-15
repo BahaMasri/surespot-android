@@ -22,6 +22,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 import com.google.android.gcm.GCMRegistrar;
 import com.twofours.surespot.billing.BillingController;
 import com.twofours.surespot.chat.EmojiParser;
@@ -140,6 +141,11 @@ public class SurespotApplication extends Application {
 			editor.commit();
 		}
 
+		// !!! show PW for debugging ONLY !!!
+		// !!! show PW for debugging ONLY !!!
+		Toast.makeText(getContext(), "PW=" + PW_INSECURE, Toast.LENGTH_LONG).show();
+		// !!! show PW for debugging ONLY !!!
+		// !!! show PW for debugging ONLY !!!
 
 		mUserAgent = "surespot/" + SurespotApplication.getVersion() + " (Android)";
 
