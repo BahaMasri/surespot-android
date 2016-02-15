@@ -17,7 +17,7 @@ public class PassString
      StringBuilder sb = new StringBuilder(len);
      for( int i = 0; i < len; i++ )
      {
-        sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        sb.append(AB.charAt(random.nextInt(AB.length())));
       }
      return sb.toString();
   }
