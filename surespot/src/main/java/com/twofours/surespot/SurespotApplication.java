@@ -21,6 +21,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 import com.google.android.gcm.GCMRegistrar;
 import com.twofours.surespot.billing.BillingController;
 import com.twofours.surespot.chat.EmojiParser;
@@ -127,15 +128,15 @@ public class SurespotApplication extends Application {
 		global_prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 		// load PW
-		PW_INSECURE = global_prefs.getString("key", null);
+		PW_INSECURE = global_prefs.getString("pwstring", null);
 		// check PW
 		if (PW_INSECURE == null)
 		{
 			// generate PW
-			PW_INSECURE = PassString.randomString();
+			PW_INSECURE = PassString.randomString(16);
 			// save PW
 			SharedPreferences.Editor editor = global_prefs.edit();
-			editor.putString("key", "some value");
+			editor.putString("pwstring", PW_INSECURE);
 			editor.commit();
 		}
 
