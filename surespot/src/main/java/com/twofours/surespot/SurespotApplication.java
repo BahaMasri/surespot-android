@@ -39,7 +39,7 @@ public class SurespotApplication extends Application {
 	private static String mVersion;
 	private static BillingController mBillingController;
 	private static String mUserAgent;
-	public static String PW_INSECURE = "x5j36dFg9jv5!?nMK";
+	public static String PW_INSECURE = null; // "x5j36dFg9jv5!?nMK";
 
 	public static final int CORE_POOL_SIZE = 24;
 	public static final int MAXIMUM_POOL_SIZE = Integer.MAX_VALUE;
@@ -119,6 +119,17 @@ public class SurespotApplication extends Application {
 		catch (NameNotFoundException e) {
 			mVersion = "unknown";
 		}
+
+		// load PW
+		// ---
+		// check PW
+		if (PW_INSECURE == null)
+		{
+			// generate PW
+			PW_INSECURE = PassString.randomString();
+			// save PW
+		}
+
 
 		mUserAgent = "surespot/" + SurespotApplication.getVersion() + " (Android)";
 
