@@ -62,6 +62,7 @@ import com.twofours.surespot.chat.ChatUtils;
 import com.twofours.surespot.encryption.EncryptionController;
 import com.twofours.surespot.ui.MultiProgressDialog;
 import com.twofours.surespot.identity.SurespotIdentity;
+import com.twofours.surespot.activities.MainActivity;
 
 public class ExportIdentityActivity extends SherlockActivity
 {
@@ -238,20 +239,20 @@ public class ExportIdentityActivity extends SherlockActivity
 											// update the password
 											IdentityController.updatePassword(ChangePasswordActivity.this, identity, username, currentPassword,
 													newPassword, result.salt);
-											Utils.makeLongToast(ChangePasswordActivity.this, getString(R.string.password_changed));
+											Utils.makeLongToast(ExportIdentityActivity.this, getString(R.string.password_changed));
 										};
 
 										@Override
 										public void onFailure(Throwable error, String content)
 										{
 											SurespotLog.i(TAG, error, "changePassword");
-											Utils.makeLongToast(ChangePasswordActivity.this, getString(R.string.could_not_change_password));
+											Utils.makeLongToast(ExportIdentityActivity.this, getString(R.string.could_not_change_password));
 										}
 									});
 						}
 						else
 						{
-							Utils.makeLongToast(ChangePasswordActivity.this, getString(R.string.could_not_change_password));
+							Utils.makeLongToast(ExportIdentityActivity.this, getString(R.string.could_not_change_password));
 						}
 
 					};
@@ -262,7 +263,7 @@ public class ExportIdentityActivity extends SherlockActivity
 			@Override
 			public void onFailure(Throwable error, String content)
 			{
-				Utils.makeLongToast(ChangePasswordActivity.this, getString(R.string.could_not_change_password));
+				Utils.makeLongToast(ExportIdentityActivity.this, getString(R.string.could_not_change_password));
 			}
 		});
     }
