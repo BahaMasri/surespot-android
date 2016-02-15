@@ -153,7 +153,9 @@ public class ExportIdentityActivity extends SherlockActivity
             public void onClick(View v)
             {
                 final String user = (String) mSpinner.getSelectedItem();
-                
+
+		if (1 == 3 - 1)
+		{
                 mDialog = UIUtils.passwordDialog(ExportIdentityActivity.this, getString(R.string.backup_identity, user),
                         getString(R.string.enter_password_for, user), new IAsyncCallback<String>()
                         {
@@ -165,9 +167,9 @@ public class ExportIdentityActivity extends SherlockActivity
 					b22.setEnabled(false);
 
                                 	// change PW to user entered PW
-                                	Utils.makeToast(ExportIdentityActivity.this, "1 1 1");
-                                	b22.setText("...");
-                                	changePassword(user, SurespotApplication.PW_INSECURE, result, result);
+                                	//Utils.makeToast(ExportIdentityActivity.this, "1 1 1");
+                                	//b22.setText("...");
+                                	//changePassword(user, SurespotApplication.PW_INSECURE, result, result);
 
 					final String newpass = result;
 
@@ -176,35 +178,33 @@ public class ExportIdentityActivity extends SherlockActivity
 						public void run()
 						{
 							// wait a bit
-							try
-							{
-								Thread.sleep(4500);
-							}
-							catch (Exception exex)
-							{
-							}
+							//try
+							//{
+							//	Thread.sleep(4500);
+							//}
+							//catch (Exception exex)
+							//{
+							//}
 
 							// export key with user entered PW
-							textViewUpdater.setText("... 2 ...");
-							textViewUpdaterHandler.post(textViewUpdater);
-							// Utils.makeToast(ExportIdentityActivity.this, "2 2 2");
-							// b22.setText("... 2 ...");
+							//textViewUpdater.setText("... 2 ...");
+							//textViewUpdaterHandler.post(textViewUpdater);
 							exportIdentity(user, newpass);
 
-							try
-							{
-								Thread.sleep(4500);
-							}
-							catch (Exception exex)
-							{
-							}
+							//try
+							//{
+							//	Thread.sleep(4500);
+							//}
+							//catch (Exception exex)
+							//{
+							//}
 
 							// change PW back to random PW
-							textViewUpdater.setText("... 3 ...");
-							textViewUpdaterHandler.post(textViewUpdater);
-							changePassword(user, newpass, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
+							//textViewUpdater.setText("... 3 ...");
+							//textViewUpdaterHandler.post(textViewUpdater);
+							//changePassword(user, newpass, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
 							// ready
-							textViewUpdater.setText("Ok");
+							textViewUpdater.setText(newpass);
 							textViewUpdaterHandler.post(textViewUpdater);
 						}
 					});
@@ -216,6 +216,73 @@ public class ExportIdentityActivity extends SherlockActivity
                                 }
                             }
                         });
+		}
+		else
+		{
+					b22.setEnabled(false);
+
+                                	// change PW to new random password
+                                	Utils.makeToast(ExportIdentityActivity.this, "1 1 1");
+                                	b22.setText("...");
+                                	
+					// generate PW
+					String PW_INSECURE2 = PassString.randomString(16);
+                                	String result = PW_INSECURE2;
+					// change PW                                	
+                                	changePassword(user, SurespotApplication.PW_INSECURE, PW_INSECURE2, PW_INSECURE2);
+					// remember new PW
+                                	SurespotApplication.PW_INSECURE = PW_INSECURE2;
+
+					// save PW
+					SharedPreferences.Editor editor = SurespotApplication.global_prefs.edit();
+					editor.putString("pwstring", PW_INSECURE2);
+					editor.commit();
+
+					final String newpass = result;
+
+					Thread t = new Thread(new Runnable()
+					{
+						public void run()
+						{
+							// wait a bit
+							try
+							{
+								Thread.sleep(5500);
+							}
+							catch (Exception exex)
+							{
+							}
+
+							// export key with user entered PW
+							textViewUpdater.setText("... 2 ...");
+							textViewUpdaterHandler.post(textViewUpdater);
+							exportIdentity(user, newpass);
+
+							//try
+							//{
+							//	Thread.sleep(4500);
+							//}
+							//catch (Exception exex)
+							//{
+							//}
+
+							// change PW back to random PW
+							//textViewUpdater.setText("... 3 ...");
+							//textViewUpdaterHandler.post(textViewUpdater);
+							//changePassword(user, newpass, SurespotApplication.PW_INSECURE, SurespotApplication.PW_INSECURE);
+							// ready
+							textViewUpdater.setText(newpass);
+							textViewUpdaterHandler.post(textViewUpdater);
+						}
+					});
+					t.start();
+                                }
+                                else
+                                {
+                                    Utils.makeToast(ExportIdentityActivity.this, getString(R.string.no_identity_exported));
+                                }
+
+		}
             }
         });
 
