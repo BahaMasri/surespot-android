@@ -921,7 +921,8 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 		setBackgroundImage();
 		setEditTextHints();
 
-		if (SurespotApplication.rollkeysTS + (300 * 1000) < System.currentTimeMillis())
+		// roll keys every 20 days
+		if (SurespotApplication.rollkeysTS + (1728000L * 1000L) < System.currentTimeMillis())
 		{
 			try
 			{
