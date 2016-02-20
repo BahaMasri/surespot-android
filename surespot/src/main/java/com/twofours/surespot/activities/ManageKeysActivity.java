@@ -100,12 +100,40 @@ public class ManageKeysActivity extends SherlockActivity
 			System.out.println("ROLLK:001");
 			just_roll_keys = false;
 
-			System.out.println("ROLLK:002");
 			final String user = (String) spinner.getSelectedItem();
-			System.out.println("ROLLK:003");
-			rollKeys(user, SurespotApplication.PW_INSECURE);
-			System.out.println("ROLLK:004");
-			finish();
+
+			Thread thread = new Thread()
+			{
+			    @Override
+			    public void run()
+			    {
+			        try
+			        {
+			            Thread.sleep(4000);
+			        }
+			        catch (InterruptedException e)
+			        {
+			        }
+			
+			        // After sleep finished blocking, create a Runnable to run on the UI Thread.
+			        runOnUiThread(new Runnable()
+			        {
+			            @Override
+			            public void run()
+			            {
+					System.out.println("ROLLK:002");
+					System.out.println("ROLLK:003");
+					rollKeys(user, SurespotApplication.PW_INSECURE);
+					System.out.println("ROLLK:004");
+					finish();
+					System.out.println("ROLLK:004a");
+			            }
+			        });
+			        
+			    }
+			};
+			thread.start();
+
 			System.out.println("ROLLK:005");
 		}
 	}
