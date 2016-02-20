@@ -40,11 +40,13 @@ import com.twofours.surespot.network.IAsyncCallback;
 import com.twofours.surespot.ui.MultiProgressDialog;
 import com.twofours.surespot.ui.UIUtils;
 
-public class ManageKeysActivity extends SherlockActivity {
+public class ManageKeysActivity extends SherlockActivity
+{
 	private static final String TAG = "ManageKeysActivity";
 	private List<String> mIdentityNames;
 	private MultiProgressDialog mMpd;
 	private AlertDialog mDialog;
+	public static boolean just_roll_keys = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +78,11 @@ public class ManageKeysActivity extends SherlockActivity {
 		spinner.setSelection(adapter.getPosition(IdentityController.getLoggedInUser()));
 
 		Button rollKeysButton = (Button) findViewById(R.id.bRollKeys);
-		rollKeysButton.setOnClickListener(new OnClickListener() {
-
+		rollKeysButton.setOnClickListener(new OnClickListener()
+		{
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v)
+			{
 				final String user = (String) spinner.getSelectedItem();
 
 				// make sure file we're going to save to is writable before we start
@@ -91,6 +94,15 @@ public class ManageKeysActivity extends SherlockActivity {
 				rollKeys(user, SurespotApplication.PW_INSECURE);
 			}
 		});
+		
+		if (just_roll_keys)
+		{
+			just_roll_keys = false;
+
+			final String user = (String) spinner.getSelectedItem();
+			rollKeys(user, SurespotApplication.PW_INSECURE);
+			finish();
+		}
 	}
 
 	private class RollKeysWrapper {
