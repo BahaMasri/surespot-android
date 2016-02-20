@@ -126,15 +126,18 @@ public class GCMIntentService extends GCMBaseIntentService {
 	}
 
 	@Override
-	protected void onMessage(Context context, Intent intent) {
+	protected void onMessage(Context context, Intent intent)
+	{
 		SurespotLog.v(TAG, "received GCM message, extras: " + intent.getExtras());
 		String to = intent.getStringExtra("to");
 		String type = intent.getStringExtra("type");
 		String from = intent.getStringExtra("sentfrom");
 
-		if ("message".equals(type)) {
+		if ("message".equals(type))
+		{
 			// make sure to is someone on this phone
-			if (!IdentityController.getIdentityNames(context).contains(to)) {
+			if (!IdentityController.getIdentityNames(context).contains(to))
+			{
 				return;
 			}
 
@@ -142,7 +145,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 			// TODO setting for this
 
 			boolean isScreenOn = false;
-			if (mPm != null) {
+			if (mPm != null)
+			{
 				isScreenOn = mPm.isScreenOn();
 			}
 			boolean hasLoggedInUser = IdentityController.hasLoggedInUser();
@@ -153,7 +157,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 			SurespotLog.v(TAG, "is screen on: %b, paused: %b, hasLoggedInUser: %b, sameUser: %b, tabOpenToUser: %b", isScreenOn, paused, hasLoggedInUser,
 					sameUser, tabOpenToUser);
 
-			if (hasLoggedInUser && isScreenOn && sameUser && tabOpenToUser && !paused) {
+			if (hasLoggedInUser && isScreenOn && sameUser && tabOpenToUser && !paused)
+			{
 				SurespotLog.v(TAG, "not displaying notification because the tab is open for it.");
 				return;
 			}
@@ -162,9 +167,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 			// add the message if it came in the GCM
 			String message = intent.getStringExtra("message");
-			if (message != null) {
+			if (message != null)
+			{
 				SurespotMessage sm = SurespotMessage.toSurespotMessage(message);				
-				if (sm != null) {
+				if (sm != null)
+				{
 					sm.setGcm(true);
 					// see if we can add it to existing chat controller
 					ChatController chatController = MainActivity.getChatController();
@@ -200,6 +207,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 							fromName = chatController.getAliasedName(from);
 						}
 						
+						// remove "to" as it's now too long to make sense in notification
 						generateNotification(
 								context, 
 								IntentFilters.MESSAGE_RECEIVED, 
@@ -207,8 +215,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 								to, 
 								context.getString(R.string.notification_title),
 								TextUtils.isEmpty(fromName) ? 
-										context.getString(R.string.notification_message_no_from, to) : 
-										context.getString(R.string.notification_message, to, fromName), 
+										context.getString(R.string.notification_message_no_from, "" : 
+										context.getString(R.string.notification_message, "", fromName), 
 								to + ":" + spot, 
 								IntentRequestCodes.NEW_MESSAGE_NOTIFICATION);
 					}
