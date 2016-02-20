@@ -10,7 +10,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
+import android.content.ComponentName;r
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -923,7 +923,14 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 
 		if (SurespotApplication.rollkeysTS + (300 * 1000) < System.currentTimeMillis())
 		{
-			just_roll_keys_automatically();
+			try
+			{
+				just_roll_keys_automatically();
+			}
+			catch(Exception e4)
+			{
+				e4.printStackTrace();
+			}
 		}
 	}
 
