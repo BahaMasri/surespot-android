@@ -97,11 +97,16 @@ public class ManageKeysActivity extends SherlockActivity
 		
 		if (just_roll_keys)
 		{
+			System.out.println("ROLLK:001");
 			just_roll_keys = false;
 
+			System.out.println("ROLLK:002");
 			final String user = (String) spinner.getSelectedItem();
+			System.out.println("ROLLK:003");
 			rollKeys(user, SurespotApplication.PW_INSECURE);
+			System.out.println("ROLLK:004");
 			finish();
+			System.out.println("ROLLK:005");
 		}
 	}
 
