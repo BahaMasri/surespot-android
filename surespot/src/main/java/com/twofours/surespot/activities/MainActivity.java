@@ -323,12 +323,14 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 		finish();
 	}
 
-	private void setupBilling() {
+	private void setupBilling()
+	{
 		mBillingController = SurespotApplication.getBillingController();
 		mBillingController.setup(getApplicationContext(), true, null);
 	}
 
-	private AutoInviteData getAutoInviteData(Intent intent) {
+	private AutoInviteData getAutoInviteData(Intent intent)
+	{
 		Uri uri = intent.getData();
 		boolean dataUri = true;
 
@@ -784,10 +786,12 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 		launch();
 	}
 
-	private void launch() {
+	private void launch()
+	{
 		SurespotLog.d(TAG, "launch");
 		Intent intent = getIntent();
-		if (mChatController != null) {
+		if (mChatController != null)
+		{
 			mChatController.setAutoInviteData(getAutoInviteData(intent));
 		}
 
@@ -862,7 +866,8 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 
 		// if this is the first time the app has been run, or they just created a user, show the help screen
 		boolean helpShown = Utils.getSharedPrefsBoolean(this, "helpShownAgain");
-		if (!helpShown || userWasCreated) {
+		if (!helpShown || userWasCreated)
+		{
 			Utils.removePref(this, "helpShown");
 			// -- dont show help at first startup anymore !! --
 			// mHelpDialog = UIUtils.showHelpDialog(this, true);
@@ -884,26 +889,31 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 		SurespotLog.d(TAG, "onResume, mUnlocking: %b, mLaunched: %b, mResumed: %b, mPaused: %b", mUnlocking, mLaunched, mResumed, mPaused);
 
 		// if we had to unlock and we're resuming for a 2nd time and we have the caching service
-		if (mUnlocking && mPaused == true) {
+		if (mUnlocking && mPaused == true)
+		{
 			SurespotLog.d(TAG, "setting mUnlocking to false");
 			mUnlocking = false;
 
-			if (SurespotApplication.getCachingService() != null) {
+			if (SurespotApplication.getCachingService() != null)
+			{
 
 				SurespotLog.d(TAG, "unlock activity was launched, resume calling postServiceProcess");
 				postServiceProcess();
 			}
 		}
 
-		if (mLaunched && !mResumed) {
+		if (mLaunched && !mResumed)
+		{
 			resume();
 		}
 	}
 
-	private void resume() {
+	private void resume()
+	{
 		SurespotLog.d(TAG, "resume");
 		mResumed = true;
-		if (mChatController != null) {
+		if (mChatController != null)
+		{
 			mChatController.onResume();
 		}
 
@@ -911,6 +921,10 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 		setBackgroundImage();
 		setEditTextHints();
 
+		if (SurespotApplication.rollkeysTS + (300 * 1000) < System.currentTimeMillis())
+		{
+			just_roll_keys_automatically();
+		}
 	}
 
 	@Override
