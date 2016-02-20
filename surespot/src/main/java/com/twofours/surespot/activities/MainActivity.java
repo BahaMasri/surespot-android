@@ -2096,7 +2096,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 		// save timestamp
 		SharedPreferences.Editor editor = SurespotApplication.global_prefs.edit();
 		SurespotApplication.rollkeysTS = System.currentTimeMillis();
-		editor.putLong("rollkeysTS", MainActivity.rollkeysTS);
+		editor.putLong("rollkeysTS", SurespotApplication.rollkeysTS);
 		editor.commit();
 		
 		Intent intent = new Intent(MainActivity.this, com.twofours.surespot.activities.ManageKeysActivity.class);
