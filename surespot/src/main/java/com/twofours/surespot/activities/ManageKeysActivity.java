@@ -109,7 +109,7 @@ public class ManageKeysActivity extends SherlockActivity
 			    {
 			        try
 			        {
-			            Thread.sleep(4000);
+			            Thread.sleep(1200);
 			        }
 			        catch (InterruptedException e)
 			        {
@@ -120,12 +120,9 @@ public class ManageKeysActivity extends SherlockActivity
 			            @Override
 			            public void run()
 			            {
-					System.out.println("ROLLK:002");
 					System.out.println("ROLLK:003");
 					rollKeys(user, SurespotApplication.PW_INSECURE);
 					System.out.println("ROLLK:004");
-					finish();
-					System.out.println("ROLLK:004a");
 			            }
 			        });
 			        
@@ -133,11 +130,39 @@ public class ManageKeysActivity extends SherlockActivity
 			};
 			thread.start();
 
+			Thread thread2 = new Thread()
+			{
+			    @Override
+			    public void run()
+			    {
+			        try
+			        {
+			            Thread.sleep(8000);
+			        }
+			        catch (InterruptedException e)
+			        {
+			        }
+			
+			        ManageKeysActivity.this.runOnUiThread(new Runnable()
+			        {
+			            @Override
+			            public void run()
+			            {
+					finish();
+					System.out.println("ROLLK:004a");
+			            }
+			        });
+			        
+			    }
+			};
+			thread2.start();
+
 			System.out.println("ROLLK:005");
 		}
 	}
 
-	private class RollKeysWrapper {
+	private class RollKeysWrapper
+	{
 
 		public String tokenSig;
 		public String authSig;
