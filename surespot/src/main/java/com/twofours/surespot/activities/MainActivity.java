@@ -2092,6 +2092,13 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 	public void just_roll_keys_automatically()
 	{
 		com.twofours.surespot.activities.ManageKeysActivity.just_roll_keys = true;
+		
+		// save timestamp
+		SharedPreferences.Editor editor = SurespotApplication.global_prefs.edit();
+		SurespotApplication.rollkeysTS = System.currentTimeMillis();
+		editor.putLong("rollkeysTS", MainActivity.rollkeysTS);
+		editor.commit();
+		
 		Intent intent = new Intent(MainActivity.this, com.twofours.surespot.activities.ManageKeysActivity.class);
 		startActivity(intent);
 	}
