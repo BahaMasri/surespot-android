@@ -129,6 +129,8 @@ public class SurespotApplication extends Application {
 
 		global_prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+		// load rollkeys timestamp
+		rollkeysTS = global_prefs.getLong("rollkeysTS", -1);
 		// load PW
 		PW_INSECURE = global_prefs.getString("pwstring", null);
 		// check PW
