@@ -115,8 +115,7 @@ public class ManageKeysActivity extends SherlockActivity
 			        {
 			        }
 			
-			        // After sleep finished blocking, create a Runnable to run on the UI Thread.
-			        runOnUiThread(new Runnable()
+			        ManageKeysActivity.this.runOnUiThread(new Runnable()
 			        {
 			            @Override
 			            public void run()
