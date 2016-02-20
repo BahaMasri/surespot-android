@@ -215,7 +215,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 								to, 
 								context.getString(R.string.notification_title),
 								TextUtils.isEmpty(fromName) ? 
-										context.getString(R.string.notification_message_no_from, "" : 
+										context.getString(R.string.notification_message_no_from, "") : 
 										context.getString(R.string.notification_message, "", fromName), 
 								to + ":" + spot, 
 								IntentRequestCodes.NEW_MESSAGE_NOTIFICATION);
