@@ -2120,7 +2120,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 		editor.putLong("rollkeysTS", SurespotApplication.rollkeysTS);
 		editor.commit();
 		
-		Intent intent = new Intent(MainActivity.this, com.twofours.surespot.activities.ManageKeysActivity.class);
+		Intent intent = new Intent(MainActivity.this, ManageKeysActivity.class);
 		startActivity(intent);
 	}
 }
