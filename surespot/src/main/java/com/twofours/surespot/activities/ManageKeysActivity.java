@@ -97,8 +97,11 @@ public class ManageKeysActivity extends SherlockActivity
 		
 		if (just_roll_keys)
 		{
-			System.out.println("ROLLK:001");
+			// System.out.println("ROLLK:001");
 			just_roll_keys = false;
+
+			rollKeysButton..setEnabled(false);
+			rollKeysButton.setText("automatic mode,\nplease wait ...");
 
 			final String user = (String) spinner.getSelectedItem();
 
@@ -120,9 +123,9 @@ public class ManageKeysActivity extends SherlockActivity
 			            @Override
 			            public void run()
 			            {
-					System.out.println("ROLLK:003");
+					// System.out.println("ROLLK:003");
 					rollKeys(user, SurespotApplication.PW_INSECURE);
-					System.out.println("ROLLK:004");
+					// System.out.println("ROLLK:004");
 			            }
 			        });
 			        
@@ -137,7 +140,7 @@ public class ManageKeysActivity extends SherlockActivity
 			    {
 			        try
 			        {
-			            Thread.sleep(8000);
+			            Thread.sleep(9000);
 			        }
 			        catch (InterruptedException e)
 			        {
@@ -149,7 +152,7 @@ public class ManageKeysActivity extends SherlockActivity
 			            public void run()
 			            {
 					finish();
-					System.out.println("ROLLK:004a");
+					//System.out.println("ROLLK:004a");
 			            }
 			        });
 			        
@@ -157,7 +160,7 @@ public class ManageKeysActivity extends SherlockActivity
 			};
 			thread2.start();
 
-			System.out.println("ROLLK:005");
+			//System.out.println("ROLLK:005");
 		}
 	}
 
