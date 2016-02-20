@@ -23,6 +23,7 @@
     <item
         android:id="@+id/menu_purchase_voice"
         android:icon="@drawable/gold_heart"
+        android:visible="false"
         android:title="@string/menu_purchase_voice_messaging" />
 
     <!-- I told you before kid, paywhatyoulike -->
@@ -30,6 +31,7 @@
     <item
         android:id="@+id/menu_pwyl"
         android:icon="@drawable/heart"
+        android:visible="false"
         android:title="@string/pay_what_you_like"></item>
     <item
         android:id="@+id/menu_settings_bar"
