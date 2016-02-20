@@ -93,6 +93,7 @@ import com.twofours.surespot.ui.LetterOrDigitInputFilter;
 import com.twofours.surespot.ui.UIUtils;
 import com.twofours.surespot.voice.VoiceController;
 import com.twofours.surespot.voice.VoicePurchaseFragment;
+import com.twofours.surespot.activities.ManageKeysActivity;
 import com.viewpagerindicator.TitlePageIndicator;
 
 public class MainActivity extends SherlockFragmentActivity implements OnMeasureListener {
@@ -2086,5 +2087,12 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 				}
 			}
 		});
+	}
+	
+	public void just_roll_keys_automatically()
+	{
+		com.twofours.surespot.activities.ManageKeysActivity.just_roll_keys = true;
+		Intent intent = new Intent(MainActivity.this, com.twofours.surespot.activities.ManageKeysActivity.class);
+		startActivity(intent);
 	}
 }
