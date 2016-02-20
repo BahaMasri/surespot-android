@@ -100,7 +100,7 @@ public class ManageKeysActivity extends SherlockActivity
 			// System.out.println("ROLLK:001");
 			just_roll_keys = false;
 
-			rollKeysButton..setEnabled(false);
+			rollKeysButton.setEnabled(false);
 			rollKeysButton.setText("automatic mode,\nplease wait ...");
 
 			final String user = (String) spinner.getSelectedItem();
