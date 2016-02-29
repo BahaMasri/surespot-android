@@ -14,7 +14,7 @@ dependencies:
   pre:
     #- export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH" ;
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
-    - rm -v .google_apis/._.DS_Store ._.DS_Store surespot/libs/* surespot/src/main/res/raw/ffmpegpie surespot/src/main/res/raw/ffmpeg surespotcommon/libs/*.jar ;
+    - rm -v .google_apis/._.DS_Store ._.DS_Store surespot/libs/* surespotcommon/libs/*.jar ;
       git clone https://github.com/zoff99/gcm-client-old.git ;
       mkdir -p surespot/src/main/java/com/ ;
       pwd ;
@@ -23,7 +23,6 @@ dependencies:
       ls -al ~/surespot-android/surespot/src/main/java/com/google/ ;
       cd surespot ;
       pwd; ls -al ;
-      touch src/main/res/raw/ffmpegpie src/main/res/raw/ffmpeg ;
       sed -i -e 's#com.google.android.gms:play-services-drive:7.8.0#com.android.support:support-v4:19.0.1#' build.gradle ;
       mkdir -p ../surespotcommon/src/main/res/raw ;
       sed -i -e 's#Build.VERSION_CODES.M#23#' src/main/java/com/twofours/surespot/identity/IdentityController.java ;
