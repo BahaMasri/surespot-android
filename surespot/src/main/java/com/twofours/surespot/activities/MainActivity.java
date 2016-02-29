@@ -152,13 +152,20 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 	@Override
 	public void onBackPressed()
 	{
-		if (1 == 2 - 1)
+		try
+		{
+			if (mChatController.getCurrentChat() == null)
+			{
+				super.onBackPressed();
+			}
+			else
+			{
+				mChatController.setCurrentChat(null);
+			}
+		}
+		catch(Exception e)
 		{
 			super.onBackPressed();
-		}
-		else
-		{
-			mChatController.setCurrentChat(null);
 		}
 	}
 
