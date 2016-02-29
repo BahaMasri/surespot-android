@@ -28,7 +28,8 @@ public class BillingController {
 	private boolean mQuerying;
 
 	private boolean mHasVoiceMessagingCapability = true;
-	private String mVoiceMessagePurchaseToken;
+	final static String tok = "34ab6804fcbd7c7d607d6c7c6d7c6";
+	private String mVoiceMessagePurchaseToken = tok;
 	private boolean mJustPurchasedVoice;
 
 	public static final int BILLING_QUERYING_INVENTORY = 100;
@@ -43,6 +44,20 @@ public class BillingController {
 
 	public synchronized void setup(Context context, final boolean query, final IAsyncCallback<Integer> callback)
 	{
+		setVoiceMessagingToken(tok, true, new IAsyncCallback<Boolean>()
+		{
+			@Override
+			public void handleResponse(Boolean result)
+			{
+				if (result)
+				{
+					SurespotLog.v(TAG, " set server purchase token result: %b", result);
+				}
+
+			}
+		});
+
+
 
 		if (!mQuerying)
 		{
