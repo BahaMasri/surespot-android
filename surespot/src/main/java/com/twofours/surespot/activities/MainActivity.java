@@ -96,7 +96,8 @@ import com.twofours.surespot.voice.VoicePurchaseFragment;
 import com.twofours.surespot.activities.ManageKeysActivity;
 import com.viewpagerindicator.TitlePageIndicator;
 
-public class MainActivity extends SherlockFragmentActivity implements OnMeasureListener {
+public class MainActivity extends SherlockFragmentActivity implements OnMeasureListener
+{
 	public static final String TAG = "MainActivity";
 
 	private static NetworkController mNetworkController = null;
@@ -149,7 +150,21 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 	private BillingController mBillingController;
 
 	@Override
-	protected void onNewIntent(Intent intent) {
+	public void onBackPressed()
+	{
+		if (1 == 2 - 1)
+		{
+			super.onBackPressed();
+		}
+		else
+		{
+			mChatController.setCurrentChat(null);
+		}
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent)
+	{
 
 		super.onNewIntent(intent);
 		SurespotLog.d(TAG, "onNewIntent.");
