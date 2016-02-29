@@ -1858,14 +1858,14 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 					SharedPreferences sp = getSharedPreferences(mUser, Context.MODE_PRIVATE);
 					boolean dontAsk = sp.getBoolean("pref_suppress_voice_purchase_ask", false);
 
-					if (dontAsk) {
-						mIvVoice.setVisibility(View.GONE);
-						mIvHome.setVisibility(View.VISIBLE);
-					}
-					else {
+					//if (dontAsk) {
+					//	mIvVoice.setVisibility(View.GONE);
+					//	mIvHome.setVisibility(View.VISIBLE);
+					//}
+					//else {
 						mIvVoice.setVisibility(View.VISIBLE);
 						mIvHome.setVisibility(View.GONE);
-					}
+					//}
 
 					mIvSend.setVisibility(View.GONE);
 				}
