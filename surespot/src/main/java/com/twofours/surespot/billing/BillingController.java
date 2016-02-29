@@ -27,36 +27,46 @@ public class BillingController {
 	private boolean mQueried;
 	private boolean mQuerying;
 
-	private boolean mHasVoiceMessagingCapability;
+	private boolean mHasVoiceMessagingCapability = true;
 	private String mVoiceMessagePurchaseToken;
 	private boolean mJustPurchasedVoice;
 
 	public static final int BILLING_QUERYING_INVENTORY = 100;
 	private Context mContext;
 
-	public BillingController(Context context) {
+	public BillingController(Context context)
+	{
 		mContext = context;
 		setup(context, true, null);
 
 	}
 
-	public synchronized void setup(Context context, final boolean query, final IAsyncCallback<Integer> callback) {
+	public synchronized void setup(Context context, final boolean query, final IAsyncCallback<Integer> callback)
+	{
 
-		if (!mQuerying) {
-			if (mIabHelper == null) {
+		if (!mQuerying)
+		{
+			if (mIabHelper == null)
+			{
 				mIabHelper = new IabHelper(context, SurespotConfiguration.getGoogleApiLicenseKey());
 			}
-			try {
-				mIabHelper.startSetup(new OnIabSetupFinishedListener() {
+
+			try
+			{
+				mIabHelper.startSetup(new OnIabSetupFinishedListener()
+				{
 
 					@Override
-					public void onIabSetupFinished(IabResult result) {
-						if (!result.isSuccess()) {
+					public void onIabSetupFinished(IabResult result)
+					{
+						if (!result.isSuccess())
+						{
 							// bollocks
 							SurespotLog.v(TAG, "Problem setting up In-app Billing: " + result);
-							revokeVoiceMessaging();
+							// revokeVoiceMessaging();
 							dispose();
-							if (callback != null) {
+							if (callback != null)
+							{
 								callback.handleResponse(result.getResponse());
 							}
 							
@@ -110,9 +120,11 @@ public class BillingController {
 				}
 			}
 		}
-		else {
+		else
+		{
 			SurespotLog.v(TAG, "In-app Billing already setup");
-			if (callback != null) {
+			if (callback != null)
+			{
 				callback.handleResponse(IabHelper.BILLING_RESPONSE_RESULT_OK);
 			}
 		}
@@ -124,7 +136,7 @@ public class BillingController {
 
 	public synchronized boolean hasVoiceMessaging() {
 		// if we just purchased it, or the purchase query said we have it then we can voice message
-		return mHasVoiceMessagingCapability || mJustPurchasedVoice;
+		return true;
 	}
 
 	IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
@@ -144,7 +156,7 @@ public class BillingController {
 
 			// consume owned items
 			List<Purchase> owned = inventory.getAllPurchases();
-			revokeVoiceMessaging();
+			//revokeVoiceMessaging();
 			if (owned.size() > 0) {
 				SurespotLog.d(TAG, "consuming pwyl purchases");
 
@@ -310,8 +322,7 @@ public class BillingController {
 
 	public synchronized void revokeVoiceMessaging() {
 		SurespotLog.v(TAG,"revokeVoiceMessaging");
-		// Will probably have to kill surespot process to re-query after this but oh well
-		mHasVoiceMessagingCapability = false;
+		mHasVoiceMessagingCapability = true;
 		mVoiceMessagePurchaseToken = null;
 		clearJustPurchased();
 	}
