@@ -421,15 +421,8 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 							SharedPreferences sp = MainActivity.this.getSharedPreferences(mUser, Context.MODE_PRIVATE);
 							boolean dontAskDontTell = sp.getBoolean("pref_suppress_voice_purchase_ask", false);
 
-							// if they have purchased voice or don't want to be bugged anymore or the user they are on is deleted
-							if (mBillingController.hasVoiceMessaging() || dontAskDontTell || mChatController.isFriendDeleted(friend.getName())) {
-								// go to home
-								mChatController.setCurrentChat(null);
-							}
-							else {
-								// nag nag nag
-								showVoicePurchaseDialog(true);
-							}
+							// go to home
+							mChatController.setCurrentChat(null);
 						}
 					}
 					else {
@@ -455,20 +448,20 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 							sendMessage(friend.getName());
 						}
 						else {
-							if (mBillingController.hasVoiceMessaging()) {
+							//if (mBillingController.hasVoiceMessaging()) {
 								VoiceController.startRecording(MainActivity.this, friend.getName());
-							}
-							else {
-								//
-								SharedPreferences sp = MainActivity.this.getSharedPreferences(mUser, Context.MODE_PRIVATE);
-								boolean dontAskDontTell = sp.getBoolean("pref_suppress_voice_purchase_ask", false);
-								if (dontAskDontTell) {
-									mChatController.closeTab();
-								}
-								else {
-									showVoicePurchaseDialog(true);
-								}
-							}
+							//}
+							//else {
+							//	//
+							//	SharedPreferences sp = MainActivity.this.getSharedPreferences(mUser, Context.MODE_PRIVATE);
+							//	boolean dontAskDontTell = sp.getBoolean("pref_suppress_voice_purchase_ask", false);
+							//	if (dontAskDontTell) {
+							//		mChatController.closeTab();
+							//	}
+							//	else {
+							//		showVoicePurchaseDialog(true);
+							//	}
+							//}
 						}
 					}
 				}
