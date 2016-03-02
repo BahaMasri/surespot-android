@@ -215,7 +215,7 @@ public class SurespotApplication extends Application
 						out.close();
 					}
 				}
-				catch (IOException e)
+				catch (Exception e)
 				{
 					e.printStackTrace();
 				}
