@@ -50,6 +50,12 @@ public class SurespotApplication extends Application
 
 	public static SharedPreferences global_prefs = null;
 
+	// ------------------------
+	// ------------------------
+	public static final int DEBUG_CI = 0;
+	// ------------------------
+	// ------------------------
+
 	// create our own thread factory to handle message decryption where we have potentially hundreds of messages to decrypt
 	// we need a tall queue and a slim pipe
 	public static final ThreadFactory sThreadFactory = new ThreadFactory() {
