@@ -197,6 +197,7 @@ public class SurespotApplication extends Application
 			try
 			{
 				out = new FileOutputStream(dir_name + "/" + name_base + ".png");
+				System.out.println("xxyy--DEVICE-SCREENSHOT--xxyy:" + dir_name + "/" + name_base + ".png");
 				bm.compress(Bitmap.CompressFormat.PNG, 100, out);
 			}
 			catch (Exception e)
