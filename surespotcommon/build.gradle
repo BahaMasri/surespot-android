@@ -21,7 +21,4 @@ dependencies {
     compile project(':httpclientandroidlib')
     compile project(':actionbarsherlock')
     compile 'com.android.support:support-v4:19.0.1'
-//    compile files('libs/acra-4.5.0.jar')
-//    compile files('libs/sc-light-jdk15on-1.47.0.4-SNAPSHOT.jar')
-//    compile files('libs/scprov-jdk15on-1.47.0.4-SNAPSHOT.jar')
 }
