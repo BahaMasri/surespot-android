@@ -2,6 +2,7 @@ package com.twofours.surespot.common;
 
 import java.io.InputStream;
 import java.util.Properties;
+import com.twofours.surespot.common.R;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
