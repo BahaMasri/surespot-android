@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.twofours.surespot"
     android:versionCode="63"
-    android:versionName="63">
+    android:versionName="63-mod">
 
 
 
@@ -45,7 +45,7 @@
         android:label="surespot"
         android:theme="@style/Theme.Sherlock.Light.DarkActionBar">
 
-        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"></meta-data>
+        <meta-data android:name="com.google.android.gms.version" android:value="4030500"></meta-data>
 
         <receiver
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
