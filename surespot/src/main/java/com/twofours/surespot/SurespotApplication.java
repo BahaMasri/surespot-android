@@ -184,7 +184,7 @@ public class SurespotApplication extends Application
 		return mUserAgent;
 	}
 
-	static void take_phone_screenshot(Activity a, String dir_name, String name_base)
+	public static void take_phone_screenshot(Activity a, String dir_name, String name_base)
 	{
 		try
 		{
