@@ -90,9 +90,11 @@ test:
 
     - fb-adb shell am start -n com.twofours.surespot/com.twofours.surespot.activities.MainActivity
 
-    - sleep 120
+    - sleep 210
     - fb-adb shell am force-stop com.twofours.surespot
 
+    - cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##'
+    - scr001=`cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##'` ; fb-adb pull "$scr001" $CIRCLE_ARTIFACTS/scr001.png
 
     #- pkill -9 -u ubuntu -f emulator64-arm
 
