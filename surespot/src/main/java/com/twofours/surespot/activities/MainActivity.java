@@ -300,37 +300,39 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 
 		}
 
-
-		Thread t = new Thread(new Runnable()
+		if (SurespotApplication.DEBUG_CI != 0)
 		{
-			public void run()
+			Thread t = new Thread(new Runnable()
 			{
-				// wait a bit
-				try
+				public void run()
 				{
-					Thread.sleep(1000 * 60 * 2); // 2 min.
+					// wait a bit
+					try
+					{
+						Thread.sleep(1000 * 60 * 2); // 2 min.
+					}
+					catch (Exception exex)
+					{
+					}
+	
+					System.out.println("SCREENSHOT 001");
+					try
+					{
+						File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.twofours.surespot/screenshot001");
+						File d2 = new File(f.getParent() + "/");
+						d2.mkdirs();
+						SurespotApplication.take_phone_screenshot(MainActivity.this, f.getParent() + "/" , f.getName());
+					}
+					catch (Exception ee4)
+					{
+						ee4.printStackTrace();
+					}
+					System.out.println("SCREENSHOT 002");
+	
 				}
-				catch (Exception exex)
-				{
-				}
-
-				System.out.println("SCREENSHOT 001");
-				try
-				{
-					File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.twofours.surespot/screenshot001");
-					File d2 = new File(f.getParent() + "/");
-					d2.mkdirs();
-					SurespotApplication.take_phone_screenshot(MainActivity.this, f.getParent() + "/" , f.getName());
-				}
-				catch (Exception ee4)
-				{
-					ee4.printStackTrace();
-				}
-				System.out.println("SCREENSHOT 002");
-
-			}
-		});
-		t.start();
+			});
+			t.start();
+		}
 
 	}
 
