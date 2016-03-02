@@ -10,7 +10,7 @@ dependencies:
     - ~/.android
     - ~/.gradle
   override:
-    #- android list sdk --all | grep -i tools
+    - android list sdk --all | grep -i tools
     - android list sdk --all --extended
   pre:
     #- export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH" ;
