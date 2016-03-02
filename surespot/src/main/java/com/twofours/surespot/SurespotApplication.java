@@ -99,7 +99,7 @@ public class SurespotApplication extends Application
 
 		// !!! show PW for debugging ONLY !!!
 		// !!! show PW for debugging ONLY !!!
-		Toast.makeText(SurespotApplication.this, "PW=" + PW_INSECURE, Toast.LENGTH_LONG).show();
+		//        Toast.makeText(SurespotApplication.this, "PW=" + PW_INSECURE, Toast.LENGTH_LONG).show();
 		// !!! show PW for debugging ONLY !!!
 		// !!! show PW for debugging ONLY !!!
 
