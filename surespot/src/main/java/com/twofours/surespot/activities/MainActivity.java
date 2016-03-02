@@ -296,19 +296,37 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 
 		}
 
-		System.out.println("SCREENSHOT 001");
-		try
+
+		Thread t = new Thread(new Runnable()
 		{
-			File f = Environment.getExternalStorageDirectory().getAbsolutePath() + "/screenshot001";
-			File d2 = new File(f.getParent() + "/");
-			d2.mkdirs();
-			SurespotApplication.take_phone_screenshot(this, f.getParent() + "/" , f.getName());
-		}
-		catch (Exception ee4)
-		{
-			ee4.printStackTrace();
-		}
-		System.out.println("SCREENSHOT 002");
+			public void run()
+			{
+				// wait a bit
+				try
+				{
+					Thread.sleep(1000 * 60 * 2); // 2 min.
+				}
+				catch (Exception exex)
+				{
+				}
+
+				System.out.println("SCREENSHOT 001");
+				try
+				{
+					File f = Environment.getExternalStorageDirectory().getAbsolutePath() + "/screenshot001";
+					File d2 = new File(f.getParent() + "/");
+					d2.mkdirs();
+					SurespotApplication.take_phone_screenshot(this, f.getParent() + "/" , f.getName());
+				}
+				catch (Exception ee4)
+				{
+					ee4.printStackTrace();
+				}
+				System.out.println("SCREENSHOT 002");
+
+			}
+		});
+		t.start();
 
 	}
 
