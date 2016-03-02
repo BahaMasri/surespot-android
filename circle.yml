@@ -10,12 +10,12 @@ dependencies:
     - ~/.android
     - ~/.gradle
   override:
-    - android list sdk --all | grep -i tools
+    #- android list sdk --all | grep -i tools
+    - android list sdk --all --extended
   pre:
     #- export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH" ;
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
-    #- echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
-    - android list sdk --all
+    - echo y | android update sdk --no-ui --all --filter android-23
     - rm -v .google_apis/._.DS_Store ._.DS_Store ;
       git clone https://github.com/zoff99/gcm-client-old.git ;
       mkdir -p surespot/src/main/java/com/ ;
@@ -29,7 +29,7 @@ dependencies:
       cd .. ;
       ln -s surespot src ;
       echo ./gradlew tasks ;
-      echo ./gradlew assembleRelease --info --stacktrace ;
+      ./gradlew assembleRelease --info --stacktrace ;
       echo;echo;echo;
       pwd ; ls -al;
       cp -av ./surespot/build/outputs/apk/surespot-release-unsigned.apk ~/ ;
