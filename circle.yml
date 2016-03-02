@@ -21,6 +21,7 @@ dependencies:
     - sudo apt-get install xvfb > /dev/null 2> /dev/null
     - sudo apt-get install xdotool > /dev/null 2> /dev/null
     - sudo apt-get install telnet
+    - sudo apt-get xwininfo
     #- export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH" ;
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
     - echo y | android update sdk --no-ui --all --filter android-23
@@ -81,6 +82,8 @@ test:
         background: true
         parallel: true
     - circle-android wait-for-boot
+    - xwininfo -root -tree
+    - xdotool getwindowfocus -f windowmove 2900 2060
     - import -window root $CIRCLE_ARTIFACTS/capture001.png
     - sleep 10
     - telnet localhost 5554 event send EV_KEY:KEY_MENU:1 EV_KEY:KEY_MENU:0 quit
