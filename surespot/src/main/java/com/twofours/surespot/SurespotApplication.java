@@ -9,10 +9,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.acra.ACRA;
-import org.acra.ReportingInteractionMode;
-import org.acra.annotation.ReportsCrashes;
-
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -33,10 +29,8 @@ import com.twofours.surespot.common.SurespotLog;
 import com.twofours.surespot.common.Utils;
 import com.twofours.surespot.services.CredentialCachingService;
 
-@ReportsCrashes(mode = ReportingInteractionMode.DIALOG, formKey = "", // will not be used
-formUri = "https://www.surespot.me:3000/logs/surespot", resToastText = R.string.crash_toast_text, resDialogText = R.string.crash_dialog_text, resDialogOkToast = R.string.crash_dialog_ok_toast, resDialogCommentPrompt = R.string.crash_dialog_comment_prompt)
-// optional
-public class SurespotApplication extends Application {
+public class SurespotApplication extends Application
+{
 	private static final String TAG = "SurespotApplication";
 	private static CredentialCachingService mCredentialCachingService;
 	private static StateController mStateController = null;
@@ -72,47 +66,6 @@ public class SurespotApplication extends Application {
 
 	public void onCreate() {
 		super.onCreate();
-
-		// Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-		//
-		// @Override
-		// public void uncaughtException(Thread thread, Throwable ex) {
-		//
-		// StringWriter stackTrace = new StringWriter();
-		// ex.printStackTrace(new PrintWriter(stackTrace));
-		// System.err.println(stackTrace);
-		//
-		// new Thread() {
-		// @Override
-		// public void run() {
-		// Looper.prepare();
-		// Toast.makeText(SurespotApplication.this, "surespot just crashed. :(", Toast.LENGTH_SHORT).show();
-		// Looper.loop();
-		// };
-		// }.start();
-		//
-		//
-		// System.exit(1);
-		//
-		// }
-		// });
-
-		// String lastUser = Utils.getSharedPrefsString(this, SurespotConstants.PrefNames.LAST_USER);
-		// if (lastUser != null) {
-		// SurespotLog.v(TAG, "using shared prefs for user %s for ACRA", lastUser);
-		// ACRAConfiguration config = ACRA.getNewDefaultConfig(this);
-		// config.setSharedPreferenceName(lastUser);
-		// config.setSharedPreferenceMode(Context.MODE_PRIVATE);
-		// ACRA.setConfig(config);
-		//
-		// }
-		//
-		// boolean enableACRA = ACRA.getACRASharedPreferences().getBoolean(ACRA.PREF_ENABLE_ACRA, false);
-		// if (!enableACRA) {
-		//
-		// }
-
-		ACRA.init(this);
 
 		EmojiParser.init(this);
 
