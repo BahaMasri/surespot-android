@@ -73,7 +73,7 @@ test:
     - echo "$EMU_"
     - echo "$sdpath"
   override:
-    - emulator -avd "$EMU_" -sdcard sdcard.img -no-audio -no-window:
+    - emulator -avd "$EMU_" -sdcard sdcard.img -no-audio:
         background: true
         parallel: true
     - circle-android wait-for-boot
@@ -91,6 +91,8 @@ test:
     - fb-adb shell am start -n com.twofours.surespot/com.twofours.surespot.activities.MainActivity
 
     - sleep 210
+    - import -window root $CIRCLE_ARTIFACTS/capture001.png
+
     - fb-adb shell am force-stop com.twofours.surespot
 
     - cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##'
