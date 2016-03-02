@@ -24,8 +24,6 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-import org.acra.ACRA;
-
 import android.util.Log;
 import ch.boye.httpclientandroidlib.HttpResponse;
 import ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler;
@@ -152,7 +150,7 @@ class AsyncHttpRequest implements Runnable {
         // no retries left, crap out with exception
         ConnectException ex = new ConnectException();
         ex.initCause(cause);       
-        //ACRA.getErrorReporter().handleSilentException(cause);
+
         throw ex;
     }
 }
