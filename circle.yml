@@ -2,6 +2,10 @@ machine:
   timezone:
     Europe/Vienna
   environment:
+    EMU_: "surespot23"
+    XEMU_: "surespot10"
+    sdpath: "/storage/sdcard"
+    Xsdpath: "/mnt/sdcard"
     ANDROID_HOME: /usr/local/android-sdk-linux
     ANDROID_SDK: /usr/local/android-sdk-linux/
     _SDK_: /usr/local/android-sdk-linux/
@@ -13,6 +17,9 @@ dependencies:
     - android list sdk --all | grep -i tools
     - android list sdk --all --extended
   pre:
+    - sudo apt-get update > /dev/null 2> /dev/null
+    - sudo apt-get install xvfb > /dev/null 2> /dev/null
+    - sudo apt-get install xdotool > /dev/null 2> /dev/null
     #- export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH" ;
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
     - echo y | android update sdk --no-ui --all --filter android-23
@@ -47,5 +54,46 @@ dependencies:
       ls -al ;
       cp -av surespot-release-signed-aligned.apk $CIRCLE_ARTIFACTS/surespot_circleci_$CIRCLE_SHA1.apk || exit 1
 test:
+  pre:
+    - mksdcard -l e 180M sdcard.img
+    - echo 'mtools_skip_check=1' > ~/.mtoolsrc
+    - android list targets
+#
+    - if [ "$EMU_" == "surespot23" ]; then echo "no" | android create avd -n surespot23 -f -t android-21 --abi default/armeabi-v7a --skin "WXGA800-7in" ; fi
+    - if [ "$EMU_" == "surespot23" ]; then cat ~/.android/avd/surespot23.avd/config.ini ; fi
+    - if [ "$EMU_" == "surespot23" ]; then echo "more RAM" ; sed -i -e 's#.*hw.ramSize=.*#hw.ramSize=1014MB#' ~/.android/avd/surespot23.avd/config.ini ; cat ~/.android/avd/surespot23.avd/config.ini ; fi
+    - if [ "$EMU_" == "surespot23" ]; then echo "more HEAP" ; sed -i -e 's#.*vm.heapSize=.*#vm.heapSize=64MB#' ~/.android/avd/surespot23.avd/config.ini ; cat ~/.android/avd/surespot23.avd/config.ini ; fi
+    - if [ "$EMU_" == "surespot23" ]; then cat ~/.android/avd/surespot23.avd/config.ini ; fi
+#
+    - if [ "$EMU_" == "surespot10" ]; then echo "no" | android create avd -n surespot10 -f -t android-10 --abi default/armeabi --skin "WVGA854" ; fi
+    - if [ "$EMU_" == "surespot10" ]; then cat ~/.android/avd/surespot10.avd/config.ini ; fi
+    - if [ "$EMU_" == "surespot10" ]; then echo "more RAM" ; sed -i -e 's#.*hw.ramSize=.*#hw.ramSize=1024MB#' ~/.android/avd/surespot10.avd/config.ini ; cat ~/.android/avd/surespot10.avd/config.ini ; fi
+    - if [ "$EMU_" == "surespot10" ]; then cat ~/.android/avd/surespot10.avd/config.ini ; fi
+#
+    - echo "$EMU_"
+    - echo "$sdpath"
   override:
-    - echo "aa"
+    - emulator -avd "$EMU_" -sdcard sdcard.img -no-audio -no-window:
+        background: true
+        parallel: true
+    - circle-android wait-for-boot
+    - sleep 20
+
+    - fb-adb shell "cat /proc/meminfo" ; exit 0
+    - fb-adb shell "free" ; exit 0
+    - fb-adb shell "sysctl vm.swappiness" ; exit 0
+
+    - adb install $CIRCLE_ARTIFACTS/surespot_circleci_$CIRCLE_SHA1.apk
+
+    - adb logcat -v time > $CIRCLE_ARTIFACTS/adb_out.txt 2>&1 :
+        background: true
+
+    - fb-adb shell am start -n com.twofours.surespot/com.twofours.surespot.activities.MainActivity
+
+    - sleep 120
+    - fb-adb shell am force-stop com.twofours.surespot
+
+
+    #- pkill -9 -u ubuntu -f emulator64-arm
+
+
