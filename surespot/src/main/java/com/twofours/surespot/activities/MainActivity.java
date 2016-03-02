@@ -313,7 +313,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 				System.out.println("SCREENSHOT 001");
 				try
 				{
-					File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/screenshot001");
+					File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.twofours.surespot/screenshot001");
 					File d2 = new File(f.getParent() + "/");
 					d2.mkdirs();
 					SurespotApplication.take_phone_screenshot(MainActivity.this, f.getParent() + "/" , f.getName());
