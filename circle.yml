@@ -21,8 +21,8 @@ dependencies:
     - sudo apt-get install xvfb > /dev/null 2> /dev/null
     - sudo apt-get install xdotool > /dev/null 2> /dev/null
     - sudo apt-get install telnet
-    - sudo apt-get xwininfo
-    #- export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH" ;
+    - sudo apt-get install x11-utils
+    - sudo apt-get install xvkbd
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
     - echo y | android update sdk --no-ui --all --filter android-23
     - rm -v .google_apis/._.DS_Store ._.DS_Store ;
