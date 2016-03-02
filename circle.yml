@@ -21,13 +21,9 @@ dependencies:
       cd surespot ;
       mkdir -p ../surespotcommon/src/main/res/raw ;
       printf 'ssl_strict=true\nbaseUrl=https://server.surespot.me:443\n' > ../surespotcommon/src/main/res/raw/configuration.properties ;
-      sed -i -e 's#android {#android {\nlintOptions {\nabortOnError false\n}\n#' build.gradle ;
-      pwd; ls -al build.gradle ; cat build.gradle ;
       pushd ../ ;
       find .google_apis -name '*.jar' -exec rm {} \; ;
       popd ;
-      sed -i -e '/support-v4/acompile "com.madgag:scprov-jdk15on:1.47.0.3"\ncompile "com.madgag:sc-light-jdk15on:1.47.0.3"' -e '/compile files/d' build.gradle ;
-      sed -i -e '/surespotcommon/acompile "com.madgag:scprov-jdk15on:1.47.0.3"\ncompile "com.madgag:sc-light-jdk15on:1.47.0.3"' -e '/compile files/d' ../androidkeystore/build.gradle ;
       pwd; ls -al build.gradle ; cat build.gradle ;
       pwd ; ls -al ../androidkeystore/build.gradle ; cat ../androidkeystore/build.gradle ;
       cd .. ;
