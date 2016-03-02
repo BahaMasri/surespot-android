@@ -50,8 +50,12 @@ dependencies {
     compile project(':httpclientandroidlib')
     compile project(':androidkeystore')
     compile 'com.android.support:support-v4:19.0.1'
-    compile "com.madgag:scprov-jdk15on:1.47.0.3"
-    compile "com.madgag:sc-light-jdk15on:1.47.0.3"
+
+    compile "com.madgag.spongycastle:prov:1.50.0.0"
+    compile "com.madgag.spongycastle:core:1.50.0.0"
+    // compile "com.madgag:scprov-jdk15on:1.47.0.3"
+    // compile "com.madgag:sc-light-jdk15on:1.47.0.3"
+
     compile 'com.google.http-client:google-http-client-gson:1.19.0'
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.google.guava:guava:18.0'
