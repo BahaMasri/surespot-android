@@ -236,8 +236,12 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 
 		// PROD Gingerbread does not like FLAG_SECURE
 		if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.FROYO
-				|| android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			getWindow().setFlags(LayoutParams.FLAG_SECURE, LayoutParams.FLAG_SECURE);
+				|| android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
+		{
+			if (SurespotApplication.DEBUG_CI == 0)
+			{
+				getWindow().setFlags(LayoutParams.FLAG_SECURE, LayoutParams.FLAG_SECURE);
+			}
 		}
 
 		mContext = this;
