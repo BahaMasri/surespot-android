@@ -14,16 +14,11 @@ dependencies:
   pre:
     #- export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH" ;
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
-    - rm -v .google_apis/._.DS_Store ._.DS_Store surespot/libs/* surespotcommon/libs/*.jar ;
+    - rm -v .google_apis/._.DS_Store ._.DS_Store ;
       git clone https://github.com/zoff99/gcm-client-old.git ;
       mkdir -p surespot/src/main/java/com/ ;
-      pwd ;
       cp -av gcm-client-old/com surespot/src/main/java/ ;
-      ls -al ~/surespot-android/surespot/src/main/java/com/ ;
-      ls -al ~/surespot-android/surespot/src/main/java/com/google/ ;
       cd surespot ;
-      pwd; ls -al ;
-      sed -i -e 's#com.google.android.gms:play-services-drive:7.8.0#com.android.support:support-v4:19.0.1#' build.gradle ;
       mkdir -p ../surespotcommon/src/main/res/raw ;
       sed -i -e 's#Build.VERSION_CODES.M#23#' src/main/java/com/twofours/surespot/identity/IdentityController.java ;
       printf 'ssl_strict=true\nbaseUrl=https://server.surespot.me:443\n' > ../surespotcommon/src/main/res/raw/configuration.properties ;
@@ -33,9 +28,7 @@ dependencies:
       mv proguard-project.txt_ proguard-project.txt ;
       sed -i -e 's#import org.acra.ACRA;##' ../androidasynchttp/src/main/java/com/loopj/android/http/AsyncHttpRequest.java src/main/java/com/twofours/surespot/SurespotApplication.java ;
       sed -i -e 's#import org.acra.ReportingInteractionMode;##' -e 's#import org.acra.annotation.ReportsCrashes;##' -e 's#ACRA.init(this);##' -e 's#@ReportsCrashes#// @ReportsCrashes#' -e 's#formUri = "ht#// formUri = "ht#' src/main/java/com/twofours/surespot/SurespotApplication.java ;
-      sed -i -e 's#compile files(.libs/gcm.jar.)##' -e 's#compile files(.*libs.*)##' -e 's#android {#android {\nlintOptions {\nabortOnError false\n}\n#' build.gradle ;
-      sed -i -e 's#javaMaxHeapSize .*##' build.gradle ;
-      rm src/main/java/com/twofours/surespot/backup/DriveHelper.java ;
+      sed -i -e 's#android {#android {\nlintOptions {\nabortOnError false\n}\n#' build.gradle ;
       pushd ../ ;
       find .google_apis -name '*.jar' -exec rm {} \; ;
       popd ;
