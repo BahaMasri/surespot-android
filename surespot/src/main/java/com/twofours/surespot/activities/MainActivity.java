@@ -316,7 +316,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 					File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/screenshot001");
 					File d2 = new File(f.getParent() + "/");
 					d2.mkdirs();
-					SurespotApplication.take_phone_screenshot(this, f.getParent() + "/" , f.getName());
+					SurespotApplication.take_phone_screenshot(MainActivity.this, f.getParent() + "/" , f.getName());
 				}
 				catch (Exception ee4)
 				{
