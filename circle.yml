@@ -80,7 +80,11 @@ test:
         background: true
         parallel: true
     - circle-android wait-for-boot
+    - import -window root $CIRCLE_ARTIFACTS/capture001.png
+    - sleep 10
+    - telnet localhost 5554 event send EV_KEY:KEY_MENU:1 EV_KEY:KEY_MENU:0 quit
     - sleep 20
+    - import -window root $CIRCLE_ARTIFACTS/capture002.png
 
     - fb-adb shell "cat /proc/meminfo" ; exit 0
     - fb-adb shell "free" ; exit 0
@@ -94,7 +98,7 @@ test:
     - fb-adb shell am start -n com.twofours.surespot/com.twofours.surespot.activities.MainActivity
 
     - sleep 210
-    - import -window root $CIRCLE_ARTIFACTS/capture001.png
+    - import -window root $CIRCLE_ARTIFACTS/capture003.png
 
     - fb-adb shell am force-stop com.twofours.surespot
 
