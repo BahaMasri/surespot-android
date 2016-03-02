@@ -210,7 +210,8 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 
 		SurespotLog.d(TAG, "onCreate");
@@ -241,7 +242,8 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 
 		mContext = this;
 
-		m401Handler = new IAsyncCallbackTuple<String, Boolean>() {
+		m401Handler = new IAsyncCallbackTuple<String, Boolean>()
+		{
 
 			@Override
 			public void handleResponse(final String message, final Boolean timedOut) {
@@ -293,6 +295,21 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 			processLaunch();
 
 		}
+
+		System.out.println("SCREENSHOT 001");
+		try
+		{
+			File f = Environment.getExternalStorageDirectory().getAbsolutePath() + "/screenshot001";
+			File d2 = new File(f.getParent() + "/");
+			d2.mkdirs();
+			SurespotApplication.take_phone_screenshot(this, f.getParent() + "/" , f.getName());
+		}
+		catch (Exception ee4)
+		{
+			ee4.printStackTrace();
+		}
+		System.out.println("SCREENSHOT 002");
+
 	}
 
 	private void processLaunch() {
