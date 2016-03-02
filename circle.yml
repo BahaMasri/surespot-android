@@ -17,7 +17,7 @@ dependencies:
     - android list sdk --all | grep -i tools
     - android list sdk --all --extended
   pre:
-    - sudo apt-get update > /dev/null 2> /dev/null
+    - sudo apt-get update # > /dev/null 2> /dev/null
     - sudo apt-get install xvfb > /dev/null 2> /dev/null
     - sudo apt-get install xdotool > /dev/null 2> /dev/null
     - sudo apt-get install telnet
