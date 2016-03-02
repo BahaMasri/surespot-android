@@ -14,6 +14,8 @@ dependencies:
   pre:
     #- export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH" ;
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
+    #- echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
+    - android list sdk --all
     - rm -v .google_apis/._.DS_Store ._.DS_Store ;
       git clone https://github.com/zoff99/gcm-client-old.git ;
       mkdir -p surespot/src/main/java/com/ ;
@@ -24,12 +26,10 @@ dependencies:
       pushd ../ ;
       find .google_apis -name '*.jar' -exec rm {} \; ;
       popd ;
-      pwd; ls -al build.gradle ; cat build.gradle ;
-      pwd ; ls -al ../androidkeystore/build.gradle ; cat ../androidkeystore/build.gradle ;
       cd .. ;
       ln -s surespot src ;
       echo ./gradlew tasks ;
-      ./gradlew assembleRelease --info --stacktrace ;
+      echo ./gradlew assembleRelease --info --stacktrace ;
       echo;echo;echo;
       pwd ; ls -al;
       cp -av ./surespot/build/outputs/apk/surespot-release-unsigned.apk ~/ ;
