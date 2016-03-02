@@ -10,6 +10,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import android.app.Application;
+import android.app.Activity;
+import android.view.View;
+import android.graphics.Bitmap;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -19,6 +22,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
+import java.io.FileOutputStream;
 import com.google.android.gcm.GCMRegistrar;
 import com.twofours.surespot.billing.BillingController;
 import com.twofours.surespot.chat.EmojiParser;
