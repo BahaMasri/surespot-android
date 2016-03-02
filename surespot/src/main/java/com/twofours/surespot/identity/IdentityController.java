@@ -1125,7 +1125,7 @@ public class IdentityController {
     private static final boolean IS_JB43 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2;
     private static final boolean IS_JB = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
     private static final boolean IS_KK = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-    private static final boolean IS_M = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+    private static final boolean IS_M = Build.VERSION.SDK_INT >= 23;
 
     public static final String OLD_UNLOCK_ACTION = "android.credentials.UNLOCK";
 
