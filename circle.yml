@@ -121,9 +121,9 @@ test:
     - fb-adb shell am force-stop com.twofours.surespot
 
     - cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##'
-    - scr001=`cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" | head -1 |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##'` ; adb pull "$scr001" $CIRCLE_ARTIFACTS/scr001.png
+    #- scr001=`cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" | head -1 |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##'` ; adb pull "$scr001" $CIRCLE_ARTIFACTS/scr001.png
     - adb shell ls /storage/sdcard/Android/data/com.twofours.surespot/
-    - scr=`cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" | head -1 |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##' | sed -e 's#_1.png##'` ; echo "$scr" ; adb pull "$scr""_1.png" $CIRCLE_ARTIFACTS/scr_1.png ; adb pull "$scr""_2.png" $CIRCLE_ARTIFACTS/scr_2.png ; adb pull "$scr""_3.png" $CIRCLE_ARTIFACTS/scr_3.png ; exit 0
+    - scr=`cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" | head -1 |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##' | sed -e 's#_1.png##'` ; echo "$scr" ; adb pull "${scr}_1.png" $CIRCLE_ARTIFACTS/scr_1.png ; adb pull "${scr}_2.png" $CIRCLE_ARTIFACTS/scr_2.png ; adb pull "$scr_3.png" $CIRCLE_ARTIFACTS/scr_3.png ; exit 0
 
     #- pkill -9 -u ubuntu -f emulator64-arm
 
