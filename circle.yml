@@ -83,7 +83,20 @@ test:
         parallel: true
     - circle-android wait-for-boot
     - xwininfo -root -tree
-    - xdotool getwindowfocus -f windowmove 2900 2060
+    - import -window root $CIRCLE_ARTIFACTS/capture000.png
+    - xdotool search --name "DDMS"
+    - xdotool getwindowfocus -f
+    - xdotool getwindowfocus
+    - xdotool getwindowfocus -f windowmove 290 206
+    - xdotool search --name "DDMS" windowsize 19 10
+    - xdotool search --name "DDMS" windowmove 290 206
+    - xdotool search --name "DDMS" key alt+f4
+    - xdotool search --name "DDMS" key alt+f4
+    - xdotool search --name "DDMS" key alt+f4
+    - xdotool search --name "DDMS" key alt+f4
+    - xdotool search --name "DDMS" key alt+f4
+    - xdotool search --name "DDMS" key alt+f4
+    - xdotool search --name "DDMS" key alt+f4
     - import -window root $CIRCLE_ARTIFACTS/capture001.png
     - sleep 10
     - printf 'event send EV_KEY:KEY_MENU:1 EV_KEY:KEY_MENU:0\nquit\n' | telnet localhost 5554 ; exit 0
