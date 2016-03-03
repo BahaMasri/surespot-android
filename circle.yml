@@ -97,9 +97,9 @@ test:
     - import -window root $CIRCLE_ARTIFACTS/capture001.png
     - sleep 10
     #- printf 'event send EV_KEY:KEY_MENU:1 EV_KEY:KEY_MENU:0\nquit\n' | telnet localhost 5554 ; exit 0
-    - printf 'event send EV_KEY:KEY_MENU:1\nquit\n' | telnet localhost 5554 ; exit 0
-    - printf 'event send EV_KEY:KEY_MENU:0\nquit\n' | telnet localhost 5554 ; exit 0
-    - sleep 20
+    #- printf 'event send EV_KEY:KEY_MENU:1\nquit\n' | telnet localhost 5554 ; exit 0
+    #- printf 'event send EV_KEY:KEY_MENU:0\nquit\n' | telnet localhost 5554 ; exit 0
+    #- sleep 20
     - import -window root $CIRCLE_ARTIFACTS/capture002.png
 
     - fb-adb shell "cat /proc/meminfo" ; exit 0
