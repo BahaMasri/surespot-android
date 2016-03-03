@@ -85,11 +85,15 @@ test:
     - circle-android wait-for-boot
     - xwininfo -root -tree
     - import -window root $CIRCLE_ARTIFACTS/capture000b.png
+
     - xdotool search --name "DDMS" ; exit 0
-    #- for i in `xdotool search --name "DDMS" 2>/dev/null`; do xdotool windowfocus "$i" ; xdotool key "Return" ; xdotool key "alt+F4" ; sleep 1 ; done ; exit 0
+
+    - for i in `xdotool search --name "DDMS" 2>/dev/null`; do xdotool windowfocus "$i" ; xdotool key "Return" ; xdotool key "F2" ; sleep 1 ; done ; exit 0
+
     - i=`xdotool search --name "DDMS" 2>/dev/null | head -1 | tail -1`; xdotool windowfocus "$i" ; xdotool key "Return" ; xdotool key "alt+F4" ; exit 0
     - xdotool search --name "DDMS" ; exit 0
     #- xdotool search --name "DDMS" key "alt+F4"
+
     - import -window root $CIRCLE_ARTIFACTS/capture001.png
     - sleep 10
     #- printf 'event send EV_KEY:KEY_MENU:1 EV_KEY:KEY_MENU:0\nquit\n' | telnet localhost 5554 ; exit 0
