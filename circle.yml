@@ -84,9 +84,9 @@ test:
     - circle-android wait-for-boot
     - xwininfo -root -tree
     - import -window root $CIRCLE_ARTIFACTS/capture000.png
-    - xdotool search --name "DDMS"
-    - for i in `xdotool search --name "DDMS" 2>/dev/null`; do xdotool windowfocus "$i" ; xdotool key "Return" xdotool key "alt+F4" ; sleep 1 ; done ; exit 0
-    - xdotool search --name "DDMS"
+    - xdotool search --name "DDMS" ; exit 0
+    - for i in `xdotool search --name "DDMS" 2>/dev/null`; do xdotool windowfocus "$i" ; xdotool key "Return" ; xdotool key "alt+F4" ; sleep 1 ; done ; exit 0
+    - xdotool search --name "DDMS" ; exit 0
     #- xdotool search --name "DDMS" key "alt+F4"
     - import -window root $CIRCLE_ARTIFACTS/capture001.png
     - sleep 10
