@@ -49,6 +49,7 @@ public class SurespotApplication extends Application
 	public static final int KEEP_ALIVE = 1;
 
 	public static SharedPreferences global_prefs = null;
+	public static int screenshot = 0;
 
 	// ------------------------
 	// ------------------------
