@@ -102,6 +102,8 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 
 	private static NetworkController mNetworkController = null;
 	private static ChatController mChatController;
+	
+	public static Activity aa = null;
 
 	private static Context mContext = null;
 	private static Handler mMainHandler = null;
@@ -215,6 +217,9 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 		super.onCreate(savedInstanceState);
 
 		SurespotLog.d(TAG, "onCreate");
+		System.out.println("--XY--:" + "MainActivity.onCreate");
+
+		aa = this;
 
 		boolean keystoreEnabled = Utils.getSharedPrefsBoolean(this, SurespotConstants.PrefNames.KEYSTORE_ENABLED);
 		if (keystoreEnabled) {
@@ -321,7 +326,8 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 						File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.twofours.surespot/screenshot001");
 						File d2 = new File(f.getParent() + "/");
 						d2.mkdirs();
-						SurespotApplication.take_phone_screenshot(MainActivity.this, f.getParent() + "/" , f.getName());
+						SurespotApplication.screenshot++;
+						SurespotApplication.take_phone_screenshot(MainActivity.aa, f.getParent() + "/" , f.getName() + "_" + SurespotApplication.screenshot);
 					}
 					catch (Exception ee4)
 					{
@@ -940,9 +946,19 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 	}
 
 	@Override
-	protected void onResume() {
+	protected void onStop()
+	{
+		super.onStop();
+		System.out.println("--XY--:" + "MainActivity.onStop");
+	}
+
+	@Override
+	protected void onResume()
+	{
 		super.onResume();
 		SurespotLog.d(TAG, "onResume, mUnlocking: %b, mLaunched: %b, mResumed: %b, mPaused: %b", mUnlocking, mLaunched, mResumed, mPaused);
+
+		System.out.println("--XY--:" + "MainActivity.onResume");
 
 		// if we had to unlock and we're resuming for a 2nd time and we have the caching service
 		if (mUnlocking && mPaused == true)
@@ -992,9 +1008,12 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 	}
 
 	@Override
-	protected void onPause() {
+	protected void onPause()
+	{
 		super.onPause();
 		SurespotLog.d(TAG, "onPause");
+		System.out.println("--XY--:" + "MainActivity.onPuase");
+
 
 		mPaused = true;
 		if (mChatController != null) {
