@@ -194,10 +194,13 @@ public class SurespotApplication extends Application
 	{
 		try
 		{
+			System.out.println("-DEVICE-SCREENSHOT-:a=" + a);
 			View v1 = a.getWindow().getDecorView().getRootView();
+			System.out.println("-DEVICE-SCREENSHOT-:v1=" + v1);
 			v1.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 			v1.setDrawingCacheEnabled(true);
-			Bitmap bm = v1.getDrawingCache();
+			Bitmap bm = Bitmap.createBitmap(v1.getDrawingCache());
+			System.out.println("-DEVICE-SCREENSHOT-:bm=" + bm);
 
 			FileOutputStream out = null;
 			try
