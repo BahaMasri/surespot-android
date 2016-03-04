@@ -94,7 +94,7 @@ test:
     - xdotool search --maxdepth 1 ; exit 0
     - xdotool search --maxdepth 10 ; exit 0
     - search --onlyvisible ; exit 0
-    - xdotool search --class ''|xargs -L1 xdotool getwindowname|grep -v '^$'; xwininfo -root -tree
+    - xdotool search --class ''|xargs -L1 xdotool getwindowname|grep -v '^$'; xwininfo -root -tree -int
 
 
 
@@ -113,7 +113,7 @@ test:
     - xdotool search --maxdepth 1 ; exit 0
     - xdotool search --maxdepth 10 ; exit 0
     - search --onlyvisible ; exit 0    #- xdotool search --name "DDMS" key "alt+F4"
-    - xdotool search --class ''|xargs -L1 xdotool getwindowname|grep -v '^$'; xwininfo -root -tree
+    - xdotool search --class ''|xargs -L1 xdotool getwindowname|grep -v '^$'; xwininfo -root -tree -int
 
     - xdotool search --name "surespot" key "F2"
 
