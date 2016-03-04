@@ -103,6 +103,7 @@ test:
 
     # - i=`xdotool search --name "DDMS" 2>/dev/null | head -1 | tail -1`; xdotool windowfocus "$i" ; xdotool key "Return" ; xdotool key "alt+F4" ; exit 0
 
+    - sleep 210
 
     - xwininfo -root -tree
 
@@ -112,6 +113,7 @@ test:
     - xdotool search --maxdepth 10 ; exit 0
     - search --onlyvisible ; exit 0    #- xdotool search --name "DDMS" key "alt+F4"
 
+    - xdotool search --name "surespot" key "F2"
 
 
     - import -window root $CIRCLE_ARTIFACTS/capture001.png
