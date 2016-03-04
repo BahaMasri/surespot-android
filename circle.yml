@@ -116,6 +116,7 @@ test:
     - xdotool search --class ''|xargs -L1 xdotool getwindowname|grep -v '^$'; xwininfo -root -tree -int
 
     - xdotool search --name "surespot" key "F2"
+    - xdotool search --name "surespot" key "Return"
 
 
     - import -window root $CIRCLE_ARTIFACTS/capture001.png
