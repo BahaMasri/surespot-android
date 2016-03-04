@@ -125,7 +125,7 @@ test:
     #- printf 'event send EV_KEY:KEY_MENU:1\nquit\n' | telnet localhost 5554 ; exit 0
     #- printf 'event send EV_KEY:KEY_MENU:0\nquit\n' | telnet localhost 5554 ; exit 0
 
-    - for i in `xdotool search --maxdepth 1`; do echo $i ; xdotool windowfocus "$i" ; xdotool key --window "$i" "F2" ; sleep 1 ; done ; exit 0
+    #- for i in `xdotool search --maxdepth 1`; do echo $i ; xdotool windowfocus "$i" ; xdotool key --window "$i" "F2" ; sleep 1 ; done ; exit 0
 
     - import -window root $CIRCLE_ARTIFACTS/capture002.png
 
