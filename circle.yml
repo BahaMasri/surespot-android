@@ -150,7 +150,9 @@ test:
     - cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##'
     #- scr001=`cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" | head -1 |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##'` ; adb pull "$scr001" $CIRCLE_ARTIFACTS/scr001.png
     - adb shell ls /storage/sdcard/Android/data/com.twofours.surespot/
-    - scr=`cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" | grep 'screenshot001'| head -1 |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##' | sed -e 's#_1.png##' | head -1` ; echo "XX""$scr""YY" ; scr1="$scr""_1.png" ; scr2="$scr""_2.png" ;  scr3="$scr""_3.png" ; echo "$scr1" ; adb pull "$scr1" $CIRCLE_ARTIFACTS/scr_1.png ; adb pull "$scr2" $CIRCLE_ARTIFACTS/scr_2.png ; adb pull "$scr3" $CIRCLE_ARTIFACTS/scr_3.png ; exit 0
+    - cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##' | grep '.png' | sed -e 's#_1.png##'
+    - cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##' | grep '.png' | sed -e 's#_1.png##' | head -1
+    - scr=`cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##' | grep '.png' | sed -e 's#_1.png##' | head -1` ; echo "--line-1-" ; echo "XX""$scr""YY" ; echo "--line-2-" ; scr1="$scr""_1.png" ; scr2="$scr""_2.png" ;  scr3="$scr""_3.png" ; echo "$scr1" ; adb pull "$scr1" $CIRCLE_ARTIFACTS/scr_1.png ; adb pull "$scr2" $CIRCLE_ARTIFACTS/scr_2.png ; adb pull "$scr3" $CIRCLE_ARTIFACTS/scr_3.png ; exit 0
 
     #- pkill -9 -u ubuntu -f emulator64-arm
 
