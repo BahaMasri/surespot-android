@@ -19,5 +19,6 @@ android {
 
 dependencies {
     compile project(':surespotcommon')
-    compile files('libs/disklrucache-2.0.2.jar')
+    // compile files('libs/disklrucache-2.0.2.jar')
+    compile "com.jakewharton:disklrucache:2.0.2"
 }
