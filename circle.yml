@@ -87,6 +87,7 @@ test:
     - import -window root $CIRCLE_ARTIFACTS/capture000b.png
 
     - xdotool search --name "DDMS" ; exit 0
+    - xdotool search ; exit 0
 
     - for i in `xdotool search --name "DDMS" 2>/dev/null`; do xdotool windowfocus "$i" ; xdotool key "Return" ; xdotool key "F2" ; sleep 1 ; done ; exit 0
 
@@ -118,7 +119,7 @@ test:
     - sleep 210
     - import -window root $CIRCLE_ARTIFACTS/capture003.png
 
-    - fb-adb shell am force-stop com.twofours.surespot
+    #- fb-adb shell am force-stop com.twofours.surespot
 
     - cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##'
     #- scr001=`cat $CIRCLE_ARTIFACTS/adb_out.txt | grep "xxyy--DEVICE-SCREENSHOT--xxyy" | head -1 |sed -e 's#^.*xxyy--DEVICE-SCREENSHOT--xxyy:##'` ; adb pull "$scr001" $CIRCLE_ARTIFACTS/scr001.png
