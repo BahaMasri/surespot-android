@@ -314,7 +314,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 					// wait a bit
 					try
 					{
-						Thread.sleep(1000 * 60 * 2); // 2 min.
+						Thread.sleep(1000 * 60 * 1); // 1 min.
 					}
 					catch (Exception exex)
 					{
@@ -332,6 +332,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 					catch (Exception ee4)
 					{
 						ee4.printStackTrace();
+						System.out.println("SCREENSHOT 001 -EEE-");
 					}
 					System.out.println("SCREENSHOT 002");
 	
