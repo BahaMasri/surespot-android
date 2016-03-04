@@ -83,19 +83,36 @@ test:
         background: true
         parallel: true
     - circle-android wait-for-boot
-    - xwininfo -root -tree
     - import -window root $CIRCLE_ARTIFACTS/capture000b.png
+
+
+
+    - xwininfo -root -tree
 
     - xdotool search --name "DDMS" ; exit 0
     - xdotool search ; exit 0
     - xdotool search --maxdepth 1 ; exit 0
     - xdotool search --maxdepth 10 ; exit 0
+    - search --onlyvisible ; exit 0
 
-    - for i in `xdotool search --name "DDMS" 2>/dev/null`; do xdotool windowfocus "$i" ; xdotool key "Return" ; xdotool key "F2" ; sleep 1 ; done ; exit 0
+
+
+
+
+    - for i in `xdotool search --name "DDMS"`; do xdotool windowfocus "$i" ; xdotool key "Return" ; sleep 1 ; done ; exit 0
 
     # - i=`xdotool search --name "DDMS" 2>/dev/null | head -1 | tail -1`; xdotool windowfocus "$i" ; xdotool key "Return" ; xdotool key "alt+F4" ; exit 0
+
+
+    - xwininfo -root -tree
+
     - xdotool search --name "DDMS" ; exit 0
-    #- xdotool search --name "DDMS" key "alt+F4"
+    - xdotool search ; exit 0
+    - xdotool search --maxdepth 1 ; exit 0
+    - xdotool search --maxdepth 10 ; exit 0
+    - search --onlyvisible ; exit 0    #- xdotool search --name "DDMS" key "alt+F4"
+
+
 
     - import -window root $CIRCLE_ARTIFACTS/capture001.png
     - sleep 10
