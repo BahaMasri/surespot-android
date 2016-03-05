@@ -64,11 +64,17 @@ test:
     - echo 'mtools_skip_check=1' > ~/.mtoolsrc
     - android list targets
 #
-    - if [ "$EMU_" == "surespot23" ]; then echo "no" | android create avd -n surespot23 -f -t android-21 --abi default/armeabi-v7a --skin "WXGA800-7in" ; fi
+    - if [ "$EMU_" == "surespot23" ]; then echo "no" | android create avd -n surespot23 -f -t android-23 --abi default/armeabi-v7a --skin "WXGA800-7in" ; fi
     - if [ "$EMU_" == "surespot23" ]; then cat ~/.android/avd/surespot23.avd/config.ini ; fi
     - if [ "$EMU_" == "surespot23" ]; then echo "more RAM" ; sed -i -e 's#.*hw.ramSize=.*#hw.ramSize=1014MB#' ~/.android/avd/surespot23.avd/config.ini ; cat ~/.android/avd/surespot23.avd/config.ini ; fi
     - if [ "$EMU_" == "surespot23" ]; then echo "more HEAP" ; sed -i -e 's#.*vm.heapSize=.*#vm.heapSize=64MB#' ~/.android/avd/surespot23.avd/config.ini ; cat ~/.android/avd/surespot23.avd/config.ini ; fi
     - if [ "$EMU_" == "surespot23" ]; then cat ~/.android/avd/surespot23.avd/config.ini ; fi
+#
+    - if [ "$EMU_" == "surespot21" ]; then echo "no" | android create avd -n surespot21 -f -t android-21 --abi default/armeabi-v7a --skin "WXGA800-7in" ; fi
+    - if [ "$EMU_" == "surespot21" ]; then cat ~/.android/avd/surespot21.avd/config.ini ; fi
+    - if [ "$EMU_" == "surespot21" ]; then echo "more RAM" ; sed -i -e 's#.*hw.ramSize=.*#hw.ramSize=1014MB#' ~/.android/avd/surespot21.avd/config.ini ; cat ~/.android/avd/surespot21.avd/config.ini ; fi
+    - if [ "$EMU_" == "surespot21" ]; then echo "more HEAP" ; sed -i -e 's#.*vm.heapSize=.*#vm.heapSize=64MB#' ~/.android/avd/surespot21.avd/config.ini ; cat ~/.android/avd/surespot21.avd/config.ini ; fi
+    - if [ "$EMU_" == "surespot21" ]; then cat ~/.android/avd/surespot21.avd/config.ini ; fi
 #
     - if [ "$EMU_" == "surespot10" ]; then echo "no" | android create avd -n surespot10 -f -t android-10 --abi default/armeabi --skin "WVGA854" ; fi
     - if [ "$EMU_" == "surespot10" ]; then cat ~/.android/avd/surespot10.avd/config.ini ; fi
