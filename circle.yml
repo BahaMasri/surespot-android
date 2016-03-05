@@ -149,6 +149,10 @@ test:
     - fb-adb shell "free" ; exit 0
     - fb-adb shell "sysctl vm.swappiness" ; exit 0
 
+    - adb shell ls -al / ; exit 0
+    - adb shell ls -al /storage/ ; exit 0
+    - adb shell ls -al /sdcard/ ; exit 0
+
     - adb install $CIRCLE_ARTIFACTS/surespot_circleci_$CIRCLE_SHA1.apk
 
     - adb logcat -v time > $CIRCLE_ARTIFACTS/adb_out.txt 2>&1 :
