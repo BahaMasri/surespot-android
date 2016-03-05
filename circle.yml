@@ -3,8 +3,10 @@ machine:
     Europe/Vienna
   environment:
     EMU_: "surespot23"
+    YEMU_: "surespot21"
     XEMU_: "surespot10"
     sdpath: "/storage/sdcard"
+    Ysdpath: "/storage/sdcard"
     Xsdpath: "/mnt/sdcard"
     ANDROID_HOME: /usr/local/android-sdk-linux
     ANDROID_SDK: /usr/local/android-sdk-linux/
@@ -24,7 +26,7 @@ dependencies:
     - sudo apt-get install x11-utils > /dev/null 2> /dev/null
     - sudo apt-get install xvkbd > /dev/null 2> /dev/null
 
-    - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
+    - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0 # needed
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.1
     - echo y | android update sdk --no-ui --all --filter android-23
     - echo y | android update sdk --no-ui --all --filter tools
@@ -72,8 +74,7 @@ test:
     - echo 'mtools_skip_check=1' > ~/.mtoolsrc
     - android list targets
 #
-    #- if [ "$EMU_" == "surespot23" ]; then echo "no" | android create avd -n surespot23 -f -t android-23 --abi default/armeabi-v7a --skin "WXGA800-7in" ; fi
-    - if [ "$EMU_" == "surespot23" ]; then echo "no" | android create avd -n surespot23 -f -t android-23 --abi default/armeabi-v7a ; fi
+    - if [ "$EMU_" == "surespot23" ]; then echo "no" | android create avd -n surespot23 -f -t android-23 --abi default/armeabi-v7a --skin "WXGA800-7in" ; fi
     - if [ "$EMU_" == "surespot23" ]; then cat ~/.android/avd/surespot23.avd/config.ini ; fi
     #- if [ "$EMU_" == "surespot23" ]; then echo "more RAM" ; sed -i -e 's#.*hw.ramSize=.*#hw.ramSize=1014MB#' ~/.android/avd/surespot23.avd/config.ini ; cat ~/.android/avd/surespot23.avd/config.ini ; fi
     #- if [ "$EMU_" == "surespot23" ]; then echo "more HEAP" ; sed -i -e 's#.*vm.heapSize=.*#vm.heapSize=64MB#' ~/.android/avd/surespot23.avd/config.ini ; cat ~/.android/avd/surespot23.avd/config.ini ; fi
