@@ -41,7 +41,7 @@ dependencies:
       cd .. ;
       ln -s surespot src ;
       echo ./gradlew tasks ;
-      ./gradlew assembleRelease --info --stacktrace ;
+      ./gradlew assembleRelease --info --stacktrace --parallel;
       echo;echo;echo;
       pwd ; ls -al;
       cp -av ./surespot/build/outputs/apk/surespot-release-unsigned.apk ~/ ;
