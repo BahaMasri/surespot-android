@@ -158,6 +158,7 @@ test:
 
     - sleep 210
     - sleep 210
+    - sleep 210
 
     - import -window root $CIRCLE_ARTIFACTS/capture003.png
 
