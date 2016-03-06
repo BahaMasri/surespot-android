@@ -2,11 +2,11 @@ machine:
   timezone:
     Europe/Vienna
   environment:
-    EMU_: "surespot23"
-    YEMU_: "surespot21"
+    YEMU_: "surespot23"
+    EMU_: "surespot21"
     XEMU_: "surespot10"
-    sdpath: "/sdcard"
-    Ysdpath: "/storage/sdcard"
+    Ysdpath: "/sdcard"
+    sdpath: "/storage/sdcard"
     Xsdpath: "/mnt/sdcard"
     ANDROID_HOME: /usr/local/android-sdk-linux
     ANDROID_SDK: /usr/local/android-sdk-linux/
