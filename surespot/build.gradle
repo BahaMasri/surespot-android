@@ -46,7 +46,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.zoff99:httpclientandroidlib:-SNAPSHOT'
+    compile 'com.github.zoff99:httpclientandroidlib:adb3f3bb70'
     // compile project(':androidasynchttp')
     compile project(':surespotcommon')
     compile project(':sSLWebSocket')
