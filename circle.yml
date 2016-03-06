@@ -44,7 +44,7 @@ dependencies:
       sed -i -e 's#DEBUG_CI = 0;#DEBUG_CI = 1;#' src/main/java/com/twofours/surespot/SurespotApplication.java ;
       cat src/main/java/com/twofours/surespot/SurespotApplication.java | grep 'DEBUG_CI =' ;
       mkdir -p ../surespotcommon/src/main/res/raw ;
-      printf 'ssl_strict=true\nbaseUrl=http://susp.crazy5.org:80\n' > ../surespotcommon/src/main/res/raw/configuration.properties ;
+      printf 'ssl_strict=true\nbaseUrl=https://susp.crazy5.org:443\n' > ../surespotcommon/src/main/res/raw/configuration.properties ;
       pushd ../ ;
       find .google_apis -name '*.jar' -exec rm {} \; ;
       popd ;
