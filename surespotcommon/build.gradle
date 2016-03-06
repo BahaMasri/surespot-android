@@ -22,29 +22,6 @@ android {
 //}
 
 
-
-// ----------------------------
-// ----------------------------
-buildscript {
-  repositories {
-    jcenter()
-  }
-
-  dependencies {
-    classpath 'com.palominolabs.gradle.task:gradle-git-clone-task:0.0.2'
-  }
-}
-// ----------------------------
-// ----------------------------
-
-
-
-task cloneRepo1(type: com.palominolabs.gradle.task.git.clone.GitCloneTask) {
-  dir = file("$buildDir/some-repo")
-  uri = 'git@github.com:zoff99/httpclientandroidlib.git'
-  treeish = '45413b2b3b3a7f4620a4bbce126886412bca72e7' // a commit hash, or tag name, or branch name (with remote prefix, like 'origin/master')
-}
-
 dependencies {
     compile project(':httpclientandroidlib')
     // compile 'com.github.zoff99:httpclientandroidlib:adb3f3bb70'
