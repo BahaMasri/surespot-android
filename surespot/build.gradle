@@ -41,13 +41,13 @@ android {
     }
 }
 
-repositories {
-    maven { url "https://jitpack.io" }
-}
+//repositories {
+//    maven { url "https://jitpack.io" }
+//}
 
 dependencies {
-    compile 'com.github.zoff99:httpclientandroidlib:adb3f3bb70'
-    // compile project(':androidasynchttp')
+    // compile 'com.github.zoff99:httpclientandroidlib:adb3f3bb70'
+    compile project(':androidasynchttp')
     compile project(':surespotcommon')
     compile project(':sSLWebSocket')
     compile project(':viewpagerindicator')
