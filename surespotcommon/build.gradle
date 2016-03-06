@@ -23,7 +23,7 @@ repositories {
 
 dependencies {
     // compile project(':httpclientandroidlib')
-    compile 'com.github.zoff99:httpclientandroidlib:adb3f3bb7004f2b7f86f1b4875a7332ebd6a8851'
+    compile 'com.github.zoff99:httpclientandroidlib:-SNAPSHOT'
     compile project(':actionbarsherlock')
     compile 'com.android.support:support-v4:19.0.1'
 }
