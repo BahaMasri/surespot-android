@@ -1,5 +1,5 @@
 include ':imageViewTouch'
-// include ':httpclientandroidlib'
+include ':httpclientandroidlib'
 include ':surespotcommon'
 include ':sSLWebSocket'
 include ':actionbarsherlock'
