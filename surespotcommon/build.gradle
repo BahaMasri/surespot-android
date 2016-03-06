@@ -22,17 +22,22 @@ android {
 //}
 
 
-// ----------------------------
 
-//buildscript {
-//  repositories {
-//    jcenter()
-//  }
+// ----------------------------
+// ----------------------------
+buildscript {
+  repositories {
+    jcenter()
+  }
 
   dependencies {
     classpath 'com.palominolabs.gradle.task:gradle-git-clone-task:0.0.2'
   }
 }
+// ----------------------------
+// ----------------------------
+
+
 
 task cloneRepo1(type: com.palominolabs.gradle.task.git.clone.GitCloneTask) {
   dir = file("$buildDir/some-repo")
