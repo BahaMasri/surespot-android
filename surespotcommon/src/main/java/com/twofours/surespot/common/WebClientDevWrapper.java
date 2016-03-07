@@ -8,12 +8,12 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import android.net.SSLCertificateSocketFactory;
-import ch.boye.httpclientandroidlib.conn.ClientConnectionManager;
-import ch.boye.httpclientandroidlib.conn.scheme.PlainSocketFactory;
-import ch.boye.httpclientandroidlib.conn.scheme.Scheme;
-import ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry;
-import ch.boye.httpclientandroidlib.conn.ssl.SSLSocketFactory;
-import ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+import cz.msebera.android.httpclient.conn.ClientConnectionManager;
+import cz.msebera.android.httpclient.conn.scheme.PlainSocketFactory;
+import cz.msebera.android.httpclient.conn.scheme.Scheme;
+import cz.msebera.android.httpclient.conn.scheme.SchemeRegistry;
+import cz.msebera.android.httpclient.conn.ssl.SSLSocketFactory;
+import cz.msebera.android.httpclient.impl.client.AbstractHttpClient;
 
 public class WebClientDevWrapper {
 	private static final String TAG = "WebClientDevWrapper";
