@@ -26,7 +26,7 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
-import cz.msebera.android.httpclient.androidextra.Base64;
+import ch.boye.httpclientandroidlib.androidextra.Base64;
 
 import com.twofours.surespot.common.SurespotLog;
 
