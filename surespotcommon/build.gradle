@@ -17,14 +17,10 @@ android {
 //    }
 }
 
-//repositories {
-//    maven { url "https://jitpack.io" }
-//}
-
 
 dependencies {
-    compile project(':httpclientandroidlib')
-    // compile 'com.github.zoff99:httpclientandroidlib:adb3f3bb70'
+    compile 'cz.msebera.android:httpclient:4.4.1.1'
+    // compile project(':httpclientandroidlib')
     compile project(':actionbarsherlock')
     compile 'com.android.support:support-v4:19.0.1'
 }
