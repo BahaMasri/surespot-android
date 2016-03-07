@@ -1,6 +1,6 @@
 package com.twofours.surespot.network;
 
-import ch.boye.httpclientandroidlib.cookie.Cookie;
+import cz.msebera.android.httpclient.cookie.Cookie;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 

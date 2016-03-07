@@ -54,7 +54,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import ch.boye.httpclientandroidlib.client.HttpResponseException;
+import cz.msebera.android.httpclient.client.HttpResponseException;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;

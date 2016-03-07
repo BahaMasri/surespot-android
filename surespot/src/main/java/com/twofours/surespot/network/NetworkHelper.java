@@ -2,7 +2,7 @@ package com.twofours.surespot.network;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import ch.boye.httpclientandroidlib.cookie.Cookie;
+import cz.msebera.android.httpclient.cookie.Cookie;
 
 import com.twofours.surespot.chat.ChatUtils;
 import com.twofours.surespot.common.SurespotLog;

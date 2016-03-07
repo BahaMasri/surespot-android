@@ -17,7 +17,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat.Builder;
-import ch.boye.httpclientandroidlib.cookie.Cookie;
+import cz.msebera.android.httpclient.cookie.Cookie;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

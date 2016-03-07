@@ -38,8 +38,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 
-import ch.boye.httpclientandroidlib.client.HttpResponseException;
-import ch.boye.httpclientandroidlib.cookie.Cookie;
+import cz.msebera.android.httpclient.client.HttpResponseException;
+import cz.msebera.android.httpclient.cookie.Cookie;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
