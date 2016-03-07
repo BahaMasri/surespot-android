@@ -41,18 +41,16 @@ android {
     }
 }
 
-//repositories {
-//    maven { url "https://jitpack.io" }
-//}
-
 dependencies {
-    // compile 'com.github.zoff99:httpclientandroidlib:adb3f3bb70'
-    compile project(':androidasynchttp')
+    compile 'cz.msebera.android:httpclient:4.4.1.1'
+    compile 'com.loopj.android:android-async-http:1.4.9'
+    // compile project(':androidasynchttp')
+    compile project(':sshttp')
     compile project(':surespotcommon')
     compile project(':sSLWebSocket')
     compile project(':viewpagerindicator')
     compile project(':imageViewTouch')
-    compile project(':httpclientandroidlib')
+    // compile project(':httpclientandroidlib')
     compile project(':androidkeystore')
     compile 'com.android.support:support-v4:19.0.1'
 
