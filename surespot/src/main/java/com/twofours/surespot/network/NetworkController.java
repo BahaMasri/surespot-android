@@ -21,6 +21,8 @@ import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.HttpResponseInterceptor;
 import cz.msebera.android.httpclient.HttpStatus;
 import cz.msebera.android.httpclient.client.CookieStore;
+import cz.msebera.android.httpclient.client.CloseableHttpClient;
+import cz.msebera.android.httpclient.client.HttpClients;
 import cz.msebera.android.httpclient.client.cache.HttpCacheEntry;
 import cz.msebera.android.httpclient.client.methods.HttpGet;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
@@ -43,7 +45,7 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.twofours.surespot.R;
 import com.twofours.surespot.SurespotApplication;
-import com.twofours.surespot.SurespotCachingHttpClient;
+//Z//import com.twofours.surespot.SurespotCachingHttpClient;
 import com.twofours.surespot.common.SurespotConfiguration;
 import com.twofours.surespot.common.SurespotConstants;
 import com.twofours.surespot.common.SurespotLog;
@@ -58,7 +60,8 @@ public class NetworkController {
 	private AsyncHttpClient mClient;
 	private CookieStore mCookieStore;
 	private SyncHttpClient mSyncClient;
-	private SurespotCachingHttpClient mCachingHttpClient;
+	//Z// private SurespotCachingHttpClient mCachingHttpClient;
+	private CloseableHttpClient mCachingHttpClient;
 
 	public void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 		mClient.get(mBaseUrl + url, params, responseHandler);
@@ -109,7 +112,10 @@ public class NetworkController {
 		}
 
 		try {
-			mCachingHttpClient = SurespotCachingHttpClient.createSurespotDiskCachingHttpClient(context);
+			//Z// mCachingHttpClient = SurespotCachingHttpClient.createSurespotDiskCachingHttpClient(context);
+			// mCachingHttpClient = HttpClients.custom().build();
+			CloseableHttpClient mCachingHttpClient = HttpClients.createDefault();
+
 			mClient = new AsyncHttpClient(mContext);
 			mSyncClient = new SyncHttpClient(mContext) {
 
@@ -705,7 +711,7 @@ public class NetworkController {
 	}
 
 	public void purgeCacheUrl(String url) {
-		mCachingHttpClient.removeEntry(mBaseUrl + url);
+		//Z// mCachingHttpClient.removeEntry(mBaseUrl + url);
 	}
 
 	public void deleteMessage(String username, Integer id, AsyncHttpResponseHandler responseHandler) {
@@ -759,16 +765,17 @@ public class NetworkController {
 	}
 
 	public void addCacheEntry(String key, HttpCacheEntry httpCacheEntry) {
-		mCachingHttpClient.addCacheEntry(key, httpCacheEntry);
+		//Z// mCachingHttpClient.addCacheEntry(key, httpCacheEntry);
 
 	}
 
 	public HttpCacheEntry getCacheEntry(String key) {
-		return mCachingHttpClient.getCacheEntry(key);
+		//Z// return mCachingHttpClient.getCacheEntry(key);
+		return null;
 	}
 
 	public void removeCacheEntry(String key) {
-		mCachingHttpClient.removeEntry(key);
+		//Z// mCachingHttpClient.removeEntry(key);
 
 	}
 
