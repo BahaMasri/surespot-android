@@ -1,7 +1,7 @@
 package com.twofours.surespot.common;
 
 import android.util.Log;
-import ch.boye.httpclientandroidlib.client.HttpResponseException;
+import cz.msebera.android.httpclient.client.HttpResponseException;
 
 public class SurespotLog {
 	private static boolean mLogging = SurespotConstants.LOGGING;
