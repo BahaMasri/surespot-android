@@ -44,7 +44,7 @@ android {
 dependencies {
     compile 'cz.msebera.android:httpclient:4.4.1.1'
     compile 'com.loopj.android:android-async-http:1.4.9'
-    // compile project(':androidasynchttp')
+    compile project(':androidasynchttp')
     compile project(':sshttp')
     compile project(':surespotcommon')
     compile project(':sSLWebSocket')
