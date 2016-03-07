@@ -28,7 +28,7 @@ import cz.msebera.android.httpclient.client.methods.HttpGet;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
 import cz.msebera.android.httpclient.cookie.Cookie;
 import cz.msebera.android.httpclient.entity.StringEntity;
-import cz.msebera.android.httpclient.entity.mime.MultipartEntity;
+import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder;
 import cz.msebera.android.httpclient.entity.mime.content.InputStreamBody;
 import cz.msebera.android.httpclient.impl.client.BasicCookieStore;
 import cz.msebera.android.httpclient.message.BasicHeader;
@@ -577,7 +577,8 @@ public class NetworkController {
 
 				InputStreamBody isBody = new InputStreamBody(fileInputStream, mimeType, id);
 
-				MultipartEntity reqEntity = new MultipartEntity();
+				//Z//MultipartEntity reqEntity = new MultipartEntity();
+				HttpEntity reqEntity = MultipartEntityBuilder.create().build();
 				reqEntity.addPart("image", isBody);
 				httppost.setEntity(reqEntity);
 				HttpResponse response = null;
@@ -628,7 +629,8 @@ public class NetworkController {
 				HttpPost httppost = new HttpPost(mBaseUrl + "/images/" + user + "/" + ourVersion);
 
 				InputStreamBody isBody = new InputStreamBody(fileInputStream, SurespotConstants.MimeTypes.IMAGE, iv);
-				MultipartEntity reqEntity = new MultipartEntity();
+				//Z// MultipartEntity reqEntity = new MultipartEntity();
+				HttpEntity reqEntity = MultipartEntityBuilder.create().build();
 				reqEntity.addPart("image", isBody);
 				httppost.setEntity(reqEntity);
 				HttpResponse response = null;
