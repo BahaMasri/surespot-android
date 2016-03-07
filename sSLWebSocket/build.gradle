@@ -18,5 +18,6 @@ android {
 }
 
 dependencies {
+	compile 'cz.msebera.android:httpclient:4.4.1.1'
     compile project(':surespotcommon')
 }

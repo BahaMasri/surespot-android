@@ -33,13 +33,13 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import ch.boye.httpclientandroidlib.HttpEntity;
-import ch.boye.httpclientandroidlib.HttpResponse;
-import ch.boye.httpclientandroidlib.HttpStatus;
-import ch.boye.httpclientandroidlib.client.HttpClient;
-import ch.boye.httpclientandroidlib.client.methods.HttpPost;
-import ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
-import ch.boye.httpclientandroidlib.impl.client.DefaultHttpClient;
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.HttpStatus;
+import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.methods.HttpPost;
+import cz.msebera.android.httpclient.impl.client.AbstractHttpClient;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
 import com.twofours.surespot.common.SurespotLog;
 import com.twofours.surespot.common.Utils;
