@@ -36,8 +36,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 
-import ch.boye.httpclientandroidlib.androidextra.Base64
-// import java.io.UnsupportedEncodingException;
+import ch.boye.httpclientandroidlib.androidextra.Base64;
 
 import com.twofours.surespot.SurespotApplication;
 import com.twofours.surespot.common.FileUtils;
