@@ -50,7 +50,8 @@ dependencies {
     compile project(':httpclientandroidlib')
     compile project(':androidkeystore')
     // compile 'com.android.support:support-v4:19.0.1'
-    compile 'com.android.support:support-v4:23.+'
+    compile 'com.android.support:support-v4:22.2.0'
+    // compile 'com.android.support:support-v4:23.+'
 
     compile "com.madgag.spongycastle:prov:1.54.0.0"
     compile "com.madgag.spongycastle:core:1.54.0.0"
