@@ -31,6 +31,7 @@ import com.twofours.surespot.common.SurespotConfiguration;
 import com.twofours.surespot.common.SurespotConstants;
 import com.twofours.surespot.common.SurespotLog;
 import com.twofours.surespot.common.Utils;
+import com.twofours.surespot.network.IAsyncCallback;
 import com.twofours.surespot.services.CredentialCachingService;
 
 public class SurespotApplication extends Application
@@ -139,6 +140,20 @@ public class SurespotApplication extends Application
 		}
 		catch (Exception e) {
 			SurespotLog.w(TAG, "onCreate", e);
+		}
+
+		boolean cacheCleared = Utils.getSharedPrefsBoolean(this, "cacheCleared65");
+
+		if (!cacheCleared) {
+
+			//wipe the cache
+			StateController.clearCache(this, new IAsyncCallback<Void>() {
+				@Override
+				public void handleResponse(Void result) {
+					SurespotLog.d(TAG, "cache cleared");
+					Utils.putSharedPrefsBoolean(SurespotApplication.this, "cacheCleared65", true);
+				}
+			});
 		}
 
 		// NetworkController.unregister(this, regId);
