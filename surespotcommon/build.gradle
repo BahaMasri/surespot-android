@@ -21,5 +21,6 @@ dependencies {
     compile project(':httpclientandroidlib')
     compile project(':actionbarsherlock')
     // compile 'com.android.support:support-v4:19.0.1'
-    compile 'com.android.support:support-v4:23.+'
+    // compile 'com.android.support:support-v4:23.+'
+    compile 'com.android.support:support-v4:22.2.0'
 }
