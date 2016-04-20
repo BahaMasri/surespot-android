@@ -294,7 +294,11 @@ public class StateController {
 				String localImageDir = FileUtils.getImageUploadDir(context);
 				FileUtils.deleteRecursive(new File(localImageDir));
 
-				SurespotApplication.getCachingService().clear();
+				CredentialCachingService ccs = SurespotApplication.getCachingService();
+				if (ccs != null)
+				{
+					ccs.clear();
+				}
 
 				return null;
 			}
@@ -330,7 +334,7 @@ public class StateController {
 				for (SharedSecretKey key : secrets.keySet()) {
 					// save only secrets for this user
 					if (key.getOurUsername().equals(username)) {
-						String skey = key.getOurUsername() + ":" + key.getOurVersion() + ":" + key.getTheirUsername() + ":" + key.getTheirVersion();
+						String skey = key.getOurUsername() + ":" + key.getOurVersion() + ":" + key.getTheirUsername() + ":" + key.getTheirVersion() + ":" + (key.getHashed() ? "1" : "0");
 						byte[] value =  secrets.get(key);
 						if (value != null) {
 							map.put(skey, value);
@@ -403,7 +407,7 @@ public class StateController {
 		for (String key : loadedMap.keySet()) {
 			String[] split = key.split(":");
 
-			SharedSecretKey ssk = new SharedSecretKey(new VersionMap(split[0], split[1]), new VersionMap(split[2], split[3]));
+			SharedSecretKey ssk = new SharedSecretKey(new VersionMap(split[0], split[1]), new VersionMap(split[2], split[3]), (Integer.parseInt( split[4]) == 0 ? false : true));
 			byte[] value = loadedMap.get(key);
 			if (value != null) {
 				map.put(ssk, value);
