@@ -248,7 +248,8 @@ public class ChatAdapter extends BaseAdapter {
             if (currentViewHolder.type != type) {
                 SurespotLog.v(TAG, "types do not match, creating new view for the row");
                 convertView = null;
-            } else {
+            }
+            else {
                 chatMessageViewHolder = currentViewHolder;
             }
         }
@@ -306,27 +307,32 @@ public class ChatAdapter extends BaseAdapter {
         if (item.getErrorStatus() > 0) {
             SurespotLog.v(TAG, "item has error: %s", item);
             UIUtils.setMessageErrorText(mContext, chatMessageViewHolder.tvTime, item);
-        } else {
+        }
+        else {
             if (item.getId() == null) {
                 // if it's a text message or we're sending
                 if (item.getMimeType().equals(SurespotConstants.MimeTypes.TEXT) || !item.isAlreadySent()) {
                     chatMessageViewHolder.tvTime.setText(R.string.message_sending);
                     SurespotLog.v(TAG, "getView, item.getId() is null, a text message or not loaded from disk, setting status text to sending...");
-                } else {
+                }
+                else {
                     if (item.getMimeType().equals(SurespotConstants.MimeTypes.IMAGE) || item.getMimeType().equals(SurespotConstants.MimeTypes.M4A)) {
                         chatMessageViewHolder.tvTime.setText(R.string.message_loading_and_decrypting);
                         SurespotLog.v(TAG, "getView, item.getId() is null, an image or voice message, setting status text to loading and decrypting...");
                     }
                 }
-            } else {
+            }
+            else {
                 if (item.getPlainData() == null && item.getPlainBinaryData() == null) {
                     chatMessageViewHolder.tvTime.setText(R.string.message_loading_and_decrypting);
-                } else {
+                }
+                else {
 
                     if (item.getDateTime() != null) {
                         chatMessageViewHolder.tvTime.setText(DateFormat.getDateFormat(mContext).format(item.getDateTime()) + " "
                                 + DateFormat.getTimeFormat(mContext).format(item.getDateTime()));
-                    } else {
+                    }
+                    else {
                         chatMessageViewHolder.tvTime.setText("");
                         SurespotLog.v(TAG, "getView, item: %s", item);
                     }
@@ -334,9 +340,8 @@ public class ChatAdapter extends BaseAdapter {
             }
         }
 
-        if (item.isHashed()) {
-            chatMessageViewHolder.tvText.setText(R.string.decrypt_update);
 
+        if (item.getMimeType().equals(SurespotConstants.MimeTypes.TEXT)) {
             chatMessageViewHolder.tvText.setVisibility(View.VISIBLE);
 
             chatMessageViewHolder.voiceView.setVisibility(View.GONE);
@@ -346,80 +351,72 @@ public class ChatAdapter extends BaseAdapter {
             chatMessageViewHolder.imageView.setImageBitmap(null);
             chatMessageViewHolder.ivNotShareable.setVisibility(View.GONE);
             chatMessageViewHolder.ivShareable.setVisibility(View.GONE);
-        } else {
-            if (item.getMimeType().equals(SurespotConstants.MimeTypes.TEXT)) {
-                chatMessageViewHolder.tvText.setVisibility(View.VISIBLE);
 
+            if (item.getPlainData() != null) {
+                chatMessageViewHolder.tvText.clearAnimation();
+                chatMessageViewHolder.tvText.setText(item.getPlainData());
+            }
+            else {
+                chatMessageViewHolder.tvText.setText("");
+                mMessageDecryptor.decrypt(chatMessageViewHolder.tvText, item);
+            }
+
+        }
+        else {
+            if (item.getMimeType().equals(SurespotConstants.MimeTypes.IMAGE)) {
+                chatMessageViewHolder.imageView.setVisibility(View.VISIBLE);
                 chatMessageViewHolder.voiceView.setVisibility(View.GONE);
                 chatMessageViewHolder.messageSize.setVisibility(View.GONE);
-                chatMessageViewHolder.imageView.setVisibility(View.GONE);
-                chatMessageViewHolder.imageView.clearAnimation();
-                chatMessageViewHolder.imageView.setImageBitmap(null);
-                chatMessageViewHolder.ivNotShareable.setVisibility(View.GONE);
-                chatMessageViewHolder.ivShareable.setVisibility(View.GONE);
+                chatMessageViewHolder.tvText.clearAnimation();
+                chatMessageViewHolder.tvText.setVisibility(View.GONE);
+                chatMessageViewHolder.tvText.setText("");
+                if (!TextUtils.isEmpty(item.getData())) {
+                    mMessageImageDownloader.download(chatMessageViewHolder.imageView, item);
+                }
 
-                if (item.getPlainData() != null) {
-                    chatMessageViewHolder.tvText.clearAnimation();
-                    chatMessageViewHolder.tvText.setText(item.getPlainData());
+                if (item.isShareable()) {
+
+                    chatMessageViewHolder.ivNotShareable.setVisibility(View.GONE);
+                    chatMessageViewHolder.ivShareable.setVisibility(View.VISIBLE);
                 }
                 else {
-                    chatMessageViewHolder.tvText.setText("");
-                    mMessageDecryptor.decrypt(chatMessageViewHolder.tvText, item);
+                    chatMessageViewHolder.ivNotShareable.setVisibility(View.VISIBLE);
+                    chatMessageViewHolder.ivShareable.setVisibility(View.GONE);
                 }
-
-            } else {
-                if (item.getMimeType().equals(SurespotConstants.MimeTypes.IMAGE)) {
-                    chatMessageViewHolder.imageView.setVisibility(View.VISIBLE);
-                    chatMessageViewHolder.voiceView.setVisibility(View.GONE);
+            }
+            else {
+                if (item.getMimeType().equals(SurespotConstants.MimeTypes.M4A)) {
+                    chatMessageViewHolder.imageView.setVisibility(View.GONE);
+                    chatMessageViewHolder.voiceView.setVisibility(View.VISIBLE);
                     chatMessageViewHolder.messageSize.setVisibility(View.GONE);
+
+                    if (type == TYPE_US) {
+                        chatMessageViewHolder.voicePlayed.setVisibility(View.VISIBLE);
+                    }
+                    // //if it's ours we don't care if it's been played or not
+                    else {
+
+                        if (item.isVoicePlayed()) {
+                            SurespotLog.v(TAG, "chatAdapter setting played to visible");
+                            chatMessageViewHolder.voicePlayed.setVisibility(View.VISIBLE);
+                            chatMessageViewHolder.voicePlay.setVisibility(View.GONE);
+                        }
+                        else {
+                            SurespotLog.v(TAG, "chatAdapter setting played to gone");
+                            chatMessageViewHolder.voicePlayed.setVisibility(View.GONE);
+                            chatMessageViewHolder.voicePlay.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    chatMessageViewHolder.voiceStop.setVisibility(View.GONE);
                     chatMessageViewHolder.tvText.clearAnimation();
                     chatMessageViewHolder.tvText.setVisibility(View.GONE);
                     chatMessageViewHolder.tvText.setText("");
-                    if (!TextUtils.isEmpty(item.getData())) {
-                        mMessageImageDownloader.download(chatMessageViewHolder.imageView, item);
-                    }
+                    chatMessageViewHolder.ivNotShareable.setVisibility(View.GONE);
+                    chatMessageViewHolder.ivShareable.setVisibility(View.GONE);
 
-                    if (item.isShareable()) {
-
-                        chatMessageViewHolder.ivNotShareable.setVisibility(View.GONE);
-                        chatMessageViewHolder.ivShareable.setVisibility(View.VISIBLE);
-                    } else {
-                        chatMessageViewHolder.ivNotShareable.setVisibility(View.VISIBLE);
-                        chatMessageViewHolder.ivShareable.setVisibility(View.GONE);
-                    }
-                } else {
-                    if (item.getMimeType().equals(SurespotConstants.MimeTypes.M4A)) {
-                        chatMessageViewHolder.imageView.setVisibility(View.GONE);
-                        chatMessageViewHolder.voiceView.setVisibility(View.VISIBLE);
-                        chatMessageViewHolder.messageSize.setVisibility(View.GONE);
-
-                        if (type == TYPE_US) {
-                            chatMessageViewHolder.voicePlayed.setVisibility(View.VISIBLE);
-                        }
-                        // //if it's ours we don't care if it's been played or not
-                        else {
-
-                            if (item.isVoicePlayed()) {
-                                SurespotLog.v(TAG, "chatAdapter setting played to visible");
-                                chatMessageViewHolder.voicePlayed.setVisibility(View.VISIBLE);
-                                chatMessageViewHolder.voicePlay.setVisibility(View.GONE);
-                            } else {
-                                SurespotLog.v(TAG, "chatAdapter setting played to gone");
-                                chatMessageViewHolder.voicePlayed.setVisibility(View.GONE);
-                                chatMessageViewHolder.voicePlay.setVisibility(View.VISIBLE);
-                            }
-                        }
-                        chatMessageViewHolder.voiceStop.setVisibility(View.GONE);
-                        chatMessageViewHolder.tvText.clearAnimation();
-                        chatMessageViewHolder.tvText.setVisibility(View.GONE);
-                        chatMessageViewHolder.tvText.setText("");
-                        chatMessageViewHolder.ivNotShareable.setVisibility(View.GONE);
-                        chatMessageViewHolder.ivShareable.setVisibility(View.GONE);
-
-                        mMessageVoiceDownloader.download(convertView, item);
-                        chatMessageViewHolder.voiceSeekBar.setTag(R.id.tagMessage, new WeakReference<SurespotMessage>(item));
-                        VoiceController.attach(chatMessageViewHolder.voiceSeekBar);
-                    }
+                    mMessageVoiceDownloader.download(convertView, item);
+                    chatMessageViewHolder.voiceSeekBar.setTag(R.id.tagMessage, new WeakReference<SurespotMessage>(item));
+                    VoiceController.attach(chatMessageViewHolder.voiceSeekBar);
                 }
             }
         }
