@@ -1,20 +1,35 @@
 package com.twofours.surespot.network;
 
+import android.content.Context;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.text.TextUtils;
+
+import com.google.android.gcm.GCMRegistrar;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
+import com.twofours.surespot.R;
+import com.twofours.surespot.SurespotApplication;
+import com.twofours.surespot.SurespotCachingHttpClient;
+import com.twofours.surespot.common.SurespotConfiguration;
+import com.twofours.surespot.common.SurespotConstants;
+import com.twofours.surespot.common.SurespotLog;
+import com.twofours.surespot.common.Utils;
+import com.twofours.surespot.identity.IdentityController;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.app.Activity;
-import android.content.Context;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.text.TextUtils;
 import ch.boye.httpclientandroidlib.HttpEntity;
 import ch.boye.httpclientandroidlib.HttpException;
 import ch.boye.httpclientandroidlib.HttpResponse;
@@ -34,21 +49,6 @@ import ch.boye.httpclientandroidlib.protocol.BasicHttpContext;
 import ch.boye.httpclientandroidlib.protocol.HTTP;
 import ch.boye.httpclientandroidlib.protocol.HttpContext;
 import ch.boye.httpclientandroidlib.util.EntityUtils;
-
-import com.google.android.gcm.GCMRegistrar;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.SyncHttpClient;
-import com.twofours.surespot.R;
-import com.twofours.surespot.SurespotApplication;
-import com.twofours.surespot.SurespotCachingHttpClient;
-import com.twofours.surespot.common.SurespotConfiguration;
-import com.twofours.surespot.common.SurespotConstants;
-import com.twofours.surespot.common.SurespotLog;
-import com.twofours.surespot.common.Utils;
-import com.twofours.surespot.identity.IdentityController;
 
 public class NetworkController {
 	protected static final String TAG = "NetworkController";
@@ -94,7 +94,7 @@ public class NetworkController {
 		}
 	}
 
-	public NetworkController(Activity context, String username, final IAsyncCallbackTuple<String, Boolean> m401Handler) throws Exception {
+	public NetworkController(Context context, String username, final IAsyncCallbackTuple<String, Boolean> m401Handler) throws Exception {
 		SurespotLog.d(TAG, "constructor username: %s", username);
 		mContext = context;
 
@@ -563,7 +563,7 @@ public class NetworkController {
 
 				SurespotLog.v(TAG, "posting file stream");
 
-				HttpPost httppost = new HttpPost(mBaseUrl + "/images/" + ourVersion + "/" + user + "/" + theirVersion);
+				HttpPost httppost = new HttpPost(mBaseUrl + "/images2/" + ourVersion + "/" + user + "/" + theirVersion);
 				if (fileInputStream == null) {
 					SurespotLog.v(TAG, "not uploading anything because the file upload stream is null");
 					return null;
@@ -619,7 +619,7 @@ public class NetworkController {
 
 				SurespotLog.v(TAG, "posting file stream");
 
-				HttpPost httppost = new HttpPost(mBaseUrl + "/images/" + user + "/" + ourVersion);
+				HttpPost httppost = new HttpPost(mBaseUrl + "/images2/" + user + "/" + ourVersion);
 
 				InputStreamBody isBody = new InputStreamBody(fileInputStream, SurespotConstants.MimeTypes.IMAGE, iv);
 				MultipartEntity reqEntity = new MultipartEntity();
@@ -783,7 +783,7 @@ public class NetworkController {
 		RequestParams params = new RequestParams("data", data);
 		params.put("iv", iv);
 		params.put("version", version);
-		put("/users/" + username + "/alias", params, responseHandler);
+		put("/users/" + username + "/alias2", params, responseHandler);
 
 	}
 	
