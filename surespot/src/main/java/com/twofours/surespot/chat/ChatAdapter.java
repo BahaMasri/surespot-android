@@ -335,8 +335,7 @@ public class ChatAdapter extends BaseAdapter {
         }
 
         if (item.isHashed()) {
-            chatMessageViewHolder.tvText.setAutoLinkMask(0);
-            UIUtils.setHtml(mContext, chatMessageViewHolder.tvText, R.string.decrypt_update);
+            chatMessageViewHolder.tvText.setText(R.string.decrypt_update);
 
             chatMessageViewHolder.tvText.setVisibility(View.VISIBLE);
 
