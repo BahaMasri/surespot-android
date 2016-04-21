@@ -31,6 +31,8 @@ import android.widget.LinearLayout;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.android.gcm.GCMRegistrar;
+import com.twofours.surespot.GCMIntentService;
 import com.twofours.surespot.R;
 import com.twofours.surespot.chat.ChatUtils;
 import com.twofours.surespot.common.SurespotConfiguration;
