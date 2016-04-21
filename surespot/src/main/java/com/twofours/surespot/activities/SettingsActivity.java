@@ -86,6 +86,8 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 			// GCMRegistrar.checkDevice(this);
 			// GCMRegistrar.checkManifest(this);
 
+			GCMRegistrar.unregister(this);
+
 			final String regId = GCMRegistrar.getRegistrationId(this);
 			boolean registered = GCMRegistrar.isRegistered(this);
 			boolean registeredOnServer = GCMRegistrar.isRegisteredOnServer(this);
