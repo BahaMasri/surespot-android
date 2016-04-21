@@ -80,6 +80,32 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 				}
 			});
 
+		try {
+			// GCMRegistrar.checkDevice(this);
+			// GCMRegistrar.checkManifest(this);
+
+			final String regId = GCMRegistrar.getRegistrationId(this);
+			boolean registered = GCMRegistrar.isRegistered(this);
+			boolean registeredOnServer = GCMRegistrar.isRegisteredOnServer(this);
+			SurespotLog.v(TAG, "Registering for GCM -> info:"+ regId + ":" + registered + ":" + registeredOnServer);
+		//	if (versionChanged(this) || !registered || !registeredOnServer) {
+				SurespotLog.v(TAG, "Registering for GCM -> start");
+				GCMRegistrar.register(this, GCMIntentService.SENDER_ID);
+				SurespotLog.v(TAG, "Registering for GCM -> OK");
+//			}
+//			else {
+//				SurespotLog.v(TAG, "GCM already registered.");
+//			}
+		}
+		catch (Exception e)
+		{
+				SurespotLog.v(TAG, "Registering for GCM -> *FAILED*");
+				e.printStackTrace();
+				System.out.println("Registering for GCM -> *FAILED*:" + e.getMessage());
+		}
+
+
+
 			mBgImagePref = prefMgr.findPreference("pref_background_image");
 
 			String bgImageUri = prefMgr.getSharedPreferences().getString("pref_background_image", null);
