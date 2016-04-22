@@ -293,7 +293,8 @@ public class LoginActivity extends SherlockActivity {
 	}
 
 	private void login() {
-		if (SurespotApplication.getCachingService() == null) {
+		if (SurespotApplication.getCachingService() == null)
+		{
 			mLoginAttempted = true;
 			mMpd.incrProgress();
 			return;
@@ -304,16 +305,19 @@ public class LoginActivity extends SherlockActivity {
 
 		final String password = pwText.getText().toString();
 
-		if (username != null && username.length() > 0 && password != null && password.length() > 0) {
+		if (username != null && username.length() > 0 && password != null && password.length() > 0)
+		{
 			mMpd.incrProgress();
 
-			new AsyncTask<Void, Void, IdSig>() {
-
+			new AsyncTask<Void, Void, IdSig>()
+			{
 				@Override
-				protected IdSig doInBackground(Void... params) {
+				protected IdSig doInBackground(Void... params)
+				{
 
 					SurespotIdentity identity = IdentityController.getIdentity(LoginActivity.this, username, password);
-					if (identity != null) {
+					if (identity != null)
+					{
 						byte[] saltBytes = ChatUtils.base64DecodeNowrap(identity.getSalt());
 						final String dPassword = new String(ChatUtils.base64EncodeNowrap(EncryptionController.derive(password, saltBytes)));
 						IdSig idSig = new IdSig();
@@ -325,35 +329,45 @@ public class LoginActivity extends SherlockActivity {
 					return null;
 				}
 
-				protected void onPostExecute(final IdSig idSig) {
-					if (idSig != null) {
-
+				protected void onPostExecute(final IdSig idSig)
+				{
+					if (idSig != null)
+					{
 						NetworkController networkController = MainActivity.getNetworkController();
-						if (networkController == null) {
-							try {
+						if (networkController == null)
+						{
+							try
+							{
 								networkController = new NetworkController(LoginActivity.this, null, null);
 							}
-							catch (Exception e) {
+							catch (Exception e)
+							{
 								LoginActivity.this.finish();
 								return;
 							}
 						}
-						networkController.login(username, idSig.derivedPassword, idSig.signature, new CookieResponseHandler() {
+
+						networkController.login(username, idSig.derivedPassword, idSig.signature, new CookieResponseHandler()
+						{
 							@Override
-							public void onSuccess(int responseCode, String arg0, Cookie cookie) {
+							public void onSuccess(int responseCode, String arg0, Cookie cookie)
+							{
 								IdentityController.userLoggedIn(LoginActivity.this, idSig.identity, cookie, password);
 								mLoggedIn = true;
 								boolean enableKeystore = Utils.getSharedPrefsBoolean(LoginActivity.this, SurespotConstants.PrefNames.KEYSTORE_ENABLED);
 
-								if (enableKeystore) {
-
+								if (enableKeystore)
+								{
 									// if we're saving the password in the key store then do it
 									boolean keysaveChecked = mCbSavePassword.isChecked();
-
-									if (keysaveChecked) {
-										try {
+									if (keysaveChecked)
+									{
+										try
+										{
 											IdentityController.storePasswordForIdentity(LoginActivity.this, username, password);
-										} catch (InvalidKeyException e) {
+										}
+										catch (InvalidKeyException e)
+										{
 											LaunchKeystoreActivity();
 										}
 									}
@@ -365,16 +379,19 @@ public class LoginActivity extends SherlockActivity {
 								newIntent.setAction(intent.getAction());
 								newIntent.setType(intent.getType());
 								Bundle extras = intent.getExtras();
-								if (extras != null) {
+								if (extras != null)
+								{
 									newIntent.putExtras(extras);
 								}
 
 								// if we logged in as someone else, remove the notification intent extras as we are no longer special
 								// we are just an ordinary login now with no magical powers
 								String notificationType = intent.getStringExtra(SurespotConstants.ExtraNames.NOTIFICATION_TYPE);
-								if (notificationType != null) {
+								if (notificationType != null)
+								{
 									String messageTo = intent.getStringExtra(SurespotConstants.ExtraNames.MESSAGE_TO);
-									if (!messageTo.equals(username)) {
+									if (!messageTo.equals(username))
+									{
 										SurespotLog.v(TAG,
 												"user has elected to login as a different user than the notification, removing relevant intent extras");
 										newIntent.removeExtra(SurespotConstants.ExtraNames.MESSAGE_TO);
@@ -397,13 +414,16 @@ public class LoginActivity extends SherlockActivity {
 							}
 
 							@Override
-							public void onFailure(Throwable arg0, String message) {
+							public void onFailure(Throwable arg0, String message)
+							{
 								SurespotLog.i(TAG, arg0, message);
 
-								if (arg0 instanceof HttpResponseException) {
+								if (arg0 instanceof HttpResponseException)
+								{
 									HttpResponseException error = (HttpResponseException) arg0;
 									int statusCode = error.getStatusCode();
-									switch (statusCode) {
+									switch (statusCode)
+									{
 									case 401:
 										Utils.makeToast(LoginActivity.this, getString(R.string.login_check_password));
 										break;
@@ -414,14 +434,16 @@ public class LoginActivity extends SherlockActivity {
 										Utils.makeToast(LoginActivity.this, getString(R.string.login_try_again_later));
 									}
 								}
-								else {
+								else
+								{
 									Utils.makeToast(LoginActivity.this, getString(R.string.login_try_again_later));
 								}
 								pwText.setText("");
 							}
 
 							@Override
-							public void onFinish() {
+							public void onFinish()
+							{
 								mMpd.decrProgress();
 							}
 						});
