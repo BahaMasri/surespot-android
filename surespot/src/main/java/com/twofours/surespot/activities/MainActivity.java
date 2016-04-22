@@ -175,19 +175,30 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 	protected void onNewIntent(Intent intent)
 	{
 
+		SurespotLog.i(TAG, "MA:0001");
+
 		super.onNewIntent(intent);
 		SurespotLog.d(TAG, "onNewIntent.");
 		Utils.logIntent(TAG, intent);
 
 		setIntent(intent);
 
+		SurespotLog.i(TAG, "MA:0002");
+
 		// handle case where we deleted the identity we were logged in as
 		boolean deleted = intent.getBooleanExtra("deleted", false);
 
-		if (deleted) {
+		SurespotLog.i(TAG, "MA:0003");
+
+		if (deleted)
+		{
+			SurespotLog.i(TAG, "MA:0004");
+
 			// if we have any users or we don't need to create a user, figure out if we need to login
 			if (!IdentityController.hasIdentity() || intent.getBooleanExtra("create", false)) {
 				// otherwise show the signup activity
+
+				SurespotLog.i(TAG, "MA:0005");
 
 				SurespotLog.d(TAG, "I was deleted and there are no other users so starting signup activity.");
 				Intent newIntent = new Intent(this, SignupActivity.class);
@@ -195,7 +206,10 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 				startActivity(newIntent);
 				finish();
 			}
-			else {
+			else
+			{
+
+				SurespotLog.i(TAG, "MA:0006");
 
 				SurespotLog.d(TAG, "I was deleted and there are different users so starting login activity.");
 				Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
@@ -204,9 +218,14 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 				finish();
 			}
 		}
-		else {
-			if (!needsSignup()) {
+		else
+		{
+			SurespotLog.i(TAG, "MA:0007");
+			if (!needsSignup())
+			{
+				SurespotLog.i(TAG, "MA:0008");
 				processLaunch();
+				SurespotLog.i(TAG, "MA:0009");
 			}
 		}
 	}
@@ -221,10 +240,16 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 
 		aa = this;
 
+		SurespotLog.i(TAG, "MA:0010");
+
 		boolean keystoreEnabled = Utils.getSharedPrefsBoolean(this, SurespotConstants.PrefNames.KEYSTORE_ENABLED);
-		if (keystoreEnabled) {
+		if (keystoreEnabled)
+		{
+			SurespotLog.i(TAG, "MA:0011");
 			IdentityController.initKeystore();
-			if (!IdentityController.unlock(this)) {
+			if (!IdentityController.unlock(this))
+			{
+				SurespotLog.i(TAG, "MA:0012");
 				// we have to launch the unlock activity
 				// so set a flag we can check in onresume and delay network until that point
 
@@ -233,6 +258,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 			}
 		}
 
+		SurespotLog.i(TAG, "MA:0013");
 		Intent intent = getIntent();
 		Utils.logIntent(TAG, intent);
 
@@ -251,18 +277,25 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 
 		mContext = this;
 
+		SurespotLog.i(TAG, "MA:0014");
+
 		m401Handler = new IAsyncCallbackTuple<String, Boolean>()
 		{
-
 			@Override
-			public void handleResponse(final String message, final Boolean timedOut) {
+			public void handleResponse(final String message, final Boolean timedOut)
+			{
+				SurespotLog.i(TAG, "MA:0015");
 				SurespotLog.d(TAG, "Got 401, checking authorization.");
-				if (!MainActivity.this.getNetworkController().isUnauthorized()) {
-
+				if (!MainActivity.this.getNetworkController().isUnauthorized())
+				{
+					SurespotLog.i(TAG, "MA:0016");
 					// if we just timed out, don't blow away the cookie or go to login screen
 					MainActivity.this.getNetworkController().setUnauthorized(true, !timedOut);
+					SurespotLog.i(TAG, "MA:0017");
 
-					if (!timedOut) {
+					if (!timedOut)
+					{
+						SurespotLog.i(TAG, "MA:0018" + "LL");
 						SurespotLog.d(TAG, "Got 401, launching login intent.");
 						Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -270,11 +303,14 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 						finish();
 					}
 
-					if (!TextUtils.isEmpty(message)) {
-						Runnable runnable = new Runnable() {
+					if (!TextUtils.isEmpty(message))
+					{
+						Runnable runnable = new Runnable()
+						{
 
 							@Override
-							public void run() {
+							public void run()
+							{
 								Utils.makeToast(MainActivity.this, message);
 
 							}
@@ -282,12 +318,21 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 
 						MainActivity.this.runOnUiThread(runnable);
 					}
+					
+					SurespotLog.i(TAG, "MA:0019");
 				}
+				SurespotLog.i(TAG, "MA:0020");
 			}
 		};
 
-		if (!needsSignup()) {
-			if (savedInstanceState != null) {
+		SurespotLog.i(TAG, "MA:0021");
+
+		if (!needsSignup())
+		{
+			SurespotLog.i(TAG, "MA:0022");
+			if (savedInstanceState != null)
+			{
+				SurespotLog.i(TAG, "MA:0022");
 
 				mKeyboardShowing = savedInstanceState.getBoolean("keyboardShowing", false);
 				mEmojiShowing = savedInstanceState.getBoolean("emojiShowing", false);
@@ -301,7 +346,9 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 								mKeyboardShowing, mEmojiShowing, mKeyboardShowingOnChatTab, mKeyboardShowingOnHomeTab, mEmojiShowingOnChatTab);
 			}
 
+			SurespotLog.i(TAG, "MA:0022");
 			processLaunch();
+			SurespotLog.i(TAG, "MA:0023");
 
 		}
 
@@ -341,40 +388,61 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 			t.start();
 		}
 
+
+		SurespotLog.i(TAG, "MA:0024");
 	}
 
-	private void processLaunch() {
+	private void processLaunch()
+	{
+		SurespotLog.i(TAG, "MA:0025");
 		String user = getLaunchUser();
+		SurespotLog.i(TAG, "MA:0026");
 
-		if (user == null) {
+		if (user == null)
+		{
+			SurespotLog.i(TAG, "MA:0027");
 			launchLogin();
+			SurespotLog.i(TAG, "MA:0028");
 		}
-		else {
+		else
+		{
 
+			SurespotLog.i(TAG, "MA:0029");
 			mUser = user;
 
 			CredentialCachingService ccs = SurespotApplication.getCachingService();
-			if (ccs == null) {
+			if (ccs == null)
+			{
+				SurespotLog.i(TAG, "MA:0030");
 				SurespotLog.d(TAG, "binding cache service");
 				Intent cacheIntent = new Intent(this, CredentialCachingService.class);
 				startService(cacheIntent);
 				bindService(cacheIntent, mConnection, Context.BIND_AUTO_CREATE);
 			}
-			else {
+			else
+			{
+				SurespotLog.i(TAG, "MA:0031");
 				SurespotLog.d(TAG, "cache service already instantiated");
-				if (!mUnlocking) {
+				if (!mUnlocking)
+				{
 					SurespotLog.d(TAG, "processLaunch calling postServiceProcess");
 					postServiceProcess();
 				}
-				else {
+				else
+				{
 					SurespotLog.d(TAG, "unlock activity launched, not post service processing until resume");
 				}
 			}
 		}
+		
+		SurespotLog.i(TAG, "MA:0032");
 
 	}
 
-	private void launchLogin() {
+	private void launchLogin()
+	{
+		SurespotLog.i(TAG, "MA:0033");
+		
 		SurespotLog.d(TAG, "launchLogin");
 		Intent intent = getIntent();
 		Intent newIntent = new Intent(MainActivity.this, LoginActivity.class);
@@ -383,13 +451,18 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 		newIntent.setType(intent.getType());
 
 		Bundle extras = intent.getExtras();
-		if (extras != null) {
+		if (extras != null)
+		{
 			newIntent.putExtras(extras);
 		}
 
 		newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
+		SurespotLog.i(TAG, "MA:0034" + "LL");
+
 		startActivity(newIntent);
+		
+		SurespotLog.i(TAG, "MA:0035");
 		finish();
 	}
 
