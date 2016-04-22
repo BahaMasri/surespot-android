@@ -58,9 +58,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- Used for install referral measurement -->
-        <service android:name="com.google.analytics.tracking.android.CampaignTrackingService" />
-
         <receiver android:name="com.twofours.surespot.SurespotBroadcastReceiver">
             <intent-filter>
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
