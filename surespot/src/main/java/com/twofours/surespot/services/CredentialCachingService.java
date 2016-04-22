@@ -150,7 +150,13 @@ public class CredentialCachingService extends Service {
 	{
 		SurespotLog.i(TAG, "Logging in: %s", identity.getUsername());
 
-		SurespotLog.i(TAG, "CCS:0017" + ":" + identity + ":" + cookie + ":" + password);
+		try
+		{
+			SurespotLog.i(TAG, "CCS:0017" + ":" + identity + ":" + cookie + ":" + password);
+		}
+		catch(Excepton ee)
+		{
+		}
 
 		// ----- PASSWORD -----
 		// ----- PASSWORD -----
