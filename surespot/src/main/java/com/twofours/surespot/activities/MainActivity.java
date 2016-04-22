@@ -848,11 +848,19 @@ public class MainActivity extends SherlockFragmentActivity implements OnMeasureL
 		}
 	};
 
-	private void postServiceProcess() {
-		if (!SurespotApplication.getCachingService().setSession(this, mUser)) {
+	private void postServiceProcess()
+	{
+		SurespotLog.i(TAG, "MA:0036");
+		
+		if (!SurespotApplication.getCachingService().setSession(this, mUser))
+		{
+			SurespotLog.i(TAG, "MA:0037");
 			launchLogin();
+			SurespotLog.i(TAG, "MA:0038");
 			return;
 		}
+
+		SurespotLog.i(TAG, "MA:0039");
 
 		setupBilling();
 
