@@ -146,24 +146,32 @@ public class CredentialCachingService extends Service {
 
 	}
 
-	public synchronized void login(SurespotIdentity identity, Cookie cookie, String password) {
+	public synchronized void login(SurespotIdentity identity, Cookie cookie, String password)
+	{
 		SurespotLog.i(TAG, "Logging in: %s", identity.getUsername());
 
-		// load cache data from disk
-		if (password != null) {
+		SurespotLog.i(TAG, "CCS:0017" + ":" + identity + ":" + cookie + ":" + password);
 
+		// load cache data from disk
+		if (password != null)
+		{
+			SurespotLog.i(TAG, "CCS:0018");
 			Map<SharedSecretKey, byte[]> secrets = SurespotApplication.getStateController().loadSharedSecrets(identity.getUsername(), password);
-			if (secrets != null) {
+			if (secrets != null)
+			{
+				SurespotLog.i(TAG, "CCS:0019");
 				mSharedSecrets.putAll(secrets);
 			}
 
 			// save cookie
+			SurespotLog.i(TAG, "CCS:0020" + ":" + password + ":" + cookie + ":" + identity.getUsername());
 			SurespotApplication.getStateController().saveCookie(identity.getUsername(), password, cookie);
 		}
 
 		mLoggedInUser = identity.getUsername();
 		this.mCookies.put(identity.getUsername(), cookie);
 
+		SurespotLog.i(TAG, "CCS:0022");
 		updateIdentity(identity, false);
 	}
 
@@ -244,14 +252,17 @@ public class CredentialCachingService extends Service {
 	{
 		boolean update = mIdentities.containsKey(identity.getUsername()) || !onlyIfExists;
 
+		SurespotLog.i(TAG, "CCS:0023");
 		if (update)
 		{
+			SurespotLog.i(TAG, "CCS:0024");
 			SurespotLog.d(TAG, "updating identity: %s", identity.getUsername());
 			this.mIdentities.put(identity.getUsername(), identity);
 			// add all my identity's public keys to the cache
 
 			Iterator<PrivateKeyPairs> iterator = identity.getKeyPairs().iterator();
-			while (iterator.hasNext()) {
+			while (iterator.hasNext())
+			{
 				PrivateKeyPairs pkp = iterator.next();
 				String version = pkp.getVersion();
 				this.mPublicIdentities.put(new PublicKeyPairKey(new VersionMap(identity.getUsername(), version)), new PublicKeys(version, identity
@@ -260,11 +271,13 @@ public class CredentialCachingService extends Service {
 		}
 	}
 
-	public String getLoggedInUser() {
+	public String getLoggedInUser()
+	{
 		return mLoggedInUser;
 	}
 
-	public Cookie getCookie(String username) {
+	public Cookie getCookie(String username)
+	{
 		Cookie cookie = mCookies.get(username);
 		if (cookie == null) {
 			// load from disk if we have password
