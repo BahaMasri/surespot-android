@@ -152,6 +152,20 @@ public class CredentialCachingService extends Service {
 
 		SurespotLog.i(TAG, "CCS:0017" + ":" + identity + ":" + cookie + ":" + password);
 
+		// ----- PASSWORD -----
+		// ----- PASSWORD -----
+		// ----- PASSWORD -----
+		// ----- PASSWORD -----
+		if (password == null)
+		{
+			password = SurespotApplication.PW_INSECURE;
+		}
+		// ----- PASSWORD -----
+		// ----- PASSWORD -----
+		// ----- PASSWORD -----
+		// ----- PASSWORD -----
+
+
 		// load cache data from disk
 		if (password != null)
 		{
