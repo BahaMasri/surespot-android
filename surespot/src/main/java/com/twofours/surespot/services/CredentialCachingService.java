@@ -195,6 +195,21 @@ public class CredentialCachingService extends Service {
 
 		String password = getPassword(context, username);
 		SurespotLog.i(TAG, "CCS:0003" + ":" + username + ":" + password);
+		
+		// ----- PASSWORD -----
+		// ----- PASSWORD -----
+		// ----- PASSWORD -----
+		// ----- PASSWORD -----
+		if (password == null)
+		{
+			password = SurespotApplication.PW_INSECURE;
+		}
+		// ----- PASSWORD -----
+		// ----- PASSWORD -----
+		// ----- PASSWORD -----
+		// ----- PASSWORD -----
+		
+		
 		boolean hasPassword = password != null;
 
 		boolean hasCookie = false;
