@@ -47,6 +47,8 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	private static final String TAG = "SettingsActivity";
 	private Preference mBgImagePref;
 	private AlertDialog mHelpDialog;
+	
+	static final boolean GCM_PROBLEM = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,32 +84,27 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 				}
 			});
 
-		try {
-			// GCMRegistrar.checkDevice(this);
-			// GCMRegistrar.checkManifest(this);
 
-			GCMRegistrar.unregister(this);
-
-			final String regId = GCMRegistrar.getRegistrationId(this);
-			boolean registered = GCMRegistrar.isRegistered(this);
-			boolean registeredOnServer = GCMRegistrar.isRegisteredOnServer(this);
-			SurespotLog.v(TAG, "Registering for GCM -> info:"+ regId + ":" + registered + ":" + registeredOnServer);
-		//	if (versionChanged(this) || !registered || !registeredOnServer) {
+		if (GCM_PROBLEM)
+		{
+			try
+			{
+				GCMRegistrar.unregister(this);
+				final String regId = GCMRegistrar.getRegistrationId(this);
+				boolean registered = GCMRegistrar.isRegistered(this);
+				boolean registeredOnServer = GCMRegistrar.isRegisteredOnServer(this);
+				SurespotLog.v(TAG, "Registering for GCM -> info:"+ regId + ":" + registered + ":" + registeredOnServer);
 				SurespotLog.v(TAG, "Registering for GCM -> start");
 				GCMRegistrar.register(this, GCMIntentService.SENDER_ID);
 				SurespotLog.v(TAG, "Registering for GCM -> OK");
-//			}
-//			else {
-//				SurespotLog.v(TAG, "GCM already registered.");
-//			}
-		}
-		catch (Exception e)
-		{
+			}
+			catch (Exception e)
+			{
 				SurespotLog.v(TAG, "Registering for GCM -> *FAILED*");
 				e.printStackTrace();
 				System.out.println("Registering for GCM -> *FAILED*:" + e.getMessage());
+			}
 		}
-
 
 
 			mBgImagePref = prefMgr.findPreference("pref_background_image");
