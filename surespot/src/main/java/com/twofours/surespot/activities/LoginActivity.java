@@ -314,75 +314,110 @@ public class LoginActivity extends SherlockActivity {
 				@Override
 				protected IdSig doInBackground(Void... params)
 				{
-
+					SurespotLog.i(TAG, "0001");
 					SurespotIdentity identity = IdentityController.getIdentity(LoginActivity.this, username, password);
+					SurespotLog.i(TAG, "0002");
 					if (identity != null)
 					{
+						SurespotLog.i(TAG, "0003");
 						byte[] saltBytes = ChatUtils.base64DecodeNowrap(identity.getSalt());
 						final String dPassword = new String(ChatUtils.base64EncodeNowrap(EncryptionController.derive(password, saltBytes)));
 						IdSig idSig = new IdSig();
 						idSig.identity = identity;
 						idSig.signature = EncryptionController.sign(identity.getKeyPairDSA().getPrivate(), username, dPassword);
 						idSig.derivedPassword = dPassword;
+						SurespotLog.i(TAG, "0004" + ":" + idSig);
+
 						return idSig;
 					}
+
+					SurespotLog.i(TAG, "0005");
+
 					return null;
 				}
 
 				protected void onPostExecute(final IdSig idSig)
 				{
+					SurespotLog.i(TAG, "0006" + ":" + idSig);
+
 					if (idSig != null)
 					{
+						SurespotLog.i(TAG, "0007");
 						NetworkController networkController = MainActivity.getNetworkController();
+						SurespotLog.i(TAG, "0008");
 						if (networkController == null)
 						{
+							SurespotLog.i(TAG, "0009");
 							try
 							{
+								SurespotLog.i(TAG, "0010");
 								networkController = new NetworkController(LoginActivity.this, null, null);
+								SurespotLog.i(TAG, "0011");
 							}
 							catch (Exception e)
 							{
+								SurespotLog.i(TAG, "0012");
 								LoginActivity.this.finish();
+								SurespotLog.i(TAG, "0013");
 								return;
 							}
 						}
+
+						SurespotLog.i(TAG, "0014");
 
 						networkController.login(username, idSig.derivedPassword, idSig.signature, new CookieResponseHandler()
 						{
 							@Override
 							public void onSuccess(int responseCode, String arg0, Cookie cookie)
 							{
+								SurespotLog.i(TAG, "0015");
 								IdentityController.userLoggedIn(LoginActivity.this, idSig.identity, cookie, password);
+								SurespotLog.i(TAG, "0016");
 								mLoggedIn = true;
+								SurespotLog.i(TAG, "0017");
 								boolean enableKeystore = Utils.getSharedPrefsBoolean(LoginActivity.this, SurespotConstants.PrefNames.KEYSTORE_ENABLED);
+								SurespotLog.i(TAG, "0018");
 
 								if (enableKeystore)
 								{
+									SurespotLog.i(TAG, "0019");
 									// if we're saving the password in the key store then do it
 									boolean keysaveChecked = mCbSavePassword.isChecked();
+									SurespotLog.i(TAG, "0020");
 									if (keysaveChecked)
 									{
+										SurespotLog.i(TAG, "0021");
 										try
 										{
+											SurespotLog.i(TAG, "0022");
 											IdentityController.storePasswordForIdentity(LoginActivity.this, username, password);
+											SurespotLog.i(TAG, "0023");
 										}
 										catch (InvalidKeyException e)
 										{
+											SurespotLog.i(TAG, "0024");
 											LaunchKeystoreActivity();
+											SurespotLog.i(TAG, "0025");
 										}
 									}
 
+									SurespotLog.i(TAG, "0026");
 								}
 
+								SurespotLog.i(TAG, "0027");
 								Intent intent = getIntent();
 								Intent newIntent = new Intent(LoginActivity.this, MainActivity.class);
 								newIntent.setAction(intent.getAction());
 								newIntent.setType(intent.getType());
 								Bundle extras = intent.getExtras();
+								SurespotLog.i(TAG, "0028");
 								if (extras != null)
 								{
+									SurespotLog.i(TAG, "0029");
 									newIntent.putExtras(extras);
+									SurespotLog.i(TAG, "0030");
 								}
+								SurespotLog.i(TAG, "0031");
 
 								// if we logged in as someone else, remove the notification intent extras as we are no longer special
 								// we are just an ordinary login now with no magical powers
@@ -402,12 +437,16 @@ public class LoginActivity extends SherlockActivity {
 									}
 								}
 
+								SurespotLog.i(TAG, "0032");
+
 								Utils.logIntent(TAG, newIntent);
 								Utils.clearIntent(intent);
 
 								startActivity(newIntent);
 								InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 								imm.hideSoftInputFromWindow(pwText.getWindowToken(), 0);
+
+								SurespotLog.i(TAG, "0033");
 
 								finish();
 
@@ -418,8 +457,11 @@ public class LoginActivity extends SherlockActivity {
 							{
 								SurespotLog.i(TAG, arg0, message);
 
+								SurespotLog.i(TAG, "0034");
+
 								if (arg0 instanceof HttpResponseException)
 								{
+									SurespotLog.i(TAG, "0035");
 									HttpResponseException error = (HttpResponseException) arg0;
 									int statusCode = error.getStatusCode();
 									switch (statusCode)
@@ -433,12 +475,17 @@ public class LoginActivity extends SherlockActivity {
 									default:
 										Utils.makeToast(LoginActivity.this, getString(R.string.login_try_again_later));
 									}
+									SurespotLog.i(TAG, "0036");
 								}
 								else
 								{
+									SurespotLog.i(TAG, "0037");
 									Utils.makeToast(LoginActivity.this, getString(R.string.login_try_again_later));
+									SurespotLog.i(TAG, "0038");
 								}
+								SurespotLog.i(TAG, "0039");
 								pwText.setText("");
+								SurespotLog.i(TAG, "0040");
 							}
 
 							@Override
@@ -449,14 +496,24 @@ public class LoginActivity extends SherlockActivity {
 						});
 					}
 					else {
+						SurespotLog.i(TAG, "0041");
 						mMpd.decrProgress();
+						SurespotLog.i(TAG, "0042");
 						Utils.makeToast(LoginActivity.this, getString(R.string.login_check_password));
+						SurespotLog.i(TAG, "0043");
 						pwText.setText("");
+						SurespotLog.i(TAG, "0044");
 					}
+
+					SurespotLog.i(TAG, "0045");
 
 				};
 			}.execute();
+
+			SurespotLog.i(TAG, "0099");
 		}
+
+		SurespotLog.i(TAG, "0999");
 	}
 
 	@Override
