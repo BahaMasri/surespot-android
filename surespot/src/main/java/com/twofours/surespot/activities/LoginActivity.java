@@ -483,9 +483,50 @@ public class LoginActivity extends SherlockActivity {
 									Utils.makeToast(LoginActivity.this, getString(R.string.login_try_again_later));
 									SurespotLog.i(TAG, "0038");
 								}
-								SurespotLog.i(TAG, "0039");
-								pwText.setText("");
-								SurespotLog.i(TAG, "0040");
+
+								// if password was correct but no internet connection, or server is gone --> still log in
+								if (2 == (1 + 1))
+								{
+									SurespotLog.i(TAG, "0015x");
+									Cookie cookie = IdentityController.getCookieForUser(username);
+									SurespotLog.i(TAG, "0015ax" + ":" + cookie);
+									IdentityController.userLoggedIn(LoginActivity.this, idSig.identity, cookie, password);
+									SurespotLog.i(TAG, "0016x");
+									mLoggedIn = true;
+									SurespotLog.i(TAG, "0017x");
+
+									Intent intent = getIntent();
+									Intent newIntent = new Intent(LoginActivity.this, MainActivity.class);
+									newIntent.setAction(intent.getAction());
+									newIntent.setType(intent.getType());
+									Bundle extras = intent.getExtras();
+									SurespotLog.i(TAG, "0028x");
+									if (extras != null)
+									{
+										SurespotLog.i(TAG, "0029x");
+										newIntent.putExtras(extras);
+										SurespotLog.i(TAG, "0030x");
+									}
+									SurespotLog.i(TAG, "0031x");
+
+									Utils.logIntent(TAG, newIntent);
+									Utils.clearIntent(intent);
+
+									startActivity(newIntent);
+									InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+									imm.hideSoftInputFromWindow(pwText.getWindowToken(), 0);
+
+									SurespotLog.i(TAG, "0033x");
+
+									finish();
+
+								}
+								else
+								{
+									SurespotLog.i(TAG, "0039");
+									pwText.setText("");
+									SurespotLog.i(TAG, "0040");
+								}
 							}
 
 							@Override
