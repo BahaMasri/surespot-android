@@ -177,35 +177,55 @@ public class CredentialCachingService extends Service {
 
 		// need identity + cookie or password
 		// see if we have the identity
+		
+		SurespotLog.i(TAG, "CCS:0001");
 		SurespotIdentity identity = getIdentity(context, username, null);
+		SurespotLog.i(TAG, "CCS:0002" + ":" + identity);
 		boolean hasIdentity = identity != null;
 
 		SurespotLog.d(TAG, "hasIdentity: %b", hasIdentity);
 
 		String password = getPassword(context, username);
+		SurespotLog.i(TAG, "CCS:0003" + ":" + username + ":" + password);
 		boolean hasPassword = password != null;
 
 		boolean hasCookie = false;
 		Cookie cookie = getCookie(username);
+		SurespotLog.i(TAG, "CCS:0004" + ":" + cookie);
 		Date date = new Date();
 		Date expire = new Date(date.getTime() - 60 * 60 * 1000);
 
 		// if the cookie expires within the hour make them login again
-		if (cookie != null && !cookie.isExpired(expire)) {
+		if (cookie != null && !cookie.isExpired(expire))
+		{
+			SurespotLog.i(TAG, "CCS:0005");
 			hasCookie = true;
 			SurespotLog.d(TAG, "we have non expired cookie");
+			SurespotLog.i(TAG, "CCS:0006");
 		}
 
 		boolean sessionSet = hasIdentity && (hasPassword || hasCookie);
-		if (sessionSet) {
+		SurespotLog.i(TAG, "CCS:0007" + ":" + sessionSet + ":" + hasPassword + ":" + hasCookie);
+
+		if (sessionSet)
+		{
+			SurespotLog.i(TAG, "CCS:0008");
 			mLoggedInUser = username;
-			if (hasPassword) {
+			if (hasPassword)
+			{
+				SurespotLog.i(TAG, "CCS:0009");
 				Map<SharedSecretKey, byte[]> secrets = SurespotApplication.getStateController().loadSharedSecrets(username, password);
-				if (secrets != null) {
+				if (secrets != null)
+				{
+					SurespotLog.i(TAG, "CCS:0010");
 					mSharedSecrets.putAll(secrets);
 				}
+				SurespotLog.i(TAG, "CCS:0011");
 			}
+			SurespotLog.i(TAG, "CCS:0012");
 		}
+
+		SurespotLog.i(TAG, "CCS:0013");
 		return sessionSet;
 	}
 
