@@ -341,6 +341,21 @@ public class CredentialCachingService extends Service {
 			if (password == null) {
 				password = getPassword(context, username);
 			}
+			
+			// ----- PASSWORD -----
+			// ----- PASSWORD -----
+			// ----- PASSWORD -----
+			// ----- PASSWORD -----
+			if (password == null)
+			{
+				password = SurespotApplication.PW_INSECURE;
+			}
+			// ----- PASSWORD -----
+			// ----- PASSWORD -----
+			// ----- PASSWORD -----
+			// ----- PASSWORD -----
+
+			
 			if (password != null) {
 				identity = IdentityController.loadIdentity(context, username, password);
 				if (identity != null) {
