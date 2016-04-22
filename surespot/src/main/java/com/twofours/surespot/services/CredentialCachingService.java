@@ -229,7 +229,8 @@ public class CredentialCachingService extends Service {
 		return sessionSet;
 	}
 
-	private void saveSharedSecrets() {
+	private void saveSharedSecrets()
+	{
 		if (mLoggedInUser != null) {
 			String password = getPassword(this, mLoggedInUser);
 			if (password != null) {
@@ -239,9 +240,12 @@ public class CredentialCachingService extends Service {
 		}
 	}
 
-	public void updateIdentity(SurespotIdentity identity, boolean onlyIfExists) {
+	public void updateIdentity(SurespotIdentity identity, boolean onlyIfExists)
+	{
 		boolean update = mIdentities.containsKey(identity.getUsername()) || !onlyIfExists;
-		if (update) {
+
+		if (update)
+		{
 			SurespotLog.d(TAG, "updating identity: %s", identity.getUsername());
 			this.mIdentities.put(identity.getUsername(), identity);
 			// add all my identity's public keys to the cache
@@ -292,13 +296,19 @@ public class CredentialCachingService extends Service {
 
 	}
 
-	public SurespotIdentity getIdentity(Context context) {
+	public SurespotIdentity getIdentity(Context context)
+	{
+		SurespotLog.i(TAG, "CCS:0014");
 		return getIdentity(context, mLoggedInUser, null);
 	}
 
-	public SurespotIdentity getIdentity(Context context, String username, String password) {
+	public SurespotIdentity getIdentity(Context context, String username, String password)
+	{
+		SurespotLog.i(TAG, "CCS:0015" + ":" + username + ":" + password + ":" + mIdentities);
 		SurespotIdentity identity = mIdentities.get(username);
-		if (identity == null && context != null) {
+		SurespotLog.i(TAG, "CCS:0016" + ":" + identity);
+		if (identity == null && context != null)
+		{
 			// if we have the password load it
 			if (password == null) {
 				password = getPassword(context, username);
