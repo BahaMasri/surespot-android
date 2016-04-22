@@ -3,23 +3,42 @@ package com.twofours.surespot.common;
 import android.util.Log;
 import ch.boye.httpclientandroidlib.client.HttpResponseException;
 
-public class SurespotLog {
+public class SurespotLog
+{
 	private static boolean mLogging = SurespotConstants.LOGGING;
 
-	public static void setLogging(boolean logging) {
+	public static void setLogging(boolean logging)
+	{
+		try
+		{
 		v("SurespotLog", "setting logging to: %b", logging);
 		mLogging = logging;
-	}
-
-	// by using string.format we avoid string concat overhead when logging is disabled
-	public static void w(String tag, String msg, Object... msgArgs) {
-		if (mLogging) {
-			if (msg == null) msg = "";
-			Log.w(tag, tag + ": " + String.format(msg, msgArgs));
+		}
+		catch (Exception e)
+		{
 		}
 	}
 
-	public static void w(String tag, Throwable tr, String msg, Object... msgArgs) {
+	// by using string.format we avoid string concat overhead when logging is disabled
+	public static void w(String tag, String msg, Object... msgArgs)
+	{
+		try
+		{
+		if (mLogging)
+		{
+			if (msg == null) msg = "";
+			Log.w(tag, tag + ": " + String.format(msg, msgArgs));
+		}
+		}
+		catch (Exception e)
+		{
+		}
+	}
+
+	public static void w(String tag, Throwable tr, String msg, Object... msgArgs)
+	{
+		try
+		{
 		String message = null;
 		if (mLogging) {
 			if (msg == null) msg = "";
@@ -27,25 +46,46 @@ public class SurespotLog {
 			// Log.w(tag, msg +", " + tr.getMessage());
 			Log.w(tag, message, tr);
 		}
+		}
+		catch (Exception e)
+		{
+		}
 	}
 
-	public static void v(String tag, String msg, Object... msgArgs) {
+	public static void v(String tag, String msg, Object... msgArgs)
+	{
+		try
+		{
 		if (mLogging) {
 			if (msg == null) msg = "";
 			Log.v(tag, tag + ": " + String.format(msg, msgArgs));
 		}
-
-	}
-
-	public static void d(String tag, String msg, Object... msgArgs) {
-		if (mLogging) {
-			if (msg == null) msg = "";
-			Log.d(tag, tag + ": " + String.format(msg, msgArgs));
+		}
+		catch (Exception e)
+		{
 		}
 
 	}
 
-	public static void e(String tag, Throwable tr, String msg, Object... msgArgs) {
+	public static void d(String tag, String msg, Object... msgArgs)
+	{
+		try
+		{
+		if (mLogging) {
+			if (msg == null) msg = "";
+			Log.d(tag, tag + ": " + String.format(msg, msgArgs));
+		}
+		}
+		catch (Exception e)
+		{
+		}
+
+	}
+
+	public static void e(String tag, Throwable tr, String msg, Object... msgArgs)
+	{
+		try
+		{
 		String message = null;
 		if (mLogging) {
 			if (msg == null) msg = "";
@@ -67,30 +107,56 @@ public class SurespotLog {
 				return;
 			}
 		}
+		}
+		catch (Exception e)
+		{
+		}
 	}
 
-	public static void i(String tag, String msg, Object... msgArgs) {
+	public static void i(String tag, String msg, Object... msgArgs)
+	{
+		try
+		{
 		if (mLogging) {
 			if (msg == null) msg = "";
 			Log.i(tag, tag + ": " + String.format(msg, msgArgs));
 		}
+		}
+		catch (Exception e)
+		{
+		}
 	}
 
-	public static void i(String tag, Throwable tr, String msg, Object... msgArgs) {
+	public static void i(String tag, Throwable tr, String msg, Object... msgArgs)
+	{
+		try
+		{
 		if (mLogging) {
 			if (msg == null) msg = "";
 			Log.i(tag, tag + ": " + String.format(msg, msgArgs), tr);
 		}
+		}
+		catch (Exception e)
+		{
+		}
 	}
 
-	public static void v(String tag, Throwable tr, String msg, Object... msgArgs) {
+	public static void v(String tag, Throwable tr, String msg, Object... msgArgs)
+	{
+		try
+		{
 		if (mLogging) {
 			if (msg == null) msg = "";
 			Log.v(tag, tag + ": " + String.format(msg, msgArgs), tr);
 		}
+		}
+		catch (Exception e)
+		{
+		}
 	}
 
-	public static boolean isLogging() {
+	public static boolean isLogging()
+	{
 		return mLogging;
 	}
 }
