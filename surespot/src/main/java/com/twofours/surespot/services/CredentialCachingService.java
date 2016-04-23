@@ -155,12 +155,6 @@ public class CredentialCachingService extends Service {
 		// ----- PASSWORD -----
 		// ----- PASSWORD -----
 		// ----- PASSWORD -----
-		/*
-		if (password == null)
-		{
-			password = SurespotApplication.PW_INSECURE;
-		}
-		*/
 		// ----- PASSWORD -----
 		// ----- PASSWORD -----
 		// ----- PASSWORD -----
@@ -217,7 +211,7 @@ public class CredentialCachingService extends Service {
 		// ----- PASSWORD -----
 		if (password == null)
 		{
-			password = SurespotApplication.PW_INSECURE;
+			password = SurespotApplication.PW_INSECURE + "XX";
 		}
 		// ----- PASSWORD -----
 		// ----- PASSWORD -----
@@ -361,12 +355,6 @@ public class CredentialCachingService extends Service {
 			// ----- PASSWORD -----
 			// ----- PASSWORD -----
 			// ----- PASSWORD -----
-			/*
-			if (password == null)
-			{
-				password = SurespotApplication.PW_INSECURE;
-			}
-			*/
 			// ----- PASSWORD -----
 			// ----- PASSWORD -----
 			// ----- PASSWORD -----
