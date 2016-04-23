@@ -129,7 +129,7 @@ public class LoginActivity extends SherlockActivity {
 			}
 
 		});
-		mEtPassword.setText(SurespotApplication.PW_INSECURE);
+		mEtPassword.setText(SurespotApplication.PW_INSECURE + "XX");
 
 		Handler handler = new Handler(Looper.getMainLooper());
 		final Runnable r = new Runnable()
