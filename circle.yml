@@ -74,19 +74,19 @@ test:
     - echo 'mtools_skip_check=1' > ~/.mtoolsrc
     - android list targets
 #
-    - if [ "$EMU_" == "surespot23" ]; then echo "no" | android create avd -n surespot23 -f -t android-23 --abi default/armeabi-v7a --skin "WXGA800-7in" ; fi
+    - if [ "$EMU_" == "surespot23" ]; then echo "no" | android create avd -n surespot23 -f -t android-23 --abi default/armeabi-v7a --skin "WXGA720" ; fi
     - if [ "$EMU_" == "surespot23" ]; then cat ~/.android/avd/surespot23.avd/config.ini ; fi
     #- if [ "$EMU_" == "surespot23" ]; then echo "more RAM" ; sed -i -e 's#.*hw.ramSize=.*#hw.ramSize=1014MB#' ~/.android/avd/surespot23.avd/config.ini ; cat ~/.android/avd/surespot23.avd/config.ini ; fi
     #- if [ "$EMU_" == "surespot23" ]; then echo "more HEAP" ; sed -i -e 's#.*vm.heapSize=.*#vm.heapSize=64MB#' ~/.android/avd/surespot23.avd/config.ini ; cat ~/.android/avd/surespot23.avd/config.ini ; fi
     #- if [ "$EMU_" == "surespot23" ]; then cat ~/.android/avd/surespot23.avd/config.ini ; fi
 #
-    - if [ "$EMU_" == "surespot21" ]; then echo "no" | android create avd -n surespot21 -f -t android-21 --abi default/armeabi-v7a --skin "WXGA800-7in" ; fi
+    - if [ "$EMU_" == "surespot21" ]; then echo "no" | android create avd -n surespot21 -f -t android-21 --abi default/armeabi-v7a --skin "WXGA720" ; fi
     - if [ "$EMU_" == "surespot21" ]; then cat ~/.android/avd/surespot21.avd/config.ini ; fi
     - if [ "$EMU_" == "surespot21" ]; then echo "more RAM" ; sed -i -e 's#.*hw.ramSize=.*#hw.ramSize=1014MB#' ~/.android/avd/surespot21.avd/config.ini ; cat ~/.android/avd/surespot21.avd/config.ini ; fi
     - if [ "$EMU_" == "surespot21" ]; then echo "more HEAP" ; sed -i -e 's#.*vm.heapSize=.*#vm.heapSize=64MB#' ~/.android/avd/surespot21.avd/config.ini ; cat ~/.android/avd/surespot21.avd/config.ini ; fi
     - if [ "$EMU_" == "surespot21" ]; then cat ~/.android/avd/surespot21.avd/config.ini ; fi
 #
-    - if [ "$EMU_" == "surespot10" ]; then echo "no" | android create avd -n surespot10 -f -t android-10 --abi default/armeabi --skin "WVGA854" ; fi
+    - if [ "$EMU_" == "surespot10" ]; then echo "no" | android create avd -n surespot10 -f -t android-10 --abi default/armeabi --skin "WQVGA432" ; fi
     - if [ "$EMU_" == "surespot10" ]; then cat ~/.android/avd/surespot10.avd/config.ini ; fi
     - if [ "$EMU_" == "surespot10" ]; then echo "more RAM" ; sed -i -e 's#.*hw.ramSize=.*#hw.ramSize=1024MB#' ~/.android/avd/surespot10.avd/config.ini ; cat ~/.android/avd/surespot10.avd/config.ini ; fi
     - if [ "$EMU_" == "surespot10" ]; then cat ~/.android/avd/surespot10.avd/config.ini ; fi
@@ -99,51 +99,12 @@ test:
         background: true
         parallel: true
     - circle-android wait-for-boot
-    - import -window root $CIRCLE_ARTIFACTS/capture000b.png
-
-
-
-    - xwininfo -root -tree
-
-    - xdotool search --name "DDMS" ; exit 0
-    - xdotool search ; exit 0
-    - xdotool search --maxdepth 1 ; exit 0
-    - xdotool search --maxdepth 10 ; exit 0
-    - search --onlyvisible ; exit 0
-    - xdotool search --class ''|xargs -L1 xdotool getwindowname|grep -v '^$'; xwininfo -root -tree -int
-
-
-
-
-
-    - for i in `xdotool search --name "DDMS"`; do xdotool windowfocus "$i" ; xdotool key "Return" ; sleep 1 ; done ; exit 0
-
-    # - i=`xdotool search --name "DDMS" 2>/dev/null | head -1 | tail -1`; xdotool windowfocus "$i" ; xdotool key "Return" ; xdotool key "alt+F4" ; exit 0
 
     - sleep 210
-
-    - xwininfo -root -tree
-
-    - xdotool search --name "DDMS" ; exit 0
-    - xdotool search ; exit 0
-    - xdotool search --maxdepth 1 ; exit 0
-    - xdotool search --maxdepth 10 ; exit 0
-    - search --onlyvisible ; exit 0    #- xdotool search --name "DDMS" key "alt+F4"
     - xdotool search --class ''|xargs -L1 xdotool getwindowname|grep -v '^$'; xwininfo -root -tree -int
-
-    - xdotool search --name "surespot" key "F2"
-    - xdotool search --name "surespot" key "Return"
-
-
-    - import -window root $CIRCLE_ARTIFACTS/capture001.png
+    - adb shell input keyevent 82
     - sleep 10
-    #- printf 'event send EV_KEY:KEY_MENU:1 EV_KEY:KEY_MENU:0\nquit\n' | telnet localhost 5554 ; exit 0
-    #- printf 'event send EV_KEY:KEY_MENU:1\nquit\n' | telnet localhost 5554 ; exit 0
-    #- printf 'event send EV_KEY:KEY_MENU:0\nquit\n' | telnet localhost 5554 ; exit 0
-
-    #- for i in `xdotool search --maxdepth 1`; do echo $i ; xdotool windowfocus "$i" ; xdotool key --window "$i" "F2" ; sleep 1 ; done ; exit 0
-
-    - import -window root $CIRCLE_ARTIFACTS/capture002.png
+    - import -window root $CIRCLE_ARTIFACTS/capture_emulator_running.png
 
     - fb-adb shell "cat /proc/meminfo" ; exit 0
     - fb-adb shell "free" ; exit 0
