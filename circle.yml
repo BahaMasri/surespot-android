@@ -35,19 +35,8 @@ dependencies:
     - echo y | android update sdk --no-ui --all --filter sys-img-armeabi-v7a-addon-google_apis-google-23
     - echo y | android update sdk --no-ui --all --filter addon-google_apis-google-23
 
-    - rm -v .google_apis/._.DS_Store ._.DS_Store ;
-      git clone https://github.com/zoff99/gcm-client-old.git ;
-      mkdir -p surespot/src/main/java/com/ ;
-      cp -av gcm-client-old/com surespot/src/main/java/ ;
-      cd surespot ;
-      cat src/main/java/com/twofours/surespot/SurespotApplication.java | grep 'DEBUG_CI =' ;
-      sed -i -e 's#DEBUG_CI = 0;#DEBUG_CI = 1;#' src/main/java/com/twofours/surespot/SurespotApplication.java ;
-      cat src/main/java/com/twofours/surespot/SurespotApplication.java | grep 'DEBUG_CI =' ;
-      mkdir -p ../surespotcommon/src/main/res/raw ;
+    - mkdir -p ../surespotcommon/src/main/res/raw ;
       printf 'ssl_strict=true\nbaseUrl=https://server.surespot.me:443\n' > ../surespotcommon/src/main/res/raw/configuration.properties ;
-      pushd ../ ;
-      find .google_apis -name '*.jar' -exec rm {} \; ;
-      popd ;
       cd .. ;
       ln -s surespot src ;
       echo ./gradlew tasks ;
