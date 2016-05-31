@@ -5,6 +5,8 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.twofours.surespot.common.R;
+
 import java.io.InputStream;
 import java.util.Properties;
 
