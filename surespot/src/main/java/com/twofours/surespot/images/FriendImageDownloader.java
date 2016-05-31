@@ -166,7 +166,7 @@ public class FriendImageDownloader {
 			Bitmap bitmap = null;
 			InputStream imageStream = null;
 
-			imageStream = MainActivity.getNetworkController().getFileStream(MainActivity.getContext(), mFriend.getImageUrl());
+			imageStream = SurespotApplication.getNetworkController().getFileStream(MainActivity.getContext(), mFriend.getImageUrl());
 
 			if (mCancelled) {
 				try {
@@ -187,7 +187,7 @@ public class FriendImageDownloader {
 					inputStream = new PipedInputStream(out);
 
 					EncryptionController.runDecryptTask(mFriend.getImageVersion(), IdentityController.getLoggedInUser(), mFriend.getImageVersion(),
-							mFriend.getImageIv(), new BufferedInputStream(imageStream), out);
+							mFriend.getImageIv(), mFriend.isImageHashed(), new BufferedInputStream(imageStream), out);
 
 					if (mCancelled) {
 						return;

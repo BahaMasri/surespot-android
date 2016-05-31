@@ -34,16 +34,18 @@ public class SurespotConstants {
 		// public static final String SHOW_CHAT_NAME = "show_chat_name";
 		public static final String MESSAGE_FROM = "message_from";
 		public static final String MESSAGE_TO = "message_to";
+		public static final String JUST_RESTORED_IDENTITY = "just_restored_identity";
 
 		public static final String GCM_CHANGED = "gcm_changed";
 		public static final String CONNECTED = "connected";
 		public static final String IMAGE_MESSAGE = "image_message";
 		public static final String NOTIFICATION_TYPE = "notification_type";
+		public static final String UNSENT_MESSAGES = "unsent_messages";
 
 	}
 
 	public final static int MESSAGE_IMAGE_DIMENSION = 800;
-	public final static int FRIEND_IMAGE_DIMENSION = 100;
+	public final static int FRIEND_IMAGE_DIMENSION = 200;
 
 	public final static int MAX_USERNAME_LENGTH = 20;
 	public final static int MAX_PASSWORD_LENGTH = 256;
@@ -60,6 +62,9 @@ public class SurespotConstants {
 	// PROD false for production
 	public final static boolean LOGGING = false;
 
+	// PROD true for production
+	public final static boolean SSL_STRICT = true;
+
 	public class PrefNames {
 		public final static String PREFS_FILE = "surespot_preferences";
 		public final static String GCM_ID_RECEIVED = "gcm_id_received";
@@ -69,6 +74,8 @@ public class SurespotConstants {
 		public static final String REFERRERS = "referrers";
 		public static final String APP_VERSION = "app_version";
 		public static final String KEYSTORE_ENABLED = "pref_enable_keystore";
+		public static final String VOICE_DISABLED = "pref_disable_voice";
+		public static final String BLACK = "pref_black";
 	}
 
 	public class MimeTypes {
@@ -98,6 +105,10 @@ public class SurespotConstants {
 		public final static int SYSTEM_NOTIFICATION = 14;
 		public final static int PURCHASE = 15;
 		public final static int BACKGROUND_CACHE_NOTIFICATION = 16;
+		public final static int BACKGROUND_CHAT_SERVICE_NOTIFICATION = 17;
+		public final static int UNSENT_MESSAGE_NOTIFICATION = 18;
+		public final static int READ_EXTERNAL_STORAGE = 19;
+		public final static int WRITE_EXTERNAL_STORAGE = 20;
 	}
 	
 	

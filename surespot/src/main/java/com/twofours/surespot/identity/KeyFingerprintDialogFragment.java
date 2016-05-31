@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,10 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import com.twofours.surespot.R;
+import com.twofours.surespot.SurespotApplication;
 import com.twofours.surespot.activities.MainActivity;
 import com.twofours.surespot.common.Utils;
 import com.twofours.surespot.encryption.PrivateKeyPairs;
@@ -26,7 +27,7 @@ import com.twofours.surespot.encryption.PublicKeys;
 import com.twofours.surespot.ui.ExpandableHeightListView;
 import com.twofours.surespot.ui.UIUtils;
 
-public class KeyFingerprintDialogFragment extends SherlockDialogFragment {
+public class KeyFingerprintDialogFragment extends DialogFragment {
 	private static final String TAG = "KeyFingerprintDialogFragment";
 	private String mUsername;
 	private String mAlias;
@@ -105,7 +106,7 @@ public class KeyFingerprintDialogFragment extends SherlockDialogFragment {
 				}
 				
 				//get latest version from server							
-				String latestVersion = MainActivity.getNetworkController().getKeyVersionSync(mUsername);
+				String latestVersion = SurespotApplication.getNetworkController().getKeyVersionSync(mUsername);
 				if (latestVersion == null) {
 					activity = getActivity();
 					if (activity == null) {

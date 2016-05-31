@@ -1,17 +1,8 @@
 package com.twofours.surespot.images;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.ListIterator;
-import java.util.Observable;
-import java.util.Observer;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnShowListener;
@@ -20,8 +11,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ListView;
 
-import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.twofours.surespot.R;
+import com.twofours.surespot.SurespotApplication;
 import com.twofours.surespot.activities.MainActivity;
 import com.twofours.surespot.chat.SurespotMessage;
 import com.twofours.surespot.common.FileUtils;
@@ -32,17 +23,27 @@ import com.twofours.surespot.identity.IdentityController;
 import com.twofours.surespot.network.IAsyncCallback;
 import com.twofours.surespot.ui.UIUtils;
 
-public class ImageMessageMenuFragment extends SherlockDialogFragment {
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.ListIterator;
+import java.util.Observable;
+import java.util.Observer;
+
+public class ImageMessageMenuFragment extends DialogFragment {
 	protected static final String TAG = "ImageMessageMenuFragment";
 	private SurespotMessage mMessage;
 	private ArrayList<String> mItems;
 	private Observer mMessageObserver;
 	
-	public static SherlockDialogFragment newInstance(SurespotMessage message) {
+	public static DialogFragment newInstance(SurespotMessage message) {
 		ImageMessageMenuFragment f = new ImageMessageMenuFragment();
 
 		Bundle args = new Bundle();
-		args.putString("message", message.toJSONObject().toString());
+		args.putString("message", message.toJSONObject(false).toString());
 		f.setArguments(args);
 
 		return f;
@@ -87,14 +88,7 @@ public class ImageMessageMenuFragment extends SherlockDialogFragment {
 		}
 
 		mItems = new ArrayList<String>(5);
-
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		// builder.setTitle(R.string.pick_color);
-
-		// if we have an errored image we can resend it
-		if (mMessage.getFrom().equals(IdentityController.getLoggedInUser()) && mMessage.getErrorStatus() > 0) {
-			mItems.add(getString(R.string.menu_resend_message));
-		}
 
 		// if it's not our message we can save it to gallery
 		if (!mMessage.getFrom().equals(IdentityController.getLoggedInUser())) {
@@ -142,10 +136,10 @@ public class ImageMessageMenuFragment extends SherlockDialogFragment {
 									File galleryFile = FileUtils.createGalleryImageFile(".jpg");
 									FileOutputStream fos = new FileOutputStream(galleryFile);
 
-									InputStream imageStream = MainActivity.getNetworkController().getFileStream(mActivity, mMessage.getData());
+									InputStream imageStream = SurespotApplication.getNetworkController().getFileStream(mActivity, mMessage.getData());
 
 									EncryptionController.runDecryptTask(mMessage.getOurVersion(), mMessage.getOtherUser(), mMessage.getTheirVersion(),
-											mMessage.getIv(), new BufferedInputStream(imageStream), fos);
+											mMessage.getIv(), mMessage.isHashed(), new BufferedInputStream(imageStream), fos);
 
 									FileUtils.galleryAddPic(mActivity, galleryFile.getAbsolutePath());
 									return true;
@@ -200,12 +194,6 @@ public class ImageMessageMenuFragment extends SherlockDialogFragment {
 
 					return;
 				}
-
-				if (itemText.equals(getString(R.string.menu_resend_message))) {
-					mActivity.getChatController().resendFileMessage(mMessage.getTo(), mMessage.getIv());
-					return;
-				}
-
 			}
 		});
 

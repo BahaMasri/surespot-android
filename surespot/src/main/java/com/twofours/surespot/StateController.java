@@ -1,5 +1,27 @@
 package com.twofours.surespot;
 
+import android.content.Context;
+import android.os.AsyncTask;
+
+import com.twofours.surespot.chat.ChatUtils;
+import com.twofours.surespot.chat.SurespotMessage;
+import com.twofours.surespot.common.FileUtils;
+import com.twofours.surespot.common.SurespotConfiguration;
+import com.twofours.surespot.common.SurespotConstants;
+import com.twofours.surespot.common.SurespotLog;
+import com.twofours.surespot.common.Utils;
+import com.twofours.surespot.encryption.EncryptionController;
+import com.twofours.surespot.friends.Friend;
+import com.twofours.surespot.images.FileCacheController;
+import com.twofours.surespot.network.IAsyncCallback;
+import com.twofours.surespot.services.CredentialCachingService;
+import com.twofours.surespot.services.CredentialCachingService.SharedSecretKey;
+import com.twofours.surespot.services.CredentialCachingService.VersionMap;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -16,27 +38,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
-import android.os.AsyncTask;
-import ch.boye.httpclientandroidlib.cookie.Cookie;
-
-import com.twofours.surespot.activities.MainActivity;
-import com.twofours.surespot.chat.ChatUtils;
-import com.twofours.surespot.chat.SurespotMessage;
-import com.twofours.surespot.common.FileUtils;
-import com.twofours.surespot.common.SurespotConstants;
-import com.twofours.surespot.common.SurespotLog;
-import com.twofours.surespot.common.Utils;
-import com.twofours.surespot.encryption.EncryptionController;
-import com.twofours.surespot.friends.Friend;
-import com.twofours.surespot.network.IAsyncCallback;
-import com.twofours.surespot.network.NetworkController;
-import com.twofours.surespot.services.CredentialCachingService.SharedSecretKey;
-import com.twofours.surespot.services.CredentialCachingService.VersionMap;
+import okhttp3.Cookie;
+import okhttp3.HttpUrl;
 
 public class StateController {
 	private static final String MESSAGES_PREFIX = "messages_";
@@ -139,24 +142,34 @@ public class StateController {
 	public synchronized void saveUnsentMessages(String username, Collection<SurespotMessage> messages) {
 		String filename = getFilename(username, UNSENT_MESSAGES);
 		if (filename != null) {
-			if (messages != null) {
+			if (messages != null && messages.size() > 0) {
 				if (messages.size() > 0) {
 
-					String messageString = ChatUtils.chatMessagesToJson(messages).toString();
+					String messageString = ChatUtils.chatMessagesToJson(messages, true).toString();
 
 					try {
 						FileUtils.writeFile(filename, messageString);
 					}
 					catch (IOException e) {
-						SurespotLog.w(TAG, e, "saveUnsentMessages");
+						SurespotLog.w(TAG, e, "saveMessageQueue");
 					}
 				}
 				else {
-					new File(filename).delete();
+					try {
+						new File(filename).delete();
+					}
+					catch (Exception ex) {
+						SurespotLog.w(TAG, ex, "saveMessageQueue");
+					}
 				}
 			}
 			else {
-				new File(filename).delete();
+				try {
+					new File(filename).delete();
+				}
+				catch (Exception ex) {
+					SurespotLog.w(TAG, ex, "saveMessageQueue");
+				}
 			}
 		}
 
@@ -204,7 +217,7 @@ public class StateController {
 				}
 
 				SurespotLog.v(TAG, "saving %s messages", saveSize);
-				String sMessages = ChatUtils.chatMessagesToJson(messagesSize <= saveSize ? messages : messages.subList(messagesSize - saveSize, messagesSize))
+				String sMessages = ChatUtils.chatMessagesToJson(messagesSize <= saveSize ? messages : messages.subList(messagesSize - saveSize, messagesSize), true)
 						.toString();
 				try {
 					FileUtils.writeFile(filename, sMessages);
@@ -214,7 +227,12 @@ public class StateController {
 				}
 			}
 			else {
-				new File(filename).delete();
+				try {
+					new File(filename).delete();
+				}
+				catch (Exception ex) {
+					SurespotLog.w(TAG, ex, "saveMessages");
+				}
 			}
 		}
 	}
@@ -238,7 +256,6 @@ public class StateController {
 				Iterator<SurespotMessage> iterator = ChatUtils.jsonStringToChatMessages(sMessages).iterator();
 				while (iterator.hasNext()) {
 					SurespotMessage message = iterator.next();
-					message.setAlreadySent(true);
 					messages.add(message);
 				}
 				SurespotLog.v(TAG, "loaded: %d messages.", messages.size());
@@ -282,19 +299,23 @@ public class StateController {
 				Utils.putSharedPrefsString(context, SurespotConstants.PrefNames.LAST_USER, null);
 
 				// network caches
-				NetworkController networkController = MainActivity.getNetworkController();
-				if (networkController != null) {
-					networkController.clearCache();
+				SurespotApplication.getNetworkController().clearCache();
+				FileCacheController fcc = SurespotApplication.getFileCacheController();
+				if (fcc != null) {
+					fcc.clearCache();
 				}
 
 				// captured image dir
 				FileUtils.wipeImageCaptureDir(context);
 
 				// uploaded images dir
-				String localImageDir = FileUtils.getImageUploadDir(context);
+				String localImageDir = FileUtils.getFileUploadDir(context);
 				FileUtils.deleteRecursive(new File(localImageDir));
 
-				SurespotApplication.getCachingService().clear();
+				CredentialCachingService ccs = SurespotApplication.getCachingService();
+				if (ccs != null) {
+					ccs.clear();
+				}
 
 				return null;
 			}
@@ -312,9 +333,13 @@ public class StateController {
 
 		String room = ChatUtils.getSpot(username, otherUsername);
 		String messageFile = FileUtils.getStateDir(context) + File.separator + username + File.separator + "messages_" + room + STATE_EXTENSION;
-		File file = new File(messageFile);
-		file.delete();
-
+		try {
+			File file = new File(messageFile);
+			file.delete();
+		}
+		catch (Exception ex) {
+			SurespotLog.w(TAG, ex, "wipeUserState");
+		}
 	}
 
 	public void saveSharedSecrets(final String username, final String password, final Map<SharedSecretKey, byte[]> secrets) {
@@ -330,7 +355,8 @@ public class StateController {
 				for (SharedSecretKey key : secrets.keySet()) {
 					// save only secrets for this user
 					if (key.getOurUsername().equals(username)) {
-						String skey = key.getOurUsername() + ":" + key.getOurVersion() + ":" + key.getTheirUsername() + ":" + key.getTheirVersion();
+						String skey = key.getOurUsername() + ":" + key.getOurVersion() + ":" + key.getTheirUsername() + ":" + key.getTheirVersion() + ":" + (key.getHashed() ? "1" : "0");
+
 						byte[] value =  secrets.get(key);
 						if (value != null) {
 							map.put(skey, value);
@@ -403,7 +429,7 @@ public class StateController {
 		for (String key : loadedMap.keySet()) {
 			String[] split = key.split(":");
 
-			SharedSecretKey ssk = new SharedSecretKey(new VersionMap(split[0], split[1]), new VersionMap(split[2], split[3]));
+			SharedSecretKey ssk = new SharedSecretKey(new VersionMap(split[0], split[1]), new VersionMap(split[2], split[3]), (Integer.parseInt( split[4]) == 0 ? false : true));
 			byte[] value = loadedMap.get(key);
 			if (value != null) {
 				map.put(ssk, value);
@@ -436,12 +462,18 @@ public class StateController {
 
 			ByteArrayInputStream bais = new ByteArrayInputStream(cookieData);
 			ObjectInputStream ois = new ObjectInputStream(bais);
-			cookie = (Cookie) ois.readObject();
+			String cookieString = (String) ois.readObject();
+
+			cookie = Cookie.parse(HttpUrl.parse(SurespotConfiguration.getBaseUrl()), cookieString);
+
 			ois.close();
 			SurespotLog.d(TAG, "loaded cookie for username: %s", username);
 			if (cookie != null) {
 				return cookie;
 			}
+		}
+		catch (ClassCastException e) {
+			SurespotLog.e(TAG, e, "error loading cookie for %s", username);
 		}
 		catch (IOException e) {
 			SurespotLog.e(TAG, e, "error loading cookie for %s", username);			
@@ -464,7 +496,7 @@ public class StateController {
 				try {
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					ObjectOutputStream oos = new ObjectOutputStream(baos);
-					oos.writeObject(cookie);
+					oos.writeObject(cookie.toString());
 					oos.close();
 					baos.close();
 

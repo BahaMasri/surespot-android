@@ -1,25 +1,9 @@
 package com.twofours.surespot.common;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,10 +18,27 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 
 public class Utils {
 	private static Toast mToast;
@@ -76,6 +77,19 @@ public class Utils {
 		return byteBuffer.toByteArray();
 	}
 
+
+	public static void copyStreamToFile(InputStream in, File dst) throws IOException {
+		OutputStream out = new FileOutputStream(dst);
+
+		// Transfer bytes from in to out
+		byte[] buf = new byte[1024];
+		int len;
+		while ((len = in.read(buf)) > 0) {
+			out.write(buf, 0, len);
+		}
+		in.close();
+		out.close();
+	}
 	// public static byte[] base64Encode(byte[] buf) {
 	// return Base64.encode(buf, Base64.NO_WRAP | Base64.URL_SAFE);
 	// }
@@ -130,6 +144,20 @@ public class Utils {
 		editor.commit();
 
 	}
+
+
+	public static String getUserSharedPrefsString(Context context, String username, String key) {
+		SharedPreferences sp = context.getSharedPreferences(username, Context.MODE_PRIVATE);
+		return sp.getString(key, null);
+	}
+
+	public static boolean putUserSharedPrefsString(Context context, String username, String key, String value) {
+		SharedPreferences sp = context.getSharedPreferences(username, Context.MODE_PRIVATE);
+		Editor e = sp.edit();
+		e.putString(key, value);
+		return e.commit();
+	}
+
 
 	public static boolean getSharedPrefsBoolean(Context context, String key) {
 		SharedPreferences settings = context.getSharedPreferences(SurespotConstants.PrefNames.PREFS_FILE, android.content.Context.MODE_PRIVATE);
@@ -254,19 +282,8 @@ public class Utils {
 	 * @param leftText
 	 * @param rightText
 	 */
-	public static void configureActionBar(SherlockFragmentActivity activity, String leftText, String rightText, boolean home) {
-		final ActionBar actionBar = activity.getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(home);
-		actionBar.setDisplayShowCustomEnabled(true);
-		actionBar.setDisplayShowTitleEnabled(false);
-		View customNav = LayoutInflater.from(activity).inflate(R.layout.actionbar_title, null);
-		actionBar.setCustomView(customNav);
-		setActionBarTitles(activity, leftText, rightText);
-
-	}
-
-	public static void configureActionBar(SherlockActivity activity, String leftText, String rightText, boolean home) {
-		final ActionBar actionBar = activity.getSupportActionBar();
+	public static void configureActionBar(Activity activity, String leftText, String rightText, boolean home) {
+		final ActionBar actionBar = activity.getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(home);
 		actionBar.setDisplayShowCustomEnabled(true);
 		actionBar.setDisplayShowTitleEnabled(false);
@@ -275,70 +292,7 @@ public class Utils {
 		setActionBarTitles(activity, leftText, rightText);
 	}
 
-	public static void configureActionBar(SherlockPreferenceActivity activity, String leftText, String rightText, boolean home) {
-		final ActionBar actionBar = activity.getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(home);
-		actionBar.setDisplayShowCustomEnabled(true);
-		actionBar.setDisplayShowTitleEnabled(false);
-		View customNav = LayoutInflater.from(activity).inflate(R.layout.actionbar_title, null);
-		actionBar.setCustomView(customNav);
-		setActionBarTitles(activity, leftText, rightText);
-	}
-
-	// code for these should be identical
-	public static void setActionBarTitles(SherlockFragmentActivity activity, String leftText, String rightText) {
-		TextView navView = (TextView) activity.findViewById(R.id.nav);
-		TextView separatorView = (TextView) activity.findViewById(R.id.separator);
-		TextView userView = (TextView) activity.findViewById(R.id.user);
-
-		if (leftText != null && leftText.length() > 0) {
-			navView.setVisibility(View.VISIBLE);
-			separatorView.setVisibility(View.VISIBLE);
-			navView.setText(leftText);
-			userView.setGravity(Gravity.CENTER_VERTICAL);
-			LayoutParams params = (LayoutParams) userView.getLayoutParams();
-			params.setMargins(0, 0, 0, 0);
-			userView.setLayoutParams(params);
-		}
-		else {
-			navView.setVisibility(View.GONE);
-			separatorView.setVisibility(View.GONE);
-			navView.setText("");
-			userView.setGravity(Gravity.CENTER);
-			LayoutParams params = (LayoutParams) userView.getLayoutParams();
-			params.setMargins(7, 0, 0, 0);
-			userView.setLayoutParams(params);
-		}
-		userView.setText(rightText);
-	}
-
-	public static void setActionBarTitles(SherlockActivity activity, String leftText, String rightText) {
-		TextView navView = (TextView) activity.findViewById(R.id.nav);
-		TextView separatorView = (TextView) activity.findViewById(R.id.separator);
-		TextView userView = (TextView) activity.findViewById(R.id.user);
-
-		if (leftText != null && leftText.length() > 0) {
-			navView.setVisibility(View.VISIBLE);
-			separatorView.setVisibility(View.VISIBLE);
-			navView.setText(leftText);
-			userView.setGravity(Gravity.CENTER_VERTICAL);
-			LayoutParams params = (LayoutParams) userView.getLayoutParams();
-			params.setMargins(0, 0, 0, 0);
-			userView.setLayoutParams(params);
-		}
-		else {
-			navView.setVisibility(View.GONE);
-			separatorView.setVisibility(View.GONE);
-			navView.setText("");
-			userView.setGravity(Gravity.CENTER);
-			LayoutParams params = (LayoutParams) userView.getLayoutParams();
-			params.setMargins(7, 0, 0, 0);
-			userView.setLayoutParams(params);
-		}
-		userView.setText(rightText);
-	}
-
-	public static void setActionBarTitles(SherlockPreferenceActivity activity, String leftText, String rightText) {
+	public static void setActionBarTitles(Activity activity, String leftText, String rightText) {
 		TextView navView = (TextView) activity.findViewById(R.id.nav);
 		TextView separatorView = (TextView) activity.findViewById(R.id.separator);
 		TextView userView = (TextView) activity.findViewById(R.id.user);

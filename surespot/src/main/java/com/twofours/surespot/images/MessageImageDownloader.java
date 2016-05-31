@@ -16,24 +16,12 @@
 
 package com.twofours.surespot.images;
 
-import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InterruptedIOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -50,366 +38,347 @@ import com.twofours.surespot.common.Utils;
 import com.twofours.surespot.encryption.EncryptionController;
 import com.twofours.surespot.ui.UIUtils;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InterruptedIOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.lang.ref.WeakReference;
+
 /**
  * This helper class download images from the Internet and binds those with the provided ImageView.
- * 
+ * <p/>
  * <p>
  * It requires the INTERNET permission, which should be added to your application's manifest file.
  * </p>
- * 
+ * <p/>
  * A local cache of downloaded images is maintained internally to improve performance.
  */
 public class MessageImageDownloader {
-	private static final String TAG = "MessageImageDownloader";
-	private static BitmapCache mBitmapCache = new BitmapCache();
-	private static Handler mHandler = new Handler(MainActivity.getContext().getMainLooper());
-	private ChatAdapter mChatAdapter;
-	private static HashMap<ImageView, Object> mImageViews;
+    private static final String TAG = "MessageImageDownloader";
+    private static BitmapCache mBitmapCache = new BitmapCache();
+    private static Handler mHandler = new Handler(MainActivity.getContext().getMainLooper());
+    private ChatAdapter mChatAdapter;
 
-	static {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			mImageViews = new HashMap<ImageView, Object>();
-		}
-	}
 
-	public MessageImageDownloader(ChatAdapter chatAdapter) {
-		mChatAdapter = chatAdapter;
-	}
+    public MessageImageDownloader(ChatAdapter chatAdapter) {
+        mChatAdapter = chatAdapter;
+    }
 
-	/**
-	 * Download the specified image from the Internet and binds it to the provided ImageView. The binding is immediate if the image is found in the cache and
-	 * will be done asynchronously otherwise. A null bitmap will be associated to the ImageView if an error occurs.
-	 * 
-	 * @param url
-	 *            The URL of the image to download.
-	 * @param imageView
-	 *            The ImageView to bind the downloaded image to.
-	 */
-	public void download(ImageView imageView, SurespotMessage message) {
-		Bitmap bitmap = getBitmapFromCache(message.getData());
+    public void download(ImageView imageView, SurespotMessage message) {
+        String uri = TextUtils.isEmpty(message.getData()) ? message.getPlainData().toString() : message.getData();
 
-		// keep a handle on the image view so we can purge the bitmap later
-		if (mImageViews != null) {
-			mImageViews.put(imageView, null);
-		}
+        if (uri == null) {
+            return;
+        }
+        Bitmap bitmap = getBitmapFromCache(uri);
 
-		if (bitmap == null) {
-			SurespotLog.v(TAG, "bitmap not in cache: " + message.getData());
-			forceDownload(imageView, message);
-		}
-		else {
-			SurespotLog.v(TAG, "loading bitmap from cache: " + message.getData());
-			cancelPotentialDownload(imageView, message);
-			imageView.clearAnimation();
-			imageView.setImageBitmap(bitmap);
-			message.setLoaded(true);
-			message.setLoading(false);
 
-			UIUtils.updateDateAndSize(message, (View) imageView.getParent());
+        if (bitmap == null) {
+            SurespotLog.d(TAG, "bitmap not in memory cache: " + uri);
+            forceDownload(imageView, message);
+        }
+        else {
+            SurespotLog.d(TAG, "loading bitmap from memory cache: " + uri);
+            cancelPotentialDownload(imageView, message);
+            imageView.clearAnimation();
+            imageView.setImageBitmap(bitmap);
+            message.setLoaded(true);
+            message.setLoading(false);
 
-		}
-	}
+            UIUtils.updateDateAndSize(message, (View) imageView.getParent());
+
+        }
+    }
 
 	/*
-	 * Same as download but the image is always downloaded and the cache is not used. Kept private at the moment as its interest is not clear. private void
+     * Same as download but the image is always downloaded and the cache is not used. Kept private at the moment as its interest is not clear. private void
 	 * forceDownload(String url, ImageView view) { forceDownload(url, view, null); }
 	 */
 
-	/**
-	 * Same as download but the image is always downloaded and the cache is not used. Kept private at the moment as its interest is not clear.
-	 */
-	private void forceDownload(ImageView imageView, SurespotMessage message) {
-		if (cancelPotentialDownload(imageView, message)) {
-			BitmapDownloaderTask task = new BitmapDownloaderTask(imageView, message);
-			DownloadedDrawable downloadedDrawable = new DownloadedDrawable(task, SurespotConfiguration.getImageDisplayHeight());
-			imageView.setImageDrawable(downloadedDrawable);
-			message.setLoaded(false);
-			message.setLoading(true);
-			SurespotApplication.THREAD_POOL_EXECUTOR.execute(task);
-		}
-	}
+    /**
+     * Same as download but the image is always downloaded and the cache is not used. Kept private at the moment as its interest is not clear.
+     */
+    private void forceDownload(ImageView imageView, SurespotMessage message) {
+        if (cancelPotentialDownload(imageView, message)) {
+            BitmapDownloaderTask task = new BitmapDownloaderTask(imageView, message);
+            DownloadedDrawable downloadedDrawable = new DownloadedDrawable(task, SurespotConfiguration.getImageDisplayHeight());
+            imageView.setImageDrawable(downloadedDrawable);
+            message.setLoaded(false);
+            message.setLoading(true);
+            SurespotApplication.THREAD_POOL_EXECUTOR.execute(task);
+        }
+    }
 
-	/**
-	 * Returns true if the current download has been canceled or if there was no download in progress on this image view. Returns false if the download in
-	 * progress deals with the same url. The download is not stopped in that case.
-	 */
-	private boolean cancelPotentialDownload(ImageView imageView, SurespotMessage message) {
-		BitmapDownloaderTask bitmapDownloaderTask = getBitmapDownloaderTask(imageView);
+    /**
+     * Returns true if the current download has been canceled or if there was no download in progress on this image view. Returns false if the download in
+     * progress deals with the same url. The download is not stopped in that case.
+     */
+    private boolean cancelPotentialDownload(ImageView imageView, SurespotMessage message) {
+        BitmapDownloaderTask bitmapDownloaderTask = getBitmapDownloaderTask(imageView);
 
-		if (bitmapDownloaderTask != null) {
-			SurespotMessage taskMessage = bitmapDownloaderTask.mMessage;
-			if ((taskMessage == null) || (!taskMessage.equals(message))) {
-				bitmapDownloaderTask.cancel();
-			}
-			else {
-				// The same URL is already being downloaded.
-				return false;
-			}
-		}
-		return true;
-	}
+        if (bitmapDownloaderTask != null) {
+            SurespotMessage taskMessage = bitmapDownloaderTask.mMessage;
+            if ((taskMessage == null) || (!taskMessage.equals(message))) {
+                bitmapDownloaderTask.cancel();
+            }
+            else {
+                // The same URL is already being downloaded.
+                return false;
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * @param imageView
-	 *            Any imageView
-	 * @return Retrieve the currently active download task (if any) associated with this imageView. null if there is no such task.
-	 */
-	public BitmapDownloaderTask getBitmapDownloaderTask(ImageView imageView) {
-		if (imageView != null) {
-			Drawable drawable = imageView.getDrawable();
-			if (drawable instanceof DownloadedDrawable) {
-				DownloadedDrawable downloadedDrawable = (DownloadedDrawable) drawable;
-				return downloadedDrawable.getBitmapDownloaderTask();
-			}
-		}
-		return null;
-	}
+    /**
+     * @param imageView Any imageView
+     * @return Retrieve the currently active download task (if any) associated with this imageView. null if there is no such task.
+     */
+    public BitmapDownloaderTask getBitmapDownloaderTask(ImageView imageView) {
+        if (imageView != null) {
+            Drawable drawable = imageView.getDrawable();
+            if (drawable instanceof DownloadedDrawable) {
+                DownloadedDrawable downloadedDrawable = (DownloadedDrawable) drawable;
+                return downloadedDrawable.getBitmapDownloaderTask();
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * The actual AsyncTask that will asynchronously download the image.
-	 */
-	class BitmapDownloaderTask implements Runnable {
-		private SurespotMessage mMessage;
-		private boolean mCancelled;
+    /**
+     * The actual AsyncTask that will asynchronously download the image.
+     */
+    class BitmapDownloaderTask implements Runnable {
+        private SurespotMessage mMessage;
+        private boolean mCancelled;
 
-		public SurespotMessage getMessage() {
-			return mMessage;
-		}
+        public SurespotMessage getMessage() {
+            return mMessage;
+        }
 
-		private final WeakReference<ImageView> imageViewReference;
+        private final WeakReference<ImageView> imageViewReference;
 
-		public BitmapDownloaderTask(ImageView imageView, SurespotMessage message) {
-			mMessage = message;
-			imageViewReference = new WeakReference<ImageView>(imageView);
-		}
+        public BitmapDownloaderTask(ImageView imageView, SurespotMessage message) {
+            mMessage = message;
+            imageViewReference = new WeakReference<ImageView>(imageView);
+        }
 
-		public void cancel() {
-			mCancelled = true;
-		}
+        public void cancel() {
+            mCancelled = true;
+        }
 
-		@Override
-		public void run() {
-			Bitmap bitmap = null;
-			InputStream imageStream = null;
+        @Override
+        public void run() {
+            if (mCancelled) {
+                return;
+            }
 
-			if (mMessage.getData().startsWith("file")) {
-				try {
-					imageStream = MainActivity.getContext().getContentResolver().openInputStream(Uri.parse(mMessage.getData()));
-				}
-				catch (FileNotFoundException e) {
-					SurespotLog.w(TAG, e, "MessageImage DownloaderTask");
-				}
-			}
-			else {
-				imageStream = MainActivity.getNetworkController().getFileStream(MainActivity.getContext(), mMessage.getData());
-			}
+            Bitmap bitmap = null;
 
-			if (mCancelled) {
-				try {
-					if (imageStream != null) {
-						imageStream.close();
-					}
-				}
-				catch (IOException e) {
-					SurespotLog.w(TAG, e, "MessageImage DownloaderTask");
-				}
-				return;
-			}
+            //if we have encrypted url (local or not)
+            if (!TextUtils.isEmpty(getMessage().getData())) {
 
-			if (!mCancelled && imageStream != null) {
-				PipedOutputStream out = new PipedOutputStream();
-				PipedInputStream inputStream = null;
-				try {
-					inputStream = new PipedInputStream(out);
 
-					EncryptionController.runDecryptTask(mMessage.getOurVersion(), mMessage.getOtherUser(), mMessage.getTheirVersion(), mMessage.getIv(),
-							new BufferedInputStream(imageStream), out);
+                InputStream encryptedImageStream = null;
 
-					if (mCancelled) {
-						mMessage.setLoaded(true);
-						mMessage.setLoading(false);
-						mChatAdapter.checkLoaded();
-						return;
-					}
+                //check disk cache before going to network
+                try {
 
-					byte[] bytes = Utils.inputStreamToBytes(inputStream);
-					if (mCancelled) {
-						mMessage.setLoaded(true);
-						mMessage.setLoading(false);
-						mChatAdapter.checkLoaded();
-						return;
-					}
+                    encryptedImageStream = SurespotApplication.getFileCacheController().getEntry(mMessage.getData());
+                    if (encryptedImageStream != null) {
+                        SurespotLog.d(TAG, "got cached file entry for: %s,", mMessage.getData());
+                    }
+                }
+                catch (IOException e) {
+                    SurespotLog.w(TAG, e, "error getting cached file entry for: %s,", mMessage.getData());
+                }
 
-					bitmap = ChatUtils.getSampledImage(bytes);
-				}
-				catch (InterruptedIOException ioe) {
+                if (encryptedImageStream == null) {
+                    SurespotLog.d(TAG, "no cached file entry, making http call for: %s,", mMessage.getData());
+                    encryptedImageStream = SurespotApplication.getNetworkController().getFileStream(MainActivity.getContext(), mMessage.getData());
+                }
 
-					SurespotLog.w(TAG, ioe, "MessageImage ioe");
+                if (mCancelled) {
+                    try {
+                        if (encryptedImageStream != null) {
+                            encryptedImageStream.close();
+                        }
+                    }
+                    catch (IOException e) {
+                        SurespotLog.w(TAG, e, "MessageImage DownloaderTask");
+                    }
+                    return;
+                }
 
-				}
-				catch (IOException e) {
-					SurespotLog.w(TAG, e, "MessageImage e");
-				}
-				finally {
+                if (!mCancelled && encryptedImageStream != null) {
+                    PipedOutputStream out = new PipedOutputStream();
+                    PipedInputStream inputStream = null;
+                    try {
+                        inputStream = new PipedInputStream(out);
 
-					try {
-						if (imageStream != null) {
-							imageStream.close();
-						}
-					}
-					catch (IOException e) {
-						SurespotLog.w(TAG, e, "MessageImage DownloaderTask");
-					}
+                        EncryptionController.runDecryptTask(mMessage.getOurVersion(), mMessage.getOtherUser(), mMessage.getTheirVersion(), mMessage.getIv(), mMessage.isHashed(),
+                                new BufferedInputStream(encryptedImageStream), out);
 
-					try {
-						if (inputStream != null) {
-							inputStream.close();
-						}
-					}
-					catch (IOException e) {
-						SurespotLog.w(TAG, e, "MessageImage DownloaderTask");
-					}
-				}
-			}
+                        if (mCancelled) {
+                            mMessage.setLoaded(true);
+                            mMessage.setLoading(false);
+                            mChatAdapter.checkLoaded();
+                            return;
+                        }
 
-			mMessage.setLoaded(true);
-			mMessage.setLoading(false);
+                        byte[] bytes = Utils.inputStreamToBytes(inputStream);
+                        if (mCancelled) {
+                            mMessage.setLoaded(true);
+                            mMessage.setLoading(false);
+                            mChatAdapter.checkLoaded();
+                            return;
+                        }
 
-			final Bitmap finalBitmap = bitmap;
+                        bitmap = ChatUtils.getSampledImage(bytes);
+                    }
+                    catch (InterruptedIOException ioe) {
 
-			if (imageViewReference != null) {
-				final ImageView imageView = imageViewReference.get();
-				final BitmapDownloaderTask bitmapDownloaderTask = getBitmapDownloaderTask(imageView);
-				// Change bitmap only if this process is still associated with it
-				// Or if we don't use any bitmap to task association (NO_DOWNLOADED_DRAWABLE mode)
-				if ((BitmapDownloaderTask.this == bitmapDownloaderTask)) {
-					mHandler.post(new Runnable() {
+                        SurespotLog.w(TAG, ioe, "MessageImage ioe");
 
-						@Override
-						public void run() {
+                    }
+                    catch (IOException e) {
+                        SurespotLog.w(TAG, e, "MessageImage e");
+                    }
+                    finally {
 
-							if (finalBitmap != null) {
+                        try {
+                            if (encryptedImageStream != null) {
+                                encryptedImageStream.close();
+                            }
+                        }
+                        catch (IOException e) {
+                            SurespotLog.w(TAG, e, "MessageImage DownloaderTask");
+                        }
 
-								MessageImageDownloader.addBitmapToCache(mMessage.getData(), finalBitmap);
+                        try {
+                            if (inputStream != null) {
+                                inputStream.close();
+                            }
+                        }
+                        catch (IOException e) {
+                            SurespotLog.w(TAG, e, "MessageImage DownloaderTask");
+                        }
+                    }
+                }
+            }
+            else if (!TextUtils.isEmpty(mMessage.getPlainData())) {
+                //load unencrypted image from disk
+                try {
+                    bitmap = ChatUtils.getSampledImage(Utils.inputStreamToBytes(new FileInputStream(Uri.parse(mMessage.getPlainData().toString()).getPath())));
+                    SurespotLog.d(TAG, "loaded unencrypted bitmap from: %s, null: %b", mMessage.getPlainData().toString(), bitmap == null);
+                }
 
-								Drawable drawable = imageView.getDrawable();
-								if (drawable instanceof DownloadedDrawable) {
+                catch (IOException e) {
+                    SurespotLog.w(TAG, e, "MessageImageDownloaderTask loading unencrypted image from disk");
+                }
+            }
 
-									imageView.clearAnimation();
-									Animation fadeIn = AnimationUtils.loadAnimation(imageView.getContext(), android.R.anim.fade_in);// new
-																																	// AlphaAnimation(0,
-																																	// 1);
-									imageView.startAnimation(fadeIn);
-								}
+            mMessage.setLoaded(true);
+            mMessage.setLoading(false);
 
-								imageView.setImageBitmap(finalBitmap);
-								imageView.getLayoutParams().height = SurespotConfiguration.getImageDisplayHeight();
+            final Bitmap finalBitmap = bitmap;
 
-								UIUtils.updateDateAndSize(mMessage, (View) imageView.getParent());
-								mChatAdapter.checkLoaded();
-							}
-							else {
-								//TODO set error image
-								imageView.setImageDrawable(null);
-							}
-						}
-					});
-				}
+            if (imageViewReference != null) {
+                final ImageView imageView = imageViewReference.get();
+                final BitmapDownloaderTask bitmapDownloaderTask = getBitmapDownloaderTask(imageView);
+                // Change bitmap only if this process is still associated with it
+                // Or if we don't use any bitmap to task association (NO_DOWNLOADED_DRAWABLE mode)
+                if ((BitmapDownloaderTask.this == bitmapDownloaderTask)) {
+                    mHandler.post(new Runnable() {
 
-			}
+                        @Override
+                        public void run() {
 
-		}
-	}
+                            if (finalBitmap != null) {
 
-	/**
-	 * A fake Drawable that will be attached to the imageView while the download is in progress.
-	 * 
-	 * <p>
-	 * Contains a reference to the actual download task, so that a download task can be stopped if a new binding is required, and makes sure that only the last
-	 * started download process can bind its result, independently of the download finish order.
-	 * </p>
-	 */
-	public static class DownloadedDrawable extends ColorDrawable {
-		private final WeakReference<BitmapDownloaderTask> bitmapDownloaderTaskReference;
-		private int mHeight;
+                                MessageImageDownloader.addBitmapToCache(mMessage.getData(), finalBitmap);
 
-		public DownloadedDrawable(BitmapDownloaderTask bitmapDownloaderTask, int height) {
-			mHeight = height;
-			bitmapDownloaderTaskReference = new WeakReference<BitmapDownloaderTask>(bitmapDownloaderTask);
-		}
+                                Drawable drawable = imageView.getDrawable();
+                                if (drawable instanceof DownloadedDrawable) {
 
-		public BitmapDownloaderTask getBitmapDownloaderTask() {
-			return bitmapDownloaderTaskReference.get();
-		}
+                                    imageView.clearAnimation();
+                                    Animation fadeIn = AnimationUtils.loadAnimation(imageView.getContext(), android.R.anim.fade_in);// new
+                                    // AlphaAnimation(0,
+                                    // 1);
+                                    imageView.startAnimation(fadeIn);
+                                }
 
-		/**
-		 * Force ImageView to be a certain height
-		 */
-		@Override
-		public int getIntrinsicHeight() {
+                                imageView.setImageBitmap(finalBitmap);
+                                imageView.getLayoutParams().height = SurespotConfiguration.getImageDisplayHeight();
 
-			return mHeight;
-		}
+                                UIUtils.updateDateAndSize(mMessage, (View) imageView.getParent());
+                                mChatAdapter.checkLoaded();
+                            }
+                            else {
+                                //TODO set error image
+                                imageView.setImageDrawable(null);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
 
-	}
+    /**
+     * A fake Drawable that will be attached to the imageView while the download is in progress.
+     * <p/>
+     * <p>
+     * Contains a reference to the actual download task, so that a download task can be stopped if a new binding is required, and makes sure that only the last
+     * started download process can bind its result, independently of the download finish order.
+     * </p>
+     */
+    public static class DownloadedDrawable extends ColorDrawable {
+        private final WeakReference<BitmapDownloaderTask> bitmapDownloaderTaskReference;
+        private int mHeight;
 
-	/**
-	 * Adds this bitmap to the cache.
-	 * 
-	 * @param bitmap
-	 *            The newly downloaded bitmap.
-	 */
-	public static void addBitmapToCache(String key, Bitmap bitmap) {
-		if (bitmap != null) {
-			mBitmapCache.addBitmapToMemoryCache(key, bitmap);
-		}
-	}
+        public DownloadedDrawable(BitmapDownloaderTask bitmapDownloaderTask, int height) {
+            mHeight = height;
+            bitmapDownloaderTaskReference = new WeakReference<BitmapDownloaderTask>(bitmapDownloaderTask);
+        }
 
-	/**
-	 * @param url
-	 *            The URL of the image that will be retrieved from the cache.
-	 * @return The cached bitmap or null if it was not found.
-	 */
-	private static Bitmap getBitmapFromCache(String key) {
-		return mBitmapCache.getBitmapFromMemCache(key);
-	}
+        public BitmapDownloaderTask getBitmapDownloaderTask() {
+            return bitmapDownloaderTaskReference.get();
+        }
 
-	public static void evictCache() {
-		// evict cache on gingerbread because bitmap garbage collection is fucked
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB && mImageViews != null) {
+        /**
+         * Force ImageView to be a certain height
+         */
+        @Override
+        public int getIntrinsicHeight() {
 
-			ArrayList<Bitmap> preserve = new ArrayList<Bitmap>();
+            return mHeight;
+        }
 
-			// make sure we're not using the bitmaps before we recycle
-			for (ImageView view : mImageViews.keySet()) {
-				// don't evict visible bitmaps
-				if (!view.isShown()) {
-					view.setImageDrawable(null);
-				}
-				else {
-					Drawable drawable = view.getDrawable();
-					if (drawable instanceof BitmapDrawable) {
-						Bitmap bmp = ((BitmapDrawable) view.getDrawable()).getBitmap();
-						preserve.add(bmp);
-					}
-				}
-			}
+    }
 
-			mImageViews.clear();
-			mBitmapCache.evictExcept(preserve);
-			preserve.clear();
-		}
-		else {
-			// otherwise just trim it
-			mBitmapCache.trimToSize(10);
-		}
-	}
+    /**
+     * Adds this bitmap to the cache.
+     *
+     * @param bitmap The newly downloaded bitmap.
+     */
+    public static void addBitmapToCache(String key, Bitmap bitmap) {
+        if (bitmap != null) {
+            mBitmapCache.addBitmapToMemoryCache(key, bitmap);
+        }
+    }
 
-	public static void copyAndRemoveCacheEntry(String sourceKey, String destKey) {
-		Bitmap bitmap = mBitmapCache.getBitmapFromMemCache(sourceKey);
-		if (bitmap != null) {
-			mBitmapCache.remove(sourceKey);
-			mBitmapCache.addBitmapToMemoryCache(destKey, bitmap);
-		}
-	}
+    private static Bitmap getBitmapFromCache(String key) {
+        return mBitmapCache.getBitmapFromMemCache(key);
+    }
+
+    public static void moveCacheEntry(String sourceKey, String destKey) {
+        Bitmap bitmap = mBitmapCache.getBitmapFromMemCache(sourceKey);
+        if (bitmap != null) {
+            mBitmapCache.remove(sourceKey);
+            mBitmapCache.addBitmapToMemoryCache(destKey, bitmap);
+        }
+    }
 }

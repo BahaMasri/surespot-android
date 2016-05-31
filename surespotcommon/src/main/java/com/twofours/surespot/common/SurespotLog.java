@@ -1,7 +1,6 @@
 package com.twofours.surespot.common;
 
 import android.util.Log;
-import ch.boye.httpclientandroidlib.client.HttpResponseException;
 
 public class SurespotLog {
 	private static boolean mLogging = SurespotConstants.LOGGING;
@@ -37,6 +36,15 @@ public class SurespotLog {
 
 	}
 
+	public static void d(String tag, String msg) {
+		if (mLogging) {
+			if (msg == null) msg = "";
+			Log.d(tag, tag + ": " + msg);
+		}
+
+	}
+
+
 	public static void d(String tag, String msg, Object... msgArgs) {
 		if (mLogging) {
 			if (msg == null) msg = "";
@@ -53,20 +61,20 @@ public class SurespotLog {
 			Log.e(tag, message, tr);
 		}
 
-		if (tr instanceof HttpResponseException) {
-			HttpResponseException error = (HttpResponseException) tr;
-			int statusCode = error.getStatusCode();
-
-			// no need to report these
-			switch (statusCode) {
-			case 400:
-			case 401:
-			case 403:
-			case 404:
-			case 409:
-				return;
-			}
-		}
+//		if (tr instanceof HttpResponseException) {
+//			HttpResponseException error = (HttpResponseException) tr;
+//			int statusCode = error.getStatusCode();
+//
+//			// no need to report these
+//			switch (statusCode) {
+//			case 400:
+//			case 401:
+//			case 403:
+//			case 404:
+//			case 409:
+//				return;
+//			}
+//		}
 	}
 
 	public static void i(String tag, String msg, Object... msgArgs) {

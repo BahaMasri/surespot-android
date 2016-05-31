@@ -1,5 +1,31 @@
 package com.twofours.surespot;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.support.multidex.MultiDex;
+
+import com.twofours.surespot.billing.BillingController;
+import com.twofours.surespot.chat.ChatController;
+import com.twofours.surespot.chat.EmojiParser;
+import com.twofours.surespot.common.FileUtils;
+import com.twofours.surespot.common.SurespotConfiguration;
+import com.twofours.surespot.common.SurespotConstants;
+import com.twofours.surespot.common.SurespotLog;
+import com.twofours.surespot.common.Utils;
+import com.twofours.surespot.images.FileCacheController;
+import com.twofours.surespot.network.IAsyncCallback;
+import com.twofours.surespot.network.NetworkController;
+import com.twofours.surespot.services.CommunicationService;
+import com.twofours.surespot.services.CredentialCachingService;
+
+import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
+
+import java.io.IOException;
 import java.security.Security;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
@@ -9,46 +35,35 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.acra.ACRA;
-import org.acra.ReportingInteractionMode;
-import org.acra.annotation.ReportsCrashes;
-
-import android.app.Application;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.support.multidex.MultiDex;
-import android.support.multidex.MultiDexApplication;
-
-import com.google.android.gcm.GCMRegistrar;
-import com.twofours.surespot.billing.BillingController;
-import com.twofours.surespot.chat.EmojiParser;
-import com.twofours.surespot.common.FileUtils;
-import com.twofours.surespot.common.SurespotConfiguration;
-import com.twofours.surespot.common.SurespotConstants;
-import com.twofours.surespot.common.SurespotLog;
-import com.twofours.surespot.common.Utils;
-import com.twofours.surespot.services.CredentialCachingService;
-
-@ReportsCrashes(mode = ReportingInteractionMode.DIALOG, formKey = "", // will not be used
+@ReportsCrashes(mode = ReportingInteractionMode.DIALOG,  // will not be used
 formUri = "https://www.surespot.me:3000/logs/surespot", resToastText = R.string.crash_toast_text, resDialogText = R.string.crash_dialog_text, resDialogOkToast = R.string.crash_dialog_ok_toast, resDialogCommentPrompt = R.string.crash_dialog_comment_prompt)
-// optional
-public class SurespotApplication extends MultiDexApplication {
+public class SurespotApplication extends Application {
 	private static final String TAG = "SurespotApplication";
 	private static CredentialCachingService mCredentialCachingService;
+	private static CommunicationService mCommunicationService;
 	private static StateController mStateController = null;
 	private static String mVersion;
 	private static BillingController mBillingController;
 	private static String mUserAgent;
+	private static NetworkController mNetworkController = null;
+	private static ChatController mChatController = null;
+	private static Context mContext;
 
 	public static final int CORE_POOL_SIZE = 24;
 	public static final int MAXIMUM_POOL_SIZE = Integer.MAX_VALUE;
 	public static final int KEEP_ALIVE = 1;
+	private static FileCacheController mFileCacheController;
+
+	public static ChatController getChatController() {
+		return mChatController;
+	}
+
+	public static void setChatController(ChatController chatController) {
+		SurespotApplication.mChatController = chatController;
+	}
 
 
-    protected void attachBaseContext(Context base) {
+	protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
@@ -73,44 +88,7 @@ public class SurespotApplication extends MultiDexApplication {
 	public void onCreate() {
 		super.onCreate();
 
-		// Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-		//
-		// @Override
-		// public void uncaughtException(Thread thread, Throwable ex) {
-		//
-		// StringWriter stackTrace = new StringWriter();
-		// ex.printStackTrace(new PrintWriter(stackTrace));
-		// System.err.println(stackTrace);
-		//
-		// new Thread() {
-		// @Override
-		// public void run() {
-		// Looper.prepare();
-		// Toast.makeText(SurespotApplication.this, "surespot just crashed. :(", Toast.LENGTH_SHORT).show();
-		// Looper.loop();
-		// };
-		// }.start();
-		//
-		//
-		// System.exit(1);
-		//
-		// }
-		// });
-
-		// String lastUser = Utils.getSharedPrefsString(this, SurespotConstants.PrefNames.LAST_USER);
-		// if (lastUser != null) {
-		// SurespotLog.v(TAG, "using shared prefs for user %s for ACRA", lastUser);
-		// ACRAConfiguration config = ACRA.getNewDefaultConfig(this);
-		// config.setSharedPreferenceName(lastUser);
-		// config.setSharedPreferenceMode(Context.MODE_PRIVATE);
-		// ACRA.setConfig(config);
-		//
-		// }
-		//
-		// boolean enableACRA = ACRA.getACRASharedPreferences().getBoolean(ACRA.PREF_ENABLE_ACRA, false);
-		// if (!enableACRA) {
-		//
-		// }
+		mContext = getApplicationContext();
 
 		ACRA.init(this);
 
@@ -123,9 +101,10 @@ public class SurespotApplication extends MultiDexApplication {
 			info = manager.getPackageInfo(this.getPackageName(), 0);
 			mVersion = info.versionName;
 		}
-		catch (NameNotFoundException e) {
+		catch (PackageManager.NameNotFoundException e) {
 			mVersion = "unknown";
 		}
+
 
 		mUserAgent = "surespot/" + SurespotApplication.getVersion() + " (Android)";
 
@@ -133,35 +112,39 @@ public class SurespotApplication extends MultiDexApplication {
 
 		SurespotConfiguration.LoadConfigProperties(getApplicationContext());
 		mStateController = new StateController(this);
-
 		try {
-			// device without GCM throws exception
-			GCMRegistrar.checkDevice(this);
-			GCMRegistrar.checkManifest(this);
-
-			// final String regId = GCMRegistrar.getRegistrationId(this);
-			boolean registered = GCMRegistrar.isRegistered(this);
-			boolean registeredOnServer = GCMRegistrar.isRegisteredOnServer(this);
-			if (versionChanged(this) || !registered || !registeredOnServer) {
-				SurespotLog.v(TAG, "Registering for GCM.");
-				GCMRegistrar.register(this, GCMIntentService.SENDER_ID);
-			}
-			else {
-				SurespotLog.v(TAG, "GCM already registered.");
-			}
+			mFileCacheController = new FileCacheController(this);
 		}
-		catch (Exception e) {
-			SurespotLog.w(TAG, "onCreate", e);
+		catch (IOException e) {
+			SurespotLog.w(TAG, e, "could not create file cache controller");
 		}
 
-		// NetworkController.unregister(this, regId);
+		boolean oneTimeGotNoCase = Utils.getSharedPrefsBoolean(this, "66onetime");
+		if (!oneTimeGotNoCase) {
+
+			//wipe the cache
+			StateController.clearCache(this, new IAsyncCallback<Void>() {
+				@Override
+				public void handleResponse(Void result) {
+					SurespotLog.d(TAG, "cache cleared");
+					Utils.putSharedPrefsBoolean(SurespotApplication.this, "66onetime", true);
+				}
+			});
+
+			//set the default theme to black
+			//Utils.putSharedPrefsBoolean(SurespotApplication.this,SurespotConstants.PrefNames.BLACK, true);
+		}
+
 
 		SurespotLog.v(TAG, "starting cache service");
 		Intent cacheIntent = new Intent(this, CredentialCachingService.class);
-
 		startService(cacheIntent);
+
+		SurespotLog.v(TAG, "starting chat transmission service");
+		Intent chatIntent = new Intent(this, CommunicationService.class);
+		startService(chatIntent);
+
 		mBillingController = new BillingController(this);
-						
 		FileUtils.wipeImageCaptureDir(this);
 	}
 
@@ -184,8 +167,28 @@ public class SurespotApplication extends MultiDexApplication {
 		return mCredentialCachingService;
 	}
 
+	public static NetworkController getNetworkController() {
+		if (mNetworkController == null) {
+			mNetworkController = new NetworkController();
+		}
+		return mNetworkController;
+	}
+
+
+
+	public static CommunicationService getCommunicationService() {
+		if (mCommunicationService == null) {
+			SurespotLog.w(TAG, "mChatTransmissionServiceWasNull", new NullPointerException("mCommunicationService"));
+		}
+		return mCommunicationService;
+	}
+
 	public static void setCachingService(CredentialCachingService credentialCachingService) {
 		SurespotApplication.mCredentialCachingService = credentialCachingService;
+	}
+
+	public static void setCommunicationService(CommunicationService communicationService) {
+		SurespotApplication.mCommunicationService = communicationService;
 	}
 
 	public static StateController getStateController() {
@@ -204,4 +207,15 @@ public class SurespotApplication extends MultiDexApplication {
 		return mUserAgent;
 	}
 
+	public static CommunicationService getCommunicationServiceNoThrow() {
+		return mCommunicationService;
+	}
+
+	public static Context getContext() {
+		return mContext;
+	}
+
+	public static FileCacheController getFileCacheController() {
+		return mFileCacheController;
+	}
 }

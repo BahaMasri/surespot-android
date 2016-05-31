@@ -1,25 +1,23 @@
 package com.twofours.surespot.friends;
 
-import java.lang.reflect.Field;
-
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.twofours.surespot.R;
+import com.twofours.surespot.SurespotApplication;
 import com.twofours.surespot.activities.MainActivity;
 import com.twofours.surespot.chat.ChatController;
 import com.twofours.surespot.identity.IdentityController;
@@ -27,7 +25,7 @@ import com.twofours.surespot.network.IAsyncCallback;
 import com.twofours.surespot.network.IAsyncCallbackTriplet;
 import com.twofours.surespot.ui.UIUtils;
 
-public class FriendFragment extends SherlockFragment {
+public class FriendFragment extends Fragment {
 	private FriendAdapter mMainAdapter;
 
 	protected static final String TAG = "FriendFragment";
@@ -46,7 +44,7 @@ public class FriendFragment extends SherlockFragment {
 
 			@Override
 			public void onClick(View v) {
-				UIUtils.sendInvitation(getActivity(), MainActivity.getNetworkController());
+				UIUtils.sendInvitation(getActivity(), SurespotApplication.getNetworkController());
 
 			}
 		});
@@ -72,18 +70,19 @@ public class FriendFragment extends SherlockFragment {
 		ChatController chatController = getMainActivity().getChatController();
 		if (chatController != null) {
 			mMainAdapter = chatController.getFriendAdapter();
-			mMainAdapter.setItemListeners(mClickListener, mLongClickListener);
 
 			mListView.setAdapter(mMainAdapter);
+			mListView.setOnItemClickListener(mClickListener);
+			mListView.setOnItemLongClickListener(mLongClickListener);
 		}
 
 		return view;
 	}
 
-	OnClickListener mClickListener = new OnClickListener() {
+	AdapterView.OnItemClickListener mClickListener = new AdapterView.OnItemClickListener() {
 		@Override
-		public void onClick(View view) {
-			Friend friend = (Friend) view.getTag();
+		public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+			Friend friend = ((FriendAdapter.FriendViewHolder) view.getTag()).friend;
 			if (friend.isFriend()) {
 
 				ChatController chatController = getMainActivity().getChatController();
@@ -95,10 +94,11 @@ public class FriendFragment extends SherlockFragment {
 		}
 	};
 
-	OnLongClickListener mLongClickListener = new OnLongClickListener() {
+	AdapterView.OnItemLongClickListener mLongClickListener = new AdapterView.OnItemLongClickListener() {
 		@Override
-		public boolean onLongClick(View view) {
-			Friend friend = (Friend) view.getTag();
+		public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+			Friend friend = ((FriendAdapter.FriendViewHolder) view.getTag()).friend;
 
 			if (!friend.isInviter()) {
 				FriendMenuFragment dialog = new FriendMenuFragment();
@@ -109,7 +109,7 @@ public class FriendFragment extends SherlockFragment {
 					};
 				});
 
-				dialog.show(getActivity().getSupportFragmentManager(), "FriendMenuFragment");
+				dialog.show(getActivity().getFragmentManager(), "FriendMenuFragment");
 			}
 			return true;
 
@@ -197,23 +197,6 @@ public class FriendFragment extends SherlockFragment {
 		return (MainActivity) getActivity();
 	}
 
-	@Override
-	public void onDetach() {
-		super.onDetach();
-
-		try {
-			Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
-			childFragmentManager.setAccessible(true);
-			childFragmentManager.set(this, null);
-
-		}
-		catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
-		catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
 
 	@Override
 	public void onPause() {

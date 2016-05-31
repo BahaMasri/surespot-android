@@ -1,11 +1,11 @@
 package com.twofours.surespot.network;
+import okhttp3.Cookie;
 
-import ch.boye.httpclientandroidlib.cookie.Cookie;
-
-import com.loopj.android.http.AsyncHttpResponseHandler;
-
-public abstract class CookieResponseHandler extends AsyncHttpResponseHandler {
+public abstract class CookieResponseHandler  {
 
 	public abstract void onSuccess(int responseCode, String result, Cookie cookie);
+	public abstract void onFailure(Throwable arg0, int code, String content);
+
+
 
 }

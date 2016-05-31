@@ -1,13 +1,13 @@
 package com.twofours.surespot.friends;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.text.TextUtils;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import com.twofours.surespot.common.SurespotLog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Friend implements Comparable<Friend> {
 	public static final int INVITER = 32;
@@ -32,13 +32,15 @@ public class Friend implements Comparable<Friend> {
 	private String mAliasVersion;
 	private String mAliasIv;
 	private String mAliasPlain;
+	private boolean mAliasHashed;
+	private boolean mImageHashed;
 	private int mSelectedItem = -1;
 	private int mSelectedTop = 0;
 
 	public Friend(String name) {
 		mName = name;
 
-		SurespotLog.v(TAG, "constructor, friend: %s", this);
+		//SurespotLog.v(TAG, "constructor, friend: %s", this);
 	}
 
 	public String getName() {
@@ -61,7 +63,7 @@ public class Friend implements Comparable<Friend> {
 		else {
 			mLastViewedMessageId = mAvailableMessageId;
 		}
-		SurespotLog.v(TAG, "setLastViewedMessageId, lastViewedMessageId: %d, friend: %s", lastViewedMessageId, this);
+		//SurespotLog.v(TAG, "setLastViewedMessageId, lastViewedMessageId: %d, friend: %s", lastViewedMessageId, this);
 	}
 
 	public int getAvailableMessageId() {
@@ -79,7 +81,7 @@ public class Friend implements Comparable<Friend> {
 				setLastViewedMessageId(availableMessageId);
 			}
 		}
-		SurespotLog.v(TAG, "setAvailableMessageId, %d, friend: %s", availableMessageId, this);
+	//	SurespotLog.v(TAG, "setAvailableMessageId, %d, friend: %s", availableMessageId, this);
 	}
 
 	public int getAvailableMessageControlId() {
@@ -91,7 +93,7 @@ public class Friend implements Comparable<Friend> {
 			mAvailableMessageControlId = availableMessageControlId;
 		}
 
-		SurespotLog.v(TAG, "setAvailabeMessageControlId, %d, friend: %s", availableMessageControlId, this);
+	//	SurespotLog.v(TAG, "setAvailabeMessageControlId, %d, friend: %s", availableMessageControlId, this);
 	}
 
 	public int getLastReceivedMessageControlId() {
@@ -100,7 +102,7 @@ public class Friend implements Comparable<Friend> {
 
 	public void setLastReceivedMessageControlId(int lastReceivedMessageControlId) {
 		mLastReceivedMessageControlId = lastReceivedMessageControlId;
-		SurespotLog.v(TAG, "setLastReceivedMessageControlId, friend: %s", this);
+	//	SurespotLog.v(TAG, "setLastReceivedMessageControlId, friend: %s", this);
 	}
 
 	public void setChatActive(boolean set) {
@@ -112,7 +114,7 @@ public class Friend implements Comparable<Friend> {
 			mFlags &= ~CHAT_ACTIVE;
 		}
 
-		SurespotLog.v(TAG, "setChatActive, friend: %s", this);
+	//	SurespotLog.v(TAG, "setChatActive, friend: %s", this);
 	}
 
 	// public void setMessageActivity(boolean set) {
@@ -163,7 +165,7 @@ public class Friend implements Comparable<Friend> {
 		// preserve active flag #257
 		int active = mFlags & CHAT_ACTIVE;
 		mFlags = DELETED | active;
-		SurespotLog.v(TAG, "setDeleted, friend: %s", this);
+	//	SurespotLog.v(TAG, "setDeleted, friend: %s", this);
 	}
 
 	public boolean isDeleted() {
@@ -181,7 +183,7 @@ public class Friend implements Comparable<Friend> {
 			mFlags &= ~NEW_FRIEND;
 		}
 
-		SurespotLog.v(TAG, "setNewFriend, set %b, friend: %s", set, this);
+	//	SurespotLog.v(TAG, "setNewFriend, set %b, friend: %s", set, this);
 	}
 
 	public boolean isNewFriend() {
@@ -207,7 +209,7 @@ public class Friend implements Comparable<Friend> {
 
 	public void setFlags(int flags) {
 		mFlags = flags;
-		SurespotLog.v(TAG, "setInviter, friend: %s", this);
+	//	SurespotLog.v(TAG, "setInviter, friend: %s", this);
 	}
 
 	public String getImageUrl() {
@@ -336,12 +338,14 @@ public class Friend implements Comparable<Friend> {
 		this.setAliasData(friend.getAliasData());
 		this.setAliasIv(friend.getAliasIv());
 		this.setAliasVersion(friend.getAliasVersion());
+		this.setAliasHashed(friend.isAliasHashed());
+		this.setImageHashed(friend.isImageHashed());
 		// this.setSelectedItem(friend.getSelectedItem());
 		// this.setSelectedTop(friend.getSelectedTop());
 		// this.setChatActive(friend.isChatActive());
 		// this.setMessageActivity(friend.isMessageActivity());
 
-		SurespotLog.v(TAG, "update <Friend>, friend: %s", this);
+	//	SurespotLog.v(TAG, "update <Friend>, friend: %s", this);
 	}
 
 	public static Friend toFriend(JSONObject jsonFriend) throws JSONException {
@@ -354,6 +358,9 @@ public class Friend implements Comparable<Friend> {
 		friend.setAliasData(jsonFriend.optString("aliasData"));
 		friend.setAliasVersion(jsonFriend.optString("aliasVersion"));
 		friend.setAliasIv(jsonFriend.optString("aliasIv"));
+
+		friend.setAliasHashed(jsonFriend.optBoolean("aliasHashed", false));
+		friend.setImageHashed(jsonFriend.optBoolean("imageHashed", false));
 
 
 		friend.setFlags(jsonFriend.optInt("flags"));
@@ -382,6 +389,8 @@ public class Friend implements Comparable<Friend> {
 			jsonFriend.put("aliasVersion", this.getAliasVersion());
 			jsonFriend.put("aliasData", this.getAliasData());
 			jsonFriend.put("aliasIv", this.getAliasIv());
+			jsonFriend.put("aliasHashed", this.isAliasHashed());
+			jsonFriend.put("imageHashed", this.isImageHashed());
 
 			jsonFriend.put("selectedItem", this.getSelectedItem());
 			jsonFriend.put("selectedTop", this.getSelectedTop());
@@ -482,7 +491,20 @@ public class Friend implements Comparable<Friend> {
 	public boolean hasFriendAliasAssigned() {
 		return !TextUtils.isEmpty(getAliasIv()) && !TextUtils.isEmpty(getAliasVersion()) && !TextUtils.isEmpty(getAliasData());
 	}
-	
-	
 
+	public boolean isAliasHashed() {
+		return mAliasHashed;
+	}
+
+	public void setAliasHashed(boolean aliasHashed) {
+		this.mAliasHashed = aliasHashed;
+	}
+
+	public boolean isImageHashed() {
+		return mImageHashed;
+	}
+
+	public void setImageHashed(boolean imageHashed) {
+		this.mImageHashed = imageHashed;
+	}
 };

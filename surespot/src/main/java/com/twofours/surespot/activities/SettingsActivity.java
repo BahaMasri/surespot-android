@@ -1,12 +1,5 @@
 package com.twofours.surespot.activities;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -14,14 +7,15 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -29,8 +23,6 @@ import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
-import com.actionbarsherlock.view.MenuItem;
 import com.twofours.surespot.R;
 import com.twofours.surespot.chat.ChatUtils;
 import com.twofours.surespot.common.SurespotConfiguration;
@@ -41,21 +33,21 @@ import com.twofours.surespot.identity.IdentityController;
 import com.twofours.surespot.network.IAsyncCallback;
 import com.twofours.surespot.ui.UIUtils;
 
-public class SettingsActivity extends SherlockPreferenceActivity {
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
+public class SettingsActivity extends PreferenceActivity {
 	private static final String TAG = "SettingsActivity";
 	private Preference mBgImagePref;
 	private AlertDialog mHelpDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		UIUtils.setTheme(this);
 		super.onCreate(savedInstanceState);
-		OnPreferenceClickListener onPreferenceClickListener = new OnPreferenceClickListener() {
-
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				return true;
-			}
-		};
 
 		// TODO put in fragment0
 		final PreferenceManager prefMgr = getPreferenceManager();
@@ -65,12 +57,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
 			addPreferencesFromResource(R.xml.preferences);
 			Utils.configureActionBar(this, getString(R.string.settings), user, true);
-
-			prefMgr.findPreference("pref_notifications_enabled").setOnPreferenceClickListener(onPreferenceClickListener);
-			prefMgr.findPreference("pref_notifications_sound").setOnPreferenceClickListener(onPreferenceClickListener);
-			prefMgr.findPreference("pref_notifications_vibration").setOnPreferenceClickListener(onPreferenceClickListener);
-			prefMgr.findPreference("pref_notifications_led").setOnPreferenceClickListener(onPreferenceClickListener);
-
 			prefMgr.findPreference("pref_help").setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 				@Override
@@ -116,10 +102,24 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 					return true;
 				}
 			});
+			// global overrides
+//			boolean black = Utils.getSharedPrefsBoolean(this, SurespotConstants.PrefNames.BLACK);
+//			final CheckBoxPreference blackPref = (CheckBoxPreference) prefMgr.findPreference(SurespotConstants.PrefNames.BLACK);
+//			blackPref.setChecked(black);
+//			SurespotLog.d(TAG, "black is: %b",  black);
+//
+//			blackPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+//				@Override
+//				public boolean onPreferenceClick(Preference preference) {
+//					boolean newChecked = blackPref.isChecked();
+//					SurespotLog.d(TAG, "set black: %b", newChecked);
+//					Utils.putSharedPrefsBoolean(SettingsActivity.this, SurespotConstants.PrefNames.BLACK, newChecked);
+//					return true;
+//				}
+//			});
+
 
 			boolean stopCache = Utils.getSharedPrefsBoolean(this, "pref_stop_cache_logout");
-
-			// global overrides
 			final CheckBoxPreference stopCachePref = (CheckBoxPreference) prefMgr.findPreference("pref_stop_cache_logout_control");
 			stopCachePref.setChecked(stopCache);
 			SurespotLog.d(TAG, "read kill cache on logout: %b", stopCache);
@@ -134,7 +134,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 				}
 			});
 
-			// global overrides
 			boolean enableKeystore = Utils.getSharedPrefsBoolean(this, SurespotConstants.PrefNames.KEYSTORE_ENABLED);
 			final CheckBoxPreference enableKeystorePref = (CheckBoxPreference) prefMgr.findPreference("pref_enable_keystore_control");
 			enableKeystorePref.setChecked(enableKeystore);
@@ -215,12 +214,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	}
 
 	/** Sets up the action bar for an {@link PreferenceScreen} */
-	@SuppressLint("NewApi")
 	public static void initializeActionBar(PreferenceScreen preferenceScreen) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			return;
-		}
-
 		final Dialog dialog = preferenceScreen.getDialog();
 		if (dialog != null && dialog.getActionBar() != null) {
 			// Inialize the action bar
@@ -231,9 +225,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 			// Related Issue: https://code.google.com/p/android/issues/detail?id=4611
 
 			View homeBtn = dialog.findViewById(android.R.id.home);
-			if (homeBtn == null) {
-				homeBtn = dialog.findViewById(R.id.abs__home);
-			}
 
 			if (homeBtn != null) {
 				OnClickListener dismissDialogClickListener = new OnClickListener() {

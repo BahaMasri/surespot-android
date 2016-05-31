@@ -1,12 +1,5 @@
 package com.twofours.surespot.services;
 
-import java.security.PublicKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -17,7 +10,6 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat.Builder;
-import ch.boye.httpclientandroidlib.cookie.Cookie;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -35,6 +27,14 @@ import com.twofours.surespot.encryption.PublicKeys;
 import com.twofours.surespot.identity.IdentityController;
 import com.twofours.surespot.identity.SurespotIdentity;
 import com.twofours.surespot.ui.UIUtils;
+
+import java.security.PublicKey;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import okhttp3.Cookie;
 
 @SuppressLint("NewApi")
 public class CredentialCachingService extends Service {
@@ -75,13 +75,13 @@ public class CredentialCachingService extends Service {
 		CacheLoader<SharedSecretKey, byte[]> secretCacheLoader = new CacheLoader<SharedSecretKey, byte[]>() {
 			@Override
 			public byte[] load(SharedSecretKey key) throws Exception {
-				SurespotLog.i(TAG, "secretCacheLoader, ourVersion: %s, theirUsername: %s, theirVersion: %s", key.getOurVersion(), key.getTheirUsername(),
-						key.getTheirVersion());
+				SurespotLog.i(TAG, "secretCacheLoader, ourVersion: %s, theirUsername: %s, theirVersion: %s, hashed: %b", key.getOurVersion(), key.getTheirUsername(),
+						key.getTheirVersion(), key.getHashed());
 
 				try {
 					PublicKey publicKey = mPublicIdentities.get(new PublicKeyPairKey(new VersionMap(key.getTheirUsername(), key.getTheirVersion()))).getDHKey();
 					return EncryptionController.generateSharedSecretSync(getIdentity(null, key.getOurUsername(), null).getKeyPairDH(key.getOurVersion())
-							.getPrivate(), publicKey);
+							.getPrivate(), publicKey, key.getHashed());
 				}
 				catch (InvalidCacheLoadException e) {
 					SurespotLog.w(TAG, e, "secretCacheLoader");
@@ -98,8 +98,8 @@ public class CredentialCachingService extends Service {
 			@Override
 			public String load(String key) throws Exception {
 
-				String version = MainActivity.getNetworkController().getKeyVersionSync(key);
-				SurespotLog.v(TAG, "versionCacheLoader: retrieved keyversion from server for username: %s, version: %s", key, version);
+				String version = SurespotApplication.getNetworkController().getKeyVersionSync(key);
+				SurespotLog.d(TAG, "versionCacheLoader: retrieved keyversion from server for username: %s, version: %s", key, version);
 				return version;
 			}
 		};
@@ -187,13 +187,10 @@ public class CredentialCachingService extends Service {
 
 		boolean hasCookie = false;
 		Cookie cookie = getCookie(username);
-		Date date = new Date();
-		Date expire = new Date(date.getTime() - 60 * 60 * 1000);
 
-		// if the cookie expires within the hour make them login again
-		if (cookie != null && !cookie.isExpired(expire)) {
+		if (cookie != null)  {
 			hasCookie = true;
-			SurespotLog.d(TAG, "we have non expired cookie");
+			SurespotLog.d(TAG, "we have cookie");
 		}
 
 		boolean sessionSet = hasIdentity && (hasPassword || hasCookie);
@@ -255,11 +252,11 @@ public class CredentialCachingService extends Service {
 		return cookie;
 	}
 
-	public byte[] getSharedSecret(String ourVersion, String theirUsername, String theirVersion) {
+	public byte[] getSharedSecret(String ourVersion, String theirUsername, String theirVersion, boolean hashed) {
 		if (getLoggedInUser() != null) {
 			// get the cache for this user
 			try {
-				return mSharedSecrets.get(new SharedSecretKey(new VersionMap(getLoggedInUser(), ourVersion), new VersionMap(theirUsername, theirVersion)));
+				return mSharedSecrets.get(new SharedSecretKey(new VersionMap(getLoggedInUser(), ourVersion), new VersionMap(theirUsername, theirVersion), hashed));
 			}
 			catch (InvalidCacheLoadException e) {
 				SurespotLog.w(TAG, e, "getSharedSecret");
@@ -504,10 +501,12 @@ public class CredentialCachingService extends Service {
 	public static class SharedSecretKey {
 		private VersionMap mOurVersionMap;
 		private VersionMap mTheirVersionMap;
+		private boolean mHashed;
 
-		public SharedSecretKey(VersionMap ourVersionMap, VersionMap theirVersionMap) {
+		public SharedSecretKey(VersionMap ourVersionMap, VersionMap theirVersionMap, boolean hashed) {
 			mOurVersionMap = ourVersionMap;
 			mTheirVersionMap = theirVersionMap;
+			mHashed = hashed;
 		}
 
 		public String getOurUsername() {
@@ -526,12 +525,13 @@ public class CredentialCachingService extends Service {
 			return mTheirVersionMap.getVersion();
 		}
 
+		public boolean getHashed() { return mHashed; }
+
 		@Override
 		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((mOurVersionMap == null) ? 0 : mOurVersionMap.hashCode());
-			result = prime * result + ((mTheirVersionMap == null) ? 0 : mTheirVersionMap.hashCode());
+			int result = mOurVersionMap != null ? mOurVersionMap.hashCode() : 0;
+			result = 31 * result + (mTheirVersionMap != null ? mTheirVersionMap.hashCode() : 0);
+			result = 31 * result + (mHashed ? 1 : 0);
 			return result;
 		}
 
@@ -558,6 +558,10 @@ public class CredentialCachingService extends Service {
 			else
 				if (!mTheirVersionMap.equals(other.mTheirVersionMap))
 					return false;
+
+			if (mHashed != other.getHashed()) {
+				return false;
+			}
 			return true;
 		}
 	}

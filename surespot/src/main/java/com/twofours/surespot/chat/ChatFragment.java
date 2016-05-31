@@ -1,10 +1,9 @@
 package com.twofours.surespot.chat;
 
-import java.lang.reflect.Field;
-
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +16,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 
-import com.actionbarsherlock.app.SherlockDialogFragment;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.twofours.surespot.R;
+import com.twofours.surespot.SurespotApplication;
 import com.twofours.surespot.activities.MainActivity;
 import com.twofours.surespot.common.SurespotConstants;
 import com.twofours.surespot.common.SurespotLog;
@@ -31,7 +29,7 @@ import com.twofours.surespot.network.IAsyncCallback;
 import com.twofours.surespot.voice.VoiceController;
 import com.twofours.surespot.voice.VoiceMessageMenuFragment;
 
-public class ChatFragment extends SherlockFragment {
+public class ChatFragment extends Fragment {
 	private String TAG = "ChatFragment";
 	private String mUsername;
 	private ListView mListView;
@@ -99,7 +97,7 @@ public class ChatFragment extends SherlockFragment {
 
 							Intent newIntent = new Intent(ChatFragment.this.getActivity(), ImageViewActivity.class);
 							newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							newIntent.putExtra(SurespotConstants.ExtraNames.IMAGE_MESSAGE, message.toJSONObject().toString());
+							newIntent.putExtra(SurespotConstants.ExtraNames.IMAGE_MESSAGE, message.toJSONObject(false).toString());
 							ChatFragment.this.getActivity().startActivity(newIntent);
 						}
 					}
@@ -121,20 +119,20 @@ public class ChatFragment extends SherlockFragment {
 				SurespotMessage message = (SurespotMessage) mChatAdapter.getItem(position);
 				if (message.getMimeType().equals(SurespotConstants.MimeTypes.TEXT)) {
 
-					SherlockDialogFragment dialog = TextMessageMenuFragment.newInstance(message);
-					dialog.show(getActivity().getSupportFragmentManager(), "TextMessageMenuFragment");
+					DialogFragment dialog = TextMessageMenuFragment.newInstance(message);
+					dialog.show(getActivity().getFragmentManager(), "TextMessageMenuFragment");
 					return true;
 				}
 				else {
 					if (message.getMimeType().equals(SurespotConstants.MimeTypes.IMAGE)) {
-						SherlockDialogFragment dialog = ImageMessageMenuFragment.newInstance(message);
-						dialog.show(getActivity().getSupportFragmentManager(), "ImageMessageMenuFragment");
+						DialogFragment dialog = ImageMessageMenuFragment.newInstance(message);
+						dialog.show(getActivity().getFragmentManager(), "ImageMessageMenuFragment");
 						return true;
 					}
 					else {
 						if (message.getMimeType().equals(SurespotConstants.MimeTypes.M4A)) {
-							SherlockDialogFragment dialog = VoiceMessageMenuFragment.newInstance(message);
-							dialog.show(getActivity().getSupportFragmentManager(), "VoiceMessageMenuFragment");
+							DialogFragment dialog = VoiceMessageMenuFragment.newInstance(message);
+							dialog.show(getActivity().getFragmentManager(), "VoiceMessageMenuFragment");
 							return true;
 						}
 					}
@@ -145,7 +143,7 @@ public class ChatFragment extends SherlockFragment {
 
 		ChatController chatController = getMainActivity().getChatController();
 		if (chatController != null) {
-			mChatAdapter = chatController.getChatAdapter(getMainActivity(), mUsername);
+			mChatAdapter = chatController.getChatAdapter(mUsername);
 			mChatAdapter.setAllLoadedCallback(new IAsyncCallback<Boolean>() {
 
 				@Override
@@ -299,8 +297,8 @@ public class ChatFragment extends SherlockFragment {
 			// mListView.removeOnScrollListener()):
 
 			if (mListView != null) {
-				ChatController chatController = getMainActivity().getChatController();
-				if (chatController != null) {
+				ChatController chatController = SurespotApplication.getChatController();
+				if (chatController != null && chatController.getFriendAdapter() != null) {
 
 					Friend friend = chatController.getFriendAdapter().getFriend(mUsername);
 
@@ -376,21 +374,5 @@ public class ChatFragment extends SherlockFragment {
 				scrollToEnd();
 			}
 		}
-	}
-
-	@Override
-	public void onDetach() {
-	    super.onDetach();
-
-	    try {
-	        Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
-	        childFragmentManager.setAccessible(true);
-	        childFragmentManager.set(this, null);
-
-	    } catch (NoSuchFieldException e) {
-	        throw new RuntimeException(e);
-	    } catch (IllegalAccessException e) {
-	        throw new RuntimeException(e);
-	    }
 	}
 }
