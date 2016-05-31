@@ -25,6 +25,7 @@ dependencies:
     - sudo apt-get install telnet > /dev/null 2> /dev/null
     - sudo apt-get install x11-utils > /dev/null 2> /dev/null
     - sudo apt-get install xvkbd > /dev/null 2> /dev/null
+    - sudo apt-get install qrencode > /dev/null 2> /dev/null
 
     - echo y | android update sdk --no-ui --all --filter "tools"
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0 # needed
@@ -59,6 +60,9 @@ dependencies:
       pwd ;
       ls -al ;
       cp -av surespot-release-signed-aligned.apk $CIRCLE_ARTIFACTS/surespot_circleci_$CIRCLE_SHA1.apk || exit 1
+    - qrencode -o $CIRCLE_ARTIFACTS/QR_apk.png 'https://circle-artifacts.com/gh/zoff99/surespot-android/'${CIRCLE_BUILD_NUM}'/artifacts/'${CIRCLE_NODE_INDEX}'/tmp/'`basename $CIRCLE_ARTIFACTS`'/'"surespot_circleci_$CIRCLE_SHA1.apk" ; exit 0
+    - qrencode -o $CIRCLE_ARTIFACTS/QR_artifacts.png 'https://circle-artifacts.com/gh/zoff99/surespot-android/'${CIRCLE_BUILD_NUM}'#artifacts' ; exit 0
+
 test:
   pre:
     - mksdcard -l e 180M sdcard.img
