@@ -38,12 +38,8 @@ dependencies:
     - echo y | android update sdk --no-ui --all --filter addon-google_apis-google-23
 
     - pwd;ls -al;
-      cd surespot-android;
-      pwd;ls la;
       mkdir -p ../surespotcommon/src/main/res/raw ;
       printf 'ssl_strict=true\nbaseUrl=https://server.surespot.me:443\n' > ../surespotcommon/src/main/res/raw/configuration.properties ;
-      cd .. ;
-      pwd; ls -al;
       ln -s surespot src ;
       echo ./gradlew tasks ;
       ./gradlew assembleRelease --info --stacktrace --parallel;
