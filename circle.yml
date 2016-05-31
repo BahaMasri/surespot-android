@@ -29,6 +29,8 @@ dependencies:
     - echo y | android update sdk --no-ui --all --filter "tools"
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0 # needed
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.1
+    - echo y | android update sdk --no-ui --all --filter build-tools-23.0.2
+    - echo y | android update sdk --no-ui --all --filter build-tools-23.0.3
     - echo y | android update sdk --no-ui --all --filter android-23
     - echo y | android update sdk --no-ui --all --filter platform-tools-preview
     - echo y | android update sdk --no-ui --all --filter sys-img-armeabi-v7a-android-23
